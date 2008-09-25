@@ -17,26 +17,44 @@
 #define  CHAR_END		0
 //////////////////////////////////////////////////////////////////////////
 #include "Token.h"
+#include <iostream>
+#include <stdio.h>
+using namespace std;
+
+
+class Buffer  
+{
+public:
+	Buffer(string filename);
+	Buffer();
+	int bcurrent ;
+	char goAheadOneChar();
+
+private:
+	char buffer[1024*1024];
+};
 
 class Scanner  
 {
 public:
-	int Scanner::NextToken(Token& t);
+	Token nextToken();
 	Scanner(const string& text);
 	Scanner();
 	virtual ~Scanner();
 	
 private:
-	char* m_text;
-	int m_current;
-	int m_forward;
+	string m_text;
 	int m_state;
-
-	char nextChar();
-	bool isLetter(char c)const;
-	string retractToken(int lookAhead)const;
-	SourcePosition retractPosition(int lookAhead)const;
+	SourcePosition position;
+	Buffer buff;
 	
+	void goBackOneChar();
+	char goAheadOneChar();
+	char nextChar();
+	bool isLetter(char c);
+	bool isLetterOrDigit(char c);
 };
+
+
 
 #endif // !defined(AFX_SCANNER_H__C606F88E_1CCF_436A_AE97_A7C35E6832AA__INCLUDED_)
