@@ -55,6 +55,7 @@ bool Scanner::isLetterOrDigit(char c)
 
 Token Scanner::nextToken()
 {
+	m_state = 0;
 	Token result;
 	char c= NULL;
 	char t= NULL;
@@ -65,74 +66,88 @@ Token Scanner::nextToken()
 		case 0 :
 			c = nextChar();
 			m_text=c;
-                if (c == ' ' || c == '\t' || c== '\r' || c == '\n' ) {
-                    if (c == '\n') {
+                if (c == ' ' || c == '\t' || c== '\r' || c == '\n' ) 
+				{
+                    if (c == '\n') 
+					{
                     	    position.NewLine();
-                    	}	          	    
-                    else if(c== '\t'){
+                    }	          	    
+                    else if(c== '\t')
+					{
                     	position.m_iCharStart += 8;
                     	position.m_iCharFinish = position.m_iCharStart-1;
-						}
-	                else {
-	                	position.m_iCharStart++;//charFinish has already increased by 1
-						}
-					}				
-					
-				else if (isLetter(c)) {
-						m_state = 1;
 					}
-				else if (c== '=') {
+	                else 
+					{
+	                	position.m_iCharStart++;//charFinish has already increased by 1
+					}
+				}				
+				else if (isLetter(c)) 
+				{
+						m_state = 1;
+				}
+				else if (c== '=') 
+				{
 						c = goAheadOneChar();
-						if(c== '>'){
+						if(c== '>')
+						{
 								m_text += c;
 								c=nextChar();
 								result = Token(MAPPING_OP,m_text,position);
 								position.m_iCharFinish++;
 								position.EndToken();
 								return result;
-							}
-						else{
+						}
+						else
+						{
 								result = Token(ERROR,m_text,position)	;
 								position.m_iCharFinish++;
 								position.EndToken();
 								return result;
-							}
-					}
-				else if (c== '<') {
+						}
+				}
+				else if (c== '<') 
+				{
 						c = goAheadOneChar();
-						if(c== '>'){ // <>
+						if(c== '>')
+						{ // <>
 								m_text += c;
 								c=nextChar();
 								result = Token(CONTRADITION_OP,m_text,position);
 								position.m_iCharFinish++;
 								position.EndToken();
 								return result;
-							}
-						else if (c == '='){ //<=
+						}
+
+						else if (c == '=')
+						{ //<=
 								m_text += c;
 								c = goAheadOneChar();
-								if (c == '>') { // <=>
+								if (c == '>') 
+								{ // <=>
 										m_text += c;
 										c = nextChar();
 										c = nextChar();
 										result = Token(EQUIVALENT_OP,m_text,position);
 										position.EndToken();
 										return result;
-									}
-								else {
+								}
+								else 
+								{
 										result = Token(ERROR,m_text,position)	;
 										position.m_iCharFinish++;
 										position.EndToken();
 										return result;
-									}
-							}
+								}
+						}
 								
-						else{
+						else
+						{
 								result = Token(ERROR,m_text,position)	;
 								position.m_iCharFinish++;
 								position.EndToken();
 								return result;
-							}
+						}
 					}
 				else if( c=='&'){
 						result = Token(INTERSECTION_OP,"&",position);
@@ -164,12 +179,21 @@ Token Scanner::nextToken()
 						position.EndToken();
 						return result;
 					}
+				else if((int)c == 0)
+					{
+						m_text="$";
+						result = Token(NIL,m_text,position)	;
+						position.m_iCharFinish++;
+						position.EndToken();
+						return result;
+					}
 				else{
 						result = Token(ERROR,m_text,position)	;
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
 					}
+				break;
 		case 1:
 				m_text = "";
 				while (true){
@@ -201,16 +225,28 @@ Token Scanner::nextToken()
 
 Buffer::Buffer(string filename)
 {
+	buffer = new char[1024];
+	for(int i = 0;i < 1024  ; i++)
+	{
+		buffer[i] = 0;
+	}
 	bcurrent = -1;
 	FILE* file = fopen("filename","r");
-	fread(buffer,sizeof(char),1024*1024,file);
+	fread(buffer,sizeof(char),1024,file);
 	fclose(file);
 }
 Buffer::Buffer() 
 {
+	buffer = new char[1024];
+
+	for(int i = 0;i < 1024  ; i++)
+	{
+		buffer[i] = 0;
+	}
 	bcurrent = -1;
 	cout<<"Nhap bai toan: ";
-	cin>>buffer;
+	cin.getline(buffer,1024);
+	
 }
 char Buffer::goAheadOneChar()
 {	

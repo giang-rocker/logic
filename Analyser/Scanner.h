@@ -31,7 +31,7 @@ public:
 	char goAheadOneChar();
 
 private:
-	char buffer[1024*1024];
+	char*buffer;
 };
 
 class Scanner  
