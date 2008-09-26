@@ -12,7 +12,7 @@
 
 Scanner::Scanner()
 {
-	
+	m_state  = 0;
 }
 
 Scanner::~Scanner()
@@ -22,7 +22,7 @@ Scanner::~Scanner()
 
 Scanner::Scanner(const string &text)
 {
-	
+	m_state = 0;
 }
 
 char Scanner::nextChar()
@@ -77,7 +77,7 @@ Token Scanner::nextToken()
 	                	position.m_iCharStart++;//charFinish has already increased by 1
 						}
 					}				
-				
+					
 				else if (isLetter(c)) {
 						m_state = 1;
 					}
@@ -201,12 +201,14 @@ Token Scanner::nextToken()
 
 Buffer::Buffer(string filename)
 {
+	bcurrent = -1;
 	FILE* file = fopen("filename","r");
 	fread(buffer,sizeof(char),1024*1024,file);
 	fclose(file);
 }
 Buffer::Buffer() 
 {
+	bcurrent = -1;
 	cout<<"Nhap bai toan: ";
 	cin>>buffer;
 }
