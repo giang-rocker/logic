@@ -9,7 +9,7 @@ int main()
 	do
 	{
 		token = s->nextToken();
-		cout<<(string)token<<endl;
+		cout<<(TokenKind)token << " :  "<<(string)token<<endl;
 	}
 	while((TokenKind)token!=NIL);
 	
