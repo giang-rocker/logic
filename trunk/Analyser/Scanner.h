@@ -19,40 +19,26 @@
 #include "Token.h"
 #include <iostream>
 #include <stdio.h>
+#include<ctype.h>
 using namespace std;
 
-
-class Buffer  
-{
-public:
-	Buffer(string filename);
-	Buffer();
-	int bcurrent ;
-	char goAheadOneChar();
-
-private:
-	char*buffer;
-};
 
 class Scanner  
 {
 public:
 	Token nextToken();
 	Scanner(const string& text);
-	Scanner();
 	virtual ~Scanner();
 	
 private:
 	string m_text;
+	int index;
 	int m_state;
 	SourcePosition position;
-	Buffer buff;
-	
+		
 	void goBackOneChar();
 	char goAheadOneChar();
 	char nextChar();
-	bool isLetter(char c);
-	bool isLetterOrDigit(char c);
 };
 
 

@@ -10,47 +10,33 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-Scanner::Scanner()
-{
-	m_state  = 0;
-}
-
 Scanner::~Scanner()
 {
-
+	
 }
 
 Scanner::Scanner(const string &text)
 {
+	m_text.assign(text);
+	index = -1;
 	m_state = 0;
 }
 
 char Scanner::nextChar()
 {	
+	index++;
 	position.m_iCharFinish++;
-	return buff.goAheadOneChar();
+	return m_text.at(index);
 }
 
 char Scanner::goAheadOneChar()
 {
-	char c = buff.goAheadOneChar();		
-	buff.bcurrent--;
-	return c;
+	return m_text.at(index+1);
 }
 
 void Scanner::goBackOneChar()
 {
-	buff.bcurrent--;
-}
-
-bool Scanner::isLetter(char c)
-{
-	return ('a'<=c && c <='z')||('A'<=c&& c<='Z');
-}
-bool Scanner::isLetterOrDigit(char c)
-{
-	int code = (int) c;
-	return ((int)'a' <= code && code <= (int)'z' ) || ((int)'A' <= code && code <= (int)'Z' ) || ((int)'0' <= code && code <= (int)'9' ) ;
+	index--;
 }
 
 Token Scanner::nextToken()
@@ -59,13 +45,14 @@ Token Scanner::nextToken()
 	Token result;
 	char c= NULL;
 	char t= NULL;
+	string lexeme="";
 	while (true)
 	{
 		switch (m_state)
 		{
 		case 0 :
 			c = nextChar();
-			m_text=c;
+			lexeme = c;
                 if (c == ' ' || c == '\t' || c== '\r' || c == '\n' ) 
 				{
                     if (c == '\n') 
@@ -82,25 +69,73 @@ Token Scanner::nextToken()
 	                	position.m_iCharStart++;//charFinish has already increased by 1
 					}
 				}				
-				else if (isLetter(c)) 
+				else if (isalpha(c)) 
 				{
-						m_state = 1;
+						m_state = 1; 
+						break;
 				}
-				else if (c== '=') 
+				else if (c== '=' || c=='-') 
 				{
 						c = goAheadOneChar();
-						if(c== '>')
+						if(c== '>') // => or ->
 						{
-								m_text += c;
+								lexeme += c;
 								c=nextChar();
-								result = Token(MAPPING_OP,m_text,position);
+								result = Token(LGC_MAPPING_OP,lexeme,position);
+								position.m_iCharFinish++;
+								position.EndToken();
+								return result;
+						}
+						if(c== '|') // =| or -|
+						{
+								lexeme += c;
+								c=nextChar();
+								result = Token(LGC_RESULT_OP,lexeme,position);
 								position.m_iCharFinish++;
 								position.EndToken();
 								return result;
 						}
 						else
 						{
-								result = Token(ERROR,m_text,position)	;
+								result = Token(LGC_ERROR,lexeme,position)	;
+								position.m_iCharFinish++;
+								position.EndToken();
+								return result;
+						}
+				}
+				else if (c== 'V') 
+				{
+						c = goAheadOneChar();
+						if(c== '-')
+						{ // V-
+								lexeme += c;
+								c=nextChar();
+								result = Token(LGC_ALL_OP,lexeme,position);
+								position.m_iCharFinish++;
+								position.EndToken();
+								return result;
+						}else
+						{
+								result = Token(LGC_ERROR,lexeme,position)	;
+								position.m_iCharFinish++;
+								position.EndToken();
+								return result;
+						}
+				}
+					else if (c== '-') 
+				{
+						c = goAheadOneChar();
+						if(c== ']')
+						{ // -]
+								lexeme += c;
+								c=nextChar();
+								result = Token(LGC_EXIST_OP,lexeme,position);
+								position.m_iCharFinish++;
+								position.EndToken();
+								return result;
+						}else
+						{
+								result = Token(LGC_ERROR,lexeme,position)	;
 								position.m_iCharFinish++;
 								position.EndToken();
 								return result;
@@ -111,30 +146,33 @@ Token Scanner::nextToken()
 						c = goAheadOneChar();
 						if(c== '>')
 						{ // <>
-								m_text += c;
+								lexeme += c;
 								c=nextChar();
-								result = Token(CONTRADITION_OP,m_text,position);
+								result = Token(LGC_CONTRADITION_OP,lexeme,position);
 								position.m_iCharFinish++;
 								position.EndToken();
 								return result;
 						}
 
-						else if (c == '=')
-						{ //<=
-								m_text += c;
+						else if (c == '=' || c =='-')
+						{ //<=	
+								string temp = lexeme;
+								lexeme += c;
+								index++;
 								c = goAheadOneChar();
 								if (c == '>') 
-								{ // <=>
+								{ // <=> or <->
 										m_text += c;
 										c = nextChar();
-										c = nextChar();
-										result = Token(EQUIVALENT_OP,m_text,position);
+										position.m_iCharFinish++;
+										result = Token(LGC_EQUIVALENT_OP,lexeme,position);
 										position.EndToken();
 										return result;
 								}
 								else 
 								{
-										result = Token(ERROR,m_text,position)	;
+										index--;
+										result = Token(LGC_ERROR,temp,position)	;
 										position.m_iCharFinish++;
 										position.EndToken();
 										return result;
@@ -143,113 +181,81 @@ Token Scanner::nextToken()
 								
 						else
 						{
-								result = Token(ERROR,m_text,position)	;
+								result = Token(LGC_ERROR,lexeme,position)	;
 								position.m_iCharFinish++;
 								position.EndToken();
 								return result;
 						}
 					}
 				else if( c=='&'){
-						result = Token(INTERSECTION_OP,"&",position);
+						result = Token(LGC_INTERSECTION_OP,"&",position);
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
 					}
 				else if( c=='|'){
-						result = Token(UNION_OP,"|",position);
+						result = Token(LGC_UNION_OP,"|",position);
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
 					}
 				else if( c=='!'){
-						result = Token(NEGATION_OP,"!",position);
+						result = Token(LGC_NEGATION_OP,"!",position);
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
 					}
 				else if( c=='('){
-						result = Token(LEFTPAR,"(",position);
+						result = Token(LGC_LEFTPAR,"(",position);
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
 					}
 				else if( c==')'){
-						result = Token(RIGHTPAR,")",position);
+						result = Token(LGC_RIGHTPAR,")",position);
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
 					}
 				else if((int)c == 0)
 					{
-						m_text="$";
-						result = Token(NIL,m_text,position)	;
+						lexeme ="$";
+						result = Token(LGC_NIL,m_text,position)	;
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
 					}
 				else{
-						result = Token(ERROR,m_text,position)	;
+						result = Token(LGC_ERROR,m_text,position)	;
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
 					}
 				break;
 		case 1:
-				m_text = "";
+				lexeme = "";
 				while (true){
-						if (!(isLetterOrDigit(c) || c == '_'))
+						if (!(isxdigit(c) || c == '_'))
 							break;
 						else{
-	                			m_text += c;
+	                			lexeme += c;
 							}
 						c = nextChar();
 					}
-				if (m_text == "AND" || m_text == "and")
-						result = Token(INTERSECTION_OP,m_text,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
-				else if (m_text == "OR" || m_text == "or")
-						result = Token(UNION_OP,m_text,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
-				else if (m_text == "NOT" )
-						result = Token(NEGATION_OP,m_text,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
-				else if (m_text == "true" || m_text == "TRUE"|| m_text == "FALSE"|| m_text == "false")
-						result = Token(BOOLEANLITERAL,m_text,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+				if (lexeme == "AND" || lexeme == "and")
+						result = Token(LGC_INTERSECTION_OP,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+				else if (lexeme == "OR" || lexeme == "or")
+						result = Token(LGC_UNION_OP,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+				else if (lexeme == "NOT" || lexeme == "not")
+						result = Token(LGC_NEGATION_OP,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+				else if (lexeme == "true" || lexeme == "TRUE"|| lexeme == "FALSE"|| lexeme == "false")
+						result = Token(LGC_BOOLEANLITERAL,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
 				else 
-						result = Token(IDENTIFER,m_text,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+						result = Token(LGC_IDENTIFER,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
 
 				position.EndToken();
 				goBackOneChar();
 				return result;
 		}
 	}
-}
-
-
-Buffer::Buffer(string filename)
-{
-	buffer = new char[1024];
-	for(int i = 0;i < 1024  ; i++)
-	{
-		buffer[i] = 0;
-	}
-	bcurrent = -1;
-	FILE* file = fopen("filename","r");
-	fread(buffer,sizeof(char),1024,file);
-	fclose(file);
-}
-Buffer::Buffer() 
-{
-	buffer = new char[1024];
-
-	for(int i = 0;i < 1024  ; i++)
-	{
-		buffer[i] = 0;
-	}
-	bcurrent = -1;
-	cout<<"Nhap bai toan: ";
-	cin.getline(buffer,1024);
-	
-}
-char Buffer::goAheadOneChar()
-{	
-	bcurrent++;
-	return buffer[bcurrent];
 }

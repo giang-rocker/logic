@@ -4,15 +4,16 @@ using namespace std;
 
 int main()
 {
-	Scanner*s = new Scanner();
+	string text = "a";
+	Scanner*s = new Scanner(text);
 	Token token;
-	cout << "\n\n\tResult:\n-------------------------\n|  Kind\t|\tLexeme\t|\n-------------------------\n";
+	cout << "\n\n\tResult:\n-----------------------------------------\n|  \tKind\t\t|\tLexeme\t|\n-----------------------------------------\n";
 	do
 	{
 		token = s->nextToken();
-		cout<<"|  "<<(TokenKind)token << "\t|\t"<<(string)token <<"\t|"<<endl;
+		cout<<"|  "<<token.convertToken() << "\t|\t"<<(string)token <<"\t|"<<endl;
 	}
-	while((TokenKind)token!=NIL);
-	cout << "-------------------------\n\n";
+	while((TokenKind)token!= LGC_NIL);
+	cout << "-----------------------------------------\n\n";
 	return 0;
 }

@@ -52,7 +52,7 @@ Token::operator =(const Token& t)
 }
 
 Token::operator string() const
-{
+{		
 	return m_lexeme;
 }
 
@@ -64,4 +64,40 @@ Token::operator TokenKind() const
 Token::operator SourcePosition()const
 {
 	return m_position;
+} 
+
+string Token::convertToken()
+{
+		int i = m_kind;
+		if (i == 2) {
+            return "Token.LGC_IDENTIFER";
+        } else if (i == 3) {
+            return "Token.LGC_INTERSECTION_OP";
+        } else if (i == 4) {
+            return "Token.LGC_UNION_OP";
+        } else if (i == 5) {
+            return "Token.LGC_NEGATION_OP";
+        } else if (i == 6) {
+            return "Token.LGC_MAPPING_OP";
+        } else if (i == 7) {
+            return "Token.LGC_EQUIVALENT_OP";
+        } else if (i == 8) {
+            return "Token.LGC_LEFTPAR";
+        } else if (i == 9) {
+            return "Token.LGC_RIGHTPAR";
+        } else if (i == 10) {
+            return "Token.LGC_BOOLEANLITERAL";
+        } else if (i == 11) {
+            return "Token.LGC_CONTRADITION_OP";
+        } else if (i == 12) {
+            return "Token.LGC_ALL_OP";
+        } else if (i == 13) {
+            return "Token.LGC_EXIST_OP";
+		} else if (i == 14) {
+            return "Token.LGC_RESULT_OP";
+        } else if (i == 15) {
+            return "Token.LGC_NIL";
+        } else {
+            return "Token.LGC_ERROR";
+		}
 }
