@@ -68,36 +68,36 @@ Token::operator SourcePosition()const
 
 string Token::convertToken()
 {
-		int i = m_kind;
-		if (i == 2) {
-            return "Token.LGC_IDENTIFER";
-        } else if (i == 3) {
+	switch (m_kind){
+		case LGC_IDENTIFER : 
+			return "Token.LGC_IDENTIFER";
+		case LGC_INTERSECTION_OP:
             return "Token.LGC_INTERSECTION_OP";
-        } else if (i == 4) {
+		case LGC_UNION_OP:
             return "Token.LGC_UNION_OP";
-        } else if (i == 5) {
+		case LGC_NEGATION_OP:
             return "Token.LGC_NEGATION_OP";
-        } else if (i == 6) {
+		case LGC_MAPPING_OP:
             return "Token.LGC_MAPPING_OP";
-        } else if (i == 7) {
+		case LGC_EQUIVALENT_OP:
             return "Token.LGC_EQUIVALENT_OP";
-        } else if (i == 8) {
+		case LGC_LEFTPAR:
             return "Token.LGC_LEFTPAR";
-        } else if (i == 9) {
+		case LGC_RIGHTPAR:
             return "Token.LGC_RIGHTPAR";
-        } else if (i == 10) {
+		case LGC_BOOLEANLITERAL:
             return "Token.LGC_BOOLEANLITERAL";
-        } else if (i == 11) {
+		case LGC_CONTRADITION_OP:
             return "Token.LGC_CONTRADITION_OP";
-        } else if (i == 12) {
+		case LGC_ALL_OP:
             return "Token.LGC_ALL_OP";
-        } else if (i == 13) {
+		case LGC_EXIST_OP:
             return "Token.LGC_EXIST_OP";
-		} else if (i == 14) {
+		case LGC_RESULT_OP:
             return "Token.LGC_RESULT_OP";
-        } else if (i == 15) {
+		case LGC_NIL:
             return "Token.LGC_NIL";
-        } else {
-            return "Token.LGC_ERROR";
-		}
+		default: 
+			return "Token.LGC_ERROR";	
+	}
 }
