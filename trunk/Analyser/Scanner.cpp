@@ -26,6 +26,10 @@ char Scanner::nextChar()
 {	
 	index++;
 	position.m_iCharFinish++;
+	if(index == m_text.length())
+	{
+		return (char)0;
+	}
 	return m_text.at(index);
 }
 
@@ -220,7 +224,7 @@ Token Scanner::nextToken()
 				else if((int)c == 0)
 					{
 						lexeme ="$";
-						result = Token(LGC_NIL,m_text,position)	;
+						result = Token(LGC_NIL,"$",position)	;
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
