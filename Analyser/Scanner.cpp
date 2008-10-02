@@ -26,15 +26,22 @@ char Scanner::nextChar()
 {	
 	index++;
 	position.m_iCharFinish++;
+
 	if(index == m_text.length())
 	{
 		return (char)0;
 	}
+
 	return m_text.at(index);
 }
 
 char Scanner::goAheadOneChar()
 {
+
+	if(index == m_text.length() - 1)
+	{
+		return (char)0;
+	}
 	return m_text.at(index+1);
 }
 
