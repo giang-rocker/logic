@@ -78,12 +78,34 @@ Token Scanner::nextToken()
 					{
 	                	position.m_iCharStart++;//charFinish has already increased by 1
 					}
-				}				
+				}
+				else if (c== 'V') 
+				{
+						c = goAheadOneChar();
+						if(c== '-')
+						{ // V-
+								lexeme += c;
+								c=nextChar();
+								result = Token(LGC_ALL_OP,lexeme,position);
+								position.m_iCharFinish++;
+								position.EndToken();
+								return result;
+						}
+						else
+						{
+								result = Token(LGC_ERROR,lexeme,position)	;
+								position.m_iCharFinish++;
+								position.EndToken();
+								return result;
+						}
+				}
+
 				else if (isalpha(c)) 
 				{
 						m_state = 1; 
 						break;
 				}
+
 				else if (c== '=' ) 
 				{
 						c = goAheadOneChar();
@@ -113,25 +135,9 @@ Token Scanner::nextToken()
 								return result;
 						}
 				}
-				else if (c== 'V') 
-				{
-						c = goAheadOneChar();
-						if(c== '-')
-						{ // V-
-								lexeme += c;
-								c=nextChar();
-								result = Token(LGC_ALL_OP,lexeme,position);
-								position.m_iCharFinish++;
-								position.EndToken();
-								return result;
-						}else
-						{
-								result = Token(LGC_ERROR,lexeme,position)	;
-								position.m_iCharFinish++;
-								position.EndToken();
-								return result;
-						}
-				}
+
+				
+
 				else if (c== '-') 
 				{
 						c = goAheadOneChar();
@@ -143,7 +149,8 @@ Token Scanner::nextToken()
 								position.m_iCharFinish++;
 								position.EndToken();
 								return result;
-						}else if(c== '|')				// -| 
+						}
+						else if(c== '|')				// -| 
 						{
 								lexeme += c;
 								c=nextChar();
@@ -159,6 +166,7 @@ Token Scanner::nextToken()
 								position.EndToken();
 								return result;
 						}
+
 				}
 				else if (c== '<') 
 				{
@@ -176,8 +184,8 @@ Token Scanner::nextToken()
 						else if (c == '=' || c =='-')
 						{ //<=	
 								string temp = lexeme;
+								c = nextChar();
 								lexeme += c;
-								index++;
 								c = goAheadOneChar();
 								if (c == '>') 
 								{ // <=> or <->
@@ -190,7 +198,7 @@ Token Scanner::nextToken()
 								}
 								else 
 								{
-										index--;
+										index-=1;
 										result = Token(LGC_ERROR,temp,position)	;
 										position.m_iCharFinish++;
 										position.EndToken();
@@ -200,80 +208,105 @@ Token Scanner::nextToken()
 								
 						else
 						{
+							
 								result = Token(LGC_ERROR,lexeme,position)	;
 								position.m_iCharFinish++;
 								position.EndToken();
 								return result;
 						}
-					}
-				else if( c=='&'){
+				}
+				else if( c=='&')
+				{
 						result = Token(LGC_INTERSECTION_OP,"&",position);
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
-					}
-				else if( c=='|'){
+				}
+				else if( c=='|')
+				{
 						result = Token(LGC_UNION_OP,"|",position);
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
-					}
-				else if( c=='!'){
+				}
+				else if( c=='!')
+				{
 						result = Token(LGC_NEGATION_OP,"!",position);
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
-					}
-				else if( c=='('){
+				}
+				else if( c=='(')
+				{
 						result = Token(LGC_LEFTPAR,"(",position);
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
-					}
-				else if( c==')'){
+				}
+				else if( c==')')
+				{
 						result = Token(LGC_RIGHTPAR,")",position);
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
-					}
+				}
 				else if((int)c == 0)
-					{
-						lexeme ="$";
-						result = Token(LGC_NIL,"$",position)	;
-						position.m_iCharFinish++;
-						position.EndToken();
-						return result;
-					}
-				else{
+				{
+					lexeme ="$";
+					result = Token(LGC_NIL,"$",position)	;
+					position.m_iCharFinish++;
+					position.EndToken();
+					return result;
+				}
+				else
+				{
 						result = Token(LGC_ERROR,lexeme,position)	;
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
-					}
+				}
 				break;
+
 		case 1:
 				lexeme = "";
-				while (true){
-						if (!(isxdigit(c) || c == '_'))
-							break;
-						else{
-	                			lexeme += c;
-							}
+				while (true)
+				{
+					
+					if ((isalpha(c)))
+					{
+						lexeme += c;
 						c = nextChar();
 					}
-				if (lexeme == "AND" || lexeme == "and")
-						result = Token(LGC_INTERSECTION_OP,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
-				else if (lexeme == "OR" || lexeme == "or")
-						result = Token(LGC_UNION_OP,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
-				else if (lexeme == "NOT" || lexeme == "not")
-						result = Token(LGC_NEGATION_OP,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
-				else if (lexeme == "true" || lexeme == "TRUE"|| lexeme == "FALSE"|| lexeme == "false")
-						result = Token(LGC_BOOLEANLITERAL,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
-				else 
-						result = Token(LGC_IDENTIFER,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+					else
+					{
+						break;
+					}
+					
+				}
 
+				if (lexeme == "AND" || lexeme == "and")
+				{
+					result = Token(LGC_INTERSECTION_OP,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+				}
+				else if (lexeme == "OR" || lexeme == "or")
+				{
+					result = Token(LGC_UNION_OP,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+				}
+				else if (lexeme == "NOT" || lexeme == "not")
+				{
+					result = Token(LGC_NEGATION_OP,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+				}
+				else if (lexeme == "true" || lexeme == "TRUE"|| lexeme == "FALSE"|| lexeme == "false")
+				{
+						result = Token(LGC_BOOLEANLITERAL,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+				}
+				else 
+				{
+						result = Token(LGC_IDENTIFER,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+						
+				}
 				position.EndToken();
-				//goBackOneChar();
+				goBackOneChar();
 				return result;
 		}
 	}
