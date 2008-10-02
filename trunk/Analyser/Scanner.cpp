@@ -47,8 +47,7 @@ Token Scanner::nextToken()
 {
 	m_state = 0;
 	Token result;
-	char c= NULL;
-	char t= NULL;
+	char c = NULL;
 	string lexeme="";
 	while (true)
 	{
@@ -78,7 +77,7 @@ Token Scanner::nextToken()
 						m_state = 1; 
 						break;
 				}
-				else if (c== '=' || c=='-') 
+				else if (c== '=' ) 
 				{
 						c = goAheadOneChar();
 						if(c== '>') // => or ->
@@ -90,7 +89,7 @@ Token Scanner::nextToken()
 								position.EndToken();
 								return result;
 						}
-						if(c== '|') // =| or -|
+						if(c== '|') // =| 
 						{
 								lexeme += c;
 								c=nextChar();
@@ -126,18 +125,27 @@ Token Scanner::nextToken()
 								return result;
 						}
 				}
-					else if (c== '-') 
+				else if (c== '-') 
 				{
 						c = goAheadOneChar();
 						if(c== ']')
-						{ // -]
+						{								// -]
 								lexeme += c;
 								c=nextChar();
 								result = Token(LGC_EXIST_OP,lexeme,position);
 								position.m_iCharFinish++;
 								position.EndToken();
 								return result;
-						}else
+						}else if(c== '|')				// -| 
+						{
+								lexeme += c;
+								c=nextChar();
+								result = Token(LGC_RESULT_OP,lexeme,position);
+								position.m_iCharFinish++;
+								position.EndToken();
+								return result;
+						}
+						else
 						{
 								result = Token(LGC_ERROR,lexeme,position)	;
 								position.m_iCharFinish++;
@@ -166,7 +174,7 @@ Token Scanner::nextToken()
 								c = goAheadOneChar();
 								if (c == '>') 
 								{ // <=> or <->
-										m_text += c;
+										lexeme += c;
 										c = nextChar();
 										position.m_iCharFinish++;
 										result = Token(LGC_EQUIVALENT_OP,lexeme,position);
@@ -230,7 +238,7 @@ Token Scanner::nextToken()
 						return result;
 					}
 				else{
-						result = Token(LGC_ERROR,m_text,position)	;
+						result = Token(LGC_ERROR,lexeme,position)	;
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
