@@ -272,7 +272,7 @@ Token Scanner::nextToken()
 				while (true)
 				{
 					
-					if ((isalpha(c)))
+					if ((isalnum(c)))
 					{
 						lexeme += c;
 						c = nextChar();
