@@ -273,7 +273,7 @@ Token Scanner::nextToken()
 						result = Token(LGC_IDENTIFER,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
 
 				position.EndToken();
-				goBackOneChar();
+				//goBackOneChar();
 				return result;
 		}
 	}
