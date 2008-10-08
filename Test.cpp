@@ -1,11 +1,12 @@
 #include <iostream>
 #include "Analyser/Scanner.h"
+
 using namespace std;
 
 int main()
 {
 
-	
+
 	//"a<->a<>abc a V- -]kdj aa ";
 	string text = "a<->a<>abc a V- -]kdj aa ";
 	Scanner*s = new Scanner(text);
