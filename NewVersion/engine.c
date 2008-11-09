@@ -270,8 +270,9 @@ int ParseToken(
   /* ACTIONACCEPT: exit. We're finished parsing the input. */
   if (Grammar.LalrArray[*LalrState].Actions[Action].Action == ACTIONACCEPT) {
     if (Debug > 0) {
-      fprintf(stdout,"LALR Accept: Target=%d\n",
-        Grammar.LalrArray[*LalrState].Actions[Action].Target);
+ //     fprintf(stdout,"LALR Accept: Target=%d\n",
+ //       Grammar.LalrArray[*LalrState].Actions[Action].Target);
+//		printf("koin9");
       }
     return(LALRACCEPT);
     }
@@ -281,7 +282,8 @@ int ParseToken(
   if (Grammar.LalrArray[*LalrState].Actions[Action].Action == ACTIONSHIFT) {
     *LalrState = Grammar.LalrArray[*LalrState].Actions[Action].Target;
     if (Debug > 0) {
-      fprintf(stdout,"LALR Shift: Lalr=%d\n",*LalrState);
+      //fprintf(stdout,"LALR Shift: Lalr=%d\n",*LalrState);
+//		printf (" koin2");
       }
     return(LALRSHIFT);
     }
@@ -295,7 +297,8 @@ int ParseToken(
   if (Grammar.LalrArray[*LalrState].Actions[Action].Action == ACTIONGOTO) {
     *LalrState = Grammar.LalrArray[*LalrState].Actions[Action].Target;
     if (Debug > 0) {
-      fprintf(stdout,"LALR Goto: Lalr=%d\n",*LalrState);
+ //     fprintf(stdout,"LALR Goto: Lalr=%d\n",*LalrState);
+//		printf("koin6");
       }
     return(LALRGOTO);
     }
@@ -309,9 +312,10 @@ int ParseToken(
      */
   Rule = Grammar.LalrArray[*LalrState].Actions[Action].Target;
   if (Debug > 0) {
-    fprintf(stdout,"LALR Reduce: Lalr=%d TargetRule=%S[%d] ==> %S\n",
-      *LalrState,Grammar.SymbolArray[Grammar.RuleArray[Rule].Head].Name,
-      Grammar.RuleArray[Rule].Head,Grammar.RuleArray[Rule].Description);
+    //fprintf(stdout,"LALR Reduce: Lalr=%d TargetRule=%S[%d] ==> %S\n",
+    //  *LalrState,Grammar.SymbolArray[Grammar.RuleArray[Rule].Head].Name,
+     // Grammar.RuleArray[Rule].Head,Grammar.RuleArray[Rule].Description);
+//	printf("koin3");
     }
 
   /* If TrimReductions is active, and the Rule contains a single non-terminal,
@@ -381,19 +385,21 @@ int ParseToken(
     PopToken->NextToken = NULL;
     if (Debug > 0) {
       if (PopToken->Token->Data != NULL) {
-          fprintf(stdout,"  + Symbol=%S[%d] RuleSymbol=%S[%d] Value='%S' Lalr=%d\n",
-            Grammar.SymbolArray[PopToken->Token->Symbol].Name,
-            PopToken->Token->Symbol,
-            Grammar.SymbolArray[Grammar.RuleArray[Rule].Symbols[i-1]].Name,
-            Grammar.RuleArray[Rule].Symbols[i-1],
-            PopToken->Token->Data,PopToken->LalrState);
+//          fprintf(stdout,"  + Symbol=%S[%d] RuleSymbol=%S[%d] Value='%S' Lalr=%d\n",
+ //           Grammar.SymbolArray[PopToken->Token->Symbol].Name,
+ //           PopToken->Token->Symbol,
+//            Grammar.SymbolArray[Grammar.RuleArray[Rule].Symbols[i-1]].Name,
+//            Grammar.RuleArray[Rule].Symbols[i-1],
+//            PopToken->Token->Data,PopToken->LalrState);
+//		  printf("koin4");
         } else {
-          fprintf(stdout,"  + Symbol=%S[%d] RuleSymbol=%S[%d] Lalr=%d\n",
-            Grammar.SymbolArray[PopToken->Token->Symbol].Name,
-            PopToken->Token->Symbol,
-            Grammar.SymbolArray[Grammar.RuleArray[Rule].Symbols[i-1]].Name,
-            Grammar.RuleArray[Rule].Symbols[i-1],
-            PopToken->LalrState);
+ //         fprintf(stdout,"  + Symbol=%S[%d] RuleSymbol=%S[%d] Lalr=%d\n",
+ //           Grammar.SymbolArray[PopToken->Token->Symbol].Name,
+ //           PopToken->Token->Symbol,
+ //           Grammar.SymbolArray[Grammar.RuleArray[Rule].Symbols[i-1]].Name,
+ //           Grammar.RuleArray[Rule].Symbols[i-1],
+ //           PopToken->LalrState);
+//			printf("koin8");
           }
       }
     Reduction->Token->Tokens[i - 1] = PopToken->Token;
@@ -406,10 +412,11 @@ int ParseToken(
 
   /* Call the LALR state machine with the Symbol of the Rule. */
   if (Debug > 0) {
-    fprintf(stdout,"Calling Lalr 1: Lalr=%d Symbol=%S[%d]\n",
-      *LalrState,
-      Grammar.SymbolArray[Grammar.RuleArray[Rule].Head].Name,
-      Grammar.RuleArray[Rule].Head);
+//    fprintf(stdout,"Calling Lalr 1: Lalr=%d Symbol=%S[%d]\n",
+ //     *LalrState,
+ //     Grammar.SymbolArray[Grammar.RuleArray[Rule].Head].Name,
+ //     Grammar.RuleArray[Rule].Head);
+//		printf("koin5");
     }
   ParseToken(LalrState,TokenStack,Reduction,TrimReductions,Debug);
 
@@ -425,10 +432,11 @@ int ParseToken(
      changed because of the reduction, so we must accept the token
      again. */
   if (Debug > 0) {
-    fprintf(stdout,"Calling Lalr 2: Lalr=%d Symbol=%S[%d]\n",
-      *LalrState,
-      Grammar.SymbolArray[InputToken->Token->Symbol].Name,
-      InputToken->Token->Symbol);
+ //   fprintf(stdout,"Calling Lalr 2: Lalr=%d Symbol=%S[%d]\n",
+  //    *LalrState,
+    //  Grammar.SymbolArray[InputToken->Token->Symbol].Name,
+      //InputToken->Token->Symbol);
+//	  printf ("koin7");
     }
   return(ParseToken(LalrState,TokenStack,InputToken,TrimReductions,Debug));
   }
@@ -667,12 +675,13 @@ int Parse(
       return(PARSETOKENERROR);
       }
 
-    if (Debug > 0) {
-      fprintf(stdout,"Token Read: Lalr=%d Symbol=%S[%d] Value='%S'\n",
-        LalrState,
-        Grammar.SymbolArray[Work->Token->Symbol].Name,
-        Work->Token->Symbol,
-        Work->Token->Data);
+    if (Debug > 0) { 
+//		fprintf(stdout,"Token Read: Lalr=%d Symbol=%S[%d] Value='%S'\n",
+//        LalrState,
+//        Grammar.SymbolArray[Work->Token->Symbol].Name,
+//        Work->Token->Symbol,
+ //       Work->Token->Data);
+//		printf ("koin1");
       }
 
     /* Feed the Symbol to the LALR state machine. It can do several
