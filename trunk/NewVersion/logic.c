@@ -137,8 +137,9 @@ void RuleTemplate(struct TokenStruct *Token, struct ContextStruct *Context) {
 
   /* Debugging: show the description of the rule. */
   if (Context->Debug > 0) {
-    ShowIndent(Context->Indent);
-    fprintf(stdout,"Executing rule: %s\n",Grammar.RuleArray[Token->ReductionRule].Description);
+ //   ShowIndent(Context->Indent);
+//    fprintf(stdout,"Executing rule: %s\n",Grammar.RuleArray[Token->ReductionRule].Description);
+		printf("\n");
     }
 
   /* For all the sub-Tokens. */
@@ -154,20 +155,22 @@ void RuleTemplate(struct TokenStruct *Token, struct ContextStruct *Context) {
 
         /* Debugging: show a description of the Symbol, and it's value. */
         if (Context->Debug > 0) {
-          ShowIndent(Context->Indent + 1);
+ //         ShowIndent(Context->Indent + 1);
           fprintf(stdout,"Token[%u] = Symbol('%s') = '%s'\n",i,
             Grammar.SymbolArray[Token->Tokens[i]->Symbol].Name,
             Context->ReturnValue);
-          }
+//	  printf("consider");
+        }
 
       } else {
         /* It's a rule. */
 
         /* Debugging: show a description of the rule. */
         if (Context->Debug > 0) {
-          ShowIndent(Context->Indent + 1);
-          fprintf(stdout,"Token[%u] = Rule = %s\n",i,
-            Grammar.RuleArray[Token->Tokens[i]->ReductionRule].Description);
+     //     ShowIndent(Context->Indent + 1);
+  //        fprintf(stdout,"Token[%u] = Rule = %s\n",i,
+    //        Grammar.RuleArray[Token->Tokens[i]->ReductionRule].Description);
+	//	  printf("xemlai");
           }
 
         /* Call the rule's subroutine via the RuleJumpTable. */
@@ -180,8 +183,9 @@ void RuleTemplate(struct TokenStruct *Token, struct ContextStruct *Context) {
 
         /* Debugging: show the value that was returned by the rule's subroutine. */
         if (Context->Debug > 0) {
-          ShowIndent(Context->Indent + 2);
-          fprintf(stdout,"Result value = %s\n",Context->ReturnValue);
+   //       ShowIndent(Context->Indent + 2);
+  //       fprintf(stdout,"Ket qua = %s\n",Context->ReturnValue);
+	//	printf("\n");
           }
         }
     }
