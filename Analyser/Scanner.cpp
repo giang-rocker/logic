@@ -300,6 +300,14 @@ Token Scanner::nextToken()
 				{
 						result = Token(LGC_BOOLEANLITERAL,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
 				}
+				else if (lexeme == "all" || lexeme == "ALL")
+				{
+						result = Token(LGC_ALL_OP,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+				}
+				else if (lexeme == "exists" || lexeme == "EXISTS")
+				{
+						result = Token(LGC_EXIST_OP,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+				}
 				else 
 				{
 						result = Token(LGC_IDENTIFER,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
