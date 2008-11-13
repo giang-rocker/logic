@@ -58,8 +58,8 @@ void Data::EndTerm(bool isCondition)
 	p = lstIndexes.erase(p);
 
 
-	Term op(LGC_PRE);
-	Term arg(LGC_REF);
+	Term op(LGC_PRE_TERM);
+	Term arg(LGC_REF_TERM);
 	
 	while(p!=lstIndexes.end())
 	{
@@ -141,7 +141,7 @@ void Data::EndTerm(bool isCondition)
 
 void Data::BeginPredicate(string name)
 {
-	lstTerms.push(Term(LGC_PRE,name));
+	lstTerms.push(Term(LGC_PRE_TERM,name));
 	lstIndexes.push_back(LGC_MARK_PRE);
 }
 
@@ -161,7 +161,7 @@ int Data::EndPredicate()
 	bank.push_back(predicate);
 	*p = bank.size()-1;
 	++p;
-	Term t(LGC_REF);
+	Term t(LGC_REF_TERM);
 	while(p!=lstIndexes.end())
 	{
 		t.m_iRef = *p;
@@ -174,7 +174,7 @@ int Data::EndPredicate()
 
 
 
-void Data::NewConstVar(string name,int kind)
+int Data::NewConstVar(string name,int kind)
 {
 	vector<Term>::const_iterator p = bank.begin();
 	int index  = 0;
@@ -193,21 +193,52 @@ void Data::NewConstVar(string name,int kind)
 		bank.push_back(t);
 	}
 	lstIndexes.push_back(index);
+	return index;
 }
 
-void Data::ExistsOp(string name)
+
+void Data::NewQuantifiers()
 {
+	LogicOp(LGC_QUAN_OP);
+	Term t(LGC_QUAN_TERM);
+	t.m_iArgs = 0;
+	quantifiers.push(bank.size());
+	bank.push_back(t);
 	
 }
 
 
-void Data::AllOp(string name)
+void Data::QuanOp(string varName, int quanKind)
 {
+	
+	Term t(LGC_QUAN_TERM);
+	t.m_iQuan = quanKind;
+	
+	vector<Term>::const_iterator p = bank.begin();
+	int index  = 0;
+	for(;p!=bank.end();++p)
+	{
+		index++;
+		if((*p).m_name == varName && (*p).m_kind == LGC_VAR_TERM)
+		{
+			break;
+		}
+	}
+	if(index == bank.size())
+	{
+		index = bank.size();
+		Term var(LGC_VAR_TERM,varName);
+		bank.push_back(var);
+	}
+
+	bank.push_back(t);
+	bank[quantifiers.top()].m_iArgs++;
 
 }
 
 
-void Data::Operator(int op)
+
+void Data::LogicOp(int op)
 {
 
 	while(operators.top() > op && operators.top()!=LGC_MARK_OP)
@@ -262,8 +293,8 @@ void Data::EndArg()
 	p = lstIndexes.erase(p);
 
 
-	Term op(LGC_PRE);
-	Term arg(LGC_REF);
+	Term op(LGC_PRE_TERM);
+	Term arg(LGC_REF_TERM);
 	
 	while(p!=lstIndexes.end())
 	{
@@ -328,6 +359,8 @@ void Data::EndArg()
 			*p = bank.size()-3;
 			break;
 
+		case LGC_QUAN_OP:
+			break;
 		}
 		++p;
 	}
@@ -344,10 +377,10 @@ void Data::print()
 		cout<<"Kind = "<< t.m_kind<<"\t";
 		switch (t.m_kind)
 		{
-		case LGC_REF:
+		case LGC_REF_TERM:
 			cout<<"Ref = " << t.m_iRef << "\t";
 			break;
-		case LGC_PRE:
+		case LGC_PRE_TERM:
 			cout<<"Args = " << t.m_iArgs << "\t" << "Name = "<< t.m_name<<"\t";
 			break;
 		default:
