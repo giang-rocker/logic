@@ -7,7 +7,7 @@ void main()
 	
 	Data d;
 
-	//Building p(x,y), q(X) AND NOT h(y,k(l)) -> r(M) 
+	//Building p(x,y), q(X) AND NOT all x h(y,k(l)) -> r(M) 
 	d.BeginTerm();
 	d.BeginPredicate("p");
 	d.BeginArg();
@@ -28,7 +28,10 @@ void main()
 	d.EndPredicate();
 	
 	d.LogicOp(LGC_AND_OP);
-	d.LogicOp(LGC_OR_OP);
+	//d.LogicOp(LGC_NOT_OP);
+	
+	d.NewQuantifiers();
+	d.QuanOp("x",LGC_ALL_QUAN);
 
 	d.BeginPredicate("h");
 	d.BeginArg();
