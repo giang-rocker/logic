@@ -5,7 +5,7 @@
 
 Parser::Parser(Scanner* s)
 {
-	scanner = s;
+	//scanner = s;
 	lookAheadToken = Token(LGC_NIL);
 }
 
@@ -31,3 +31,4 @@ void Parser::parse()
 {
 	
 }
+
