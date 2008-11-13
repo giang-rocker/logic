@@ -3,23 +3,23 @@
 
 #include "Parser.h"
 
-Parser::Parser(Scanner s)
+Parser::Parser(Scanner* s)
 {
 	scanner = s;
-	lookAheadToken = NULL;
+	lookAheadToken = Token(LGC_NIL);
 }
 
-void Parser::match(int tokenKind)
+void Parser::match(Token tokenKind)
 {
-	if( (TokenKind)lookAheadToken == (TokenKind)tokenKind))
-		lookAheadToken = scanner->nextToken;
+	if( lookAheadToken.convertToken == tokenKind.convertToken)
+		lookAheadToken = scanner->nextToken();
 	else
-		return NULL;
+		cout<<"Unexpected Token"<<endl;
 }
 
-bool Parser::check(int tokenKind)
+bool Parser::check(Token tokenKind)
 {
-	return (TokenKind)lookAheadToken == (TokenKind)tokenKind;
+	return lookAheadToken.convertToken == tokenKind.convertToken;
 }
 
 Token Parser::getLookAheadToken()
