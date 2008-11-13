@@ -13,7 +13,7 @@ public:
 	Token getLookAheadToken();
 	void parse();
 private:
-	Scanner scanner; 
+	Scanner* scanner; 
 	Token lookAheadToken;
 }
 ;
