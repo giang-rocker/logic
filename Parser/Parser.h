@@ -8,8 +8,8 @@ class Parser
 {
 public:
 	Parser(Scanner* s);
-	void match(Token tokenKind);
-	bool check(Token tokenKind);
+	void match(TokenKind tokenKind);
+	bool check(TokenKind tokenKind);
 	Token getLookAheadToken();
 	void parse();
 private:
