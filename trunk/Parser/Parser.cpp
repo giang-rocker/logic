@@ -9,7 +9,7 @@ Parser::Parser(Scanner* s)
 	lookAheadToken = Token(LGC_NIL);
 }
 
-void Parser::match(Token tokenKind)
+void Parser::match(TokenKind tokenKind)
 {
 	if((TokenKind)lookAheadToken == (TokenKind)tokenKind)
 		lookAheadToken = scanner->nextToken();
@@ -17,7 +17,7 @@ void Parser::match(Token tokenKind)
 		cout<<"Unexpected Token"<<endl;
 }
 
-bool Parser::check(Token tokenKind)
+bool Parser::check(TokenKind tokenKind)
 {
 	return (TokenKind)lookAheadToken == (TokenKind)tokenKind;
 }
@@ -27,23 +27,10 @@ Token Parser::getLookAheadToken()
 	return lookAheadToken;	
 }
 
-void Parser::parse()
-{
-	//parseSource();
-}
-
-/*
-//<source>		::= 	<formula> <tail>  
-void parseSource()
-{
-	//parseFormula();
-	//parseTail();
-}
-
 //<tail>			::= 	',' <source>  	|  <binary-operator><source>  	|
 void parseFormula()
 {
-	if(check(LGC_COMMA){
+	if(check(LGC_COMMA)){
 		match(LGC_COMMA);
 		parseSource();
 	}
@@ -55,9 +42,25 @@ void parseFormula()
 		parseEmptyTail();
 }
 
+//<source>		::= 	<formula> <tail>  
+void parseSource()
+{
+	parseFormula();
+	parseTail();
+}
+
+void Parser::parse()
+{
+	parseSource();
+}
+
+
+
+
+
+
 //<formula>		::=   con	|  'not' <formula>  |  <quantifier> <formula> 	| con <argument-list>	| var <argument-list>	|'(' <source> ')'
 void parseFormula()
 {
 	
 }
-*/
