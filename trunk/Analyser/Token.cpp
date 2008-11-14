@@ -66,6 +66,7 @@ Token::operator SourcePosition()const
 	return m_position;
 } 
 
+/*
 string Token::convertToken()
 {
 	switch (m_kind){
@@ -100,8 +101,9 @@ string Token::convertToken()
 		case LGC_COMMA:
 			return "Token.COMMA";
 		case LGC_CON:
-			return "Token.CON"
+			return "Token.CON";
 		default: 
 			return "Token.LGC_ERROR";	
 	}
 }
+*/
