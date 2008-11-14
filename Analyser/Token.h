@@ -50,7 +50,7 @@ public:
 	operator string() const;
 	operator TokenKind() const;
 	operator SourcePosition() const;
-	string convertToken();
+	//string convertToken();
 
 private:
 	SourcePosition m_position;
