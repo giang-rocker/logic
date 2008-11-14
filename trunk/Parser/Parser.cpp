@@ -27,6 +27,13 @@ Token Parser::getLookAheadToken()
 	return lookAheadToken;	
 }
 
+void Parser::parse()
+{
+	parseSource();
+	
+}
+
+/*
 //<tail>			::= 	',' <source>  	|  <binary-operator><source>  	|
 void parseFormula()
 {
@@ -41,10 +48,18 @@ void parseFormula()
 	else 
 		parseEmptyTail();
 }
+<EmptyTail>::<,><Source>
+if(check,)
+{
+error = "Expec
+ ,"
+
+}
 
 //<source>		::= 	<formula> <tail>  
 void parseSource()
 {
+	
 	parseFormula();
 	parseTail();
 }
@@ -64,3 +79,5 @@ void parseFormula()
 {
 	
 }
+
+  */
