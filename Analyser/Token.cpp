@@ -69,8 +69,8 @@ Token::operator SourcePosition()const
 string Token::convertToken()
 {
 	switch (m_kind){
-		case LGC_IDENTIFER : 
-			return "Token.LGC_IDENTIFER";
+		case LGC_VAR : 
+			return "Token.LGC_VAR";
 		case LGC_INTERSECTION_OP:
             return "Token.LGC_INTERSECTION_OP";
 		case LGC_UNION_OP:
@@ -97,6 +97,10 @@ string Token::convertToken()
             return "Token.LGC_RESULT_OP";
 		case LGC_NIL:
             return "Token.LGC_NIL";
+		case LGC_COMMA:
+			return "Token.COMMA";
+		case LGC_CON:
+			return "Token.CON"
 		default: 
 			return "Token.LGC_ERROR";	
 	}

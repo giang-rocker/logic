@@ -17,7 +17,7 @@ enum TokenKind
 {
 	
 	LGC_ERROR			=	1,	// Error
-	LGC_IDENTIFER		=	2,	// Identifier
+	LGC_VAR				=	2,	// Identifier
 	LGC_INTERSECTION_OP	=	3,	// AND operator
 	LGC_UNION_OP		=	4,	// OR  operator
 	LGC_NEGATION_OP		=	5,	// NOT operator
@@ -31,6 +31,8 @@ enum TokenKind
 	LGC_EXIST_OP		=	13, // -]
 	LGC_RESULT_OP		=	14, // =|
 	LGC_NIL				=	15, // End of text
+	LGC_COMMA			=	16, // ,
+	LGC_CON				=	17,
 	
 };
 

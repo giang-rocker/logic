@@ -55,6 +55,7 @@ Token Scanner::nextToken()
 	m_state = 0;
 	Token result;
 	char c = NULL;
+	char t = NULL; 
 	string lexeme="";
 	while (true)
 	{
@@ -222,6 +223,13 @@ Token Scanner::nextToken()
 						position.EndToken();
 						return result;
 				}
+				else if( c==',')
+				{
+						result = Token(LGC_COMMA,"&",position);
+						position.m_iCharFinish++;
+						position.EndToken();
+						return result;
+				}
 				else if( c=='|')
 				{
 						result = Token(LGC_UNION_OP,"|",position);
@@ -269,6 +277,7 @@ Token Scanner::nextToken()
 
 		case 1:
 				lexeme = "";
+				t = c;
 				while (true)
 				{
 					
@@ -310,8 +319,10 @@ Token Scanner::nextToken()
 				}
 				else 
 				{
-						result = Token(LGC_IDENTIFER,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
-						
+					if(	isupper(t))
+						result = Token(LGC_CON,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+					else
+						result = Token(LGC_VAR,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));					
 				}
 				position.EndToken();
 				goBackOneChar();
