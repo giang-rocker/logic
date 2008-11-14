@@ -11,10 +11,11 @@ public:
 	void match(TokenKind tokenKind);
 	bool check(TokenKind tokenKind);
 	Token getLookAheadToken();
-	void parse();
+	int parse();
 private:
 	Scanner* scanner; 
 	Token lookAheadToken;
+	string error = "" ;
 }
 ;
 
