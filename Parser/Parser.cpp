@@ -33,8 +33,15 @@ void Parser::parse()
 	
 }
 
-/*
-//<tail>			::= 	',' <source>  	|  <binary-operator><source>  	|
+//<source>		::= 	<formula> <tail>  
+void parseSource()
+{
+	
+	parseFormula();
+	parseTail();
+}
+
+//<formula>		::=   con	|  'not' <formula>  |  <quantifier> <formula> 	| con <argument-list>	| var <argument-list>	|'(' <source> ')'
 void parseFormula()
 {
 	if(check(LGC_COMMA)){
@@ -46,38 +53,11 @@ void parseFormula()
 		parseSource();
 	}
 	else 
-		parseEmptyTail();
+		match(LGC_NIL)
 }
-<EmptyTail>::<,><Source>
+
+//<tail>			::= 	',' <source>  	|  <binary-operator><source>  	
 if(check,)
 {
-error = "Expec
- ,"
 
 }
-
-//<source>		::= 	<formula> <tail>  
-void parseSource()
-{
-	
-	parseFormula();
-	parseTail();
-}
-
-void Parser::parse()
-{
-	parseSource();
-}
-
-
-
-
-
-
-//<formula>		::=   con	|  'not' <formula>  |  <quantifier> <formula> 	| con <argument-list>	| var <argument-list>	|'(' <source> ')'
-void parseFormula()
-{
-	
-}
-
-  */
