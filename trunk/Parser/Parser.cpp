@@ -61,3 +61,31 @@ if(check,)
 {
 
 }
+
+/*
+var		= 	[abcdefghijklmnopqrstuvwxyz] {Alphanumeric}*
+con		= 	[ABCDEFGHIJKLMNOPQRSTUVWXYZ] {Alphanumeric}*
+
+<source>		::= 	<formula> <tail>  
+<tail>			::= 	',' <source>  
+				|  <binary-operator><source>  
+				|
+<formula>		::= 	con
+				|  'not' <formula>  
+				|  <quantifier> <formula> 
+				| con <argument-list>
+				| var <argument-list>
+				|'(' <source> ')'
+<argument-list>	::=	'(' <term-list> ')'
+<term-list> 		::= 	<term> 
+				| <term-list> ',' <term>
+<term> 			::= 	var
+				| con
+<binary-operator> 	::= 	'and' 
+				| 'or' 
+				| 'modus'
+<quantifier> 		::= 	  'all' var  
+				|  'exists' var
+				| '('<quantifier>')'
+
+*/
