@@ -51,9 +51,9 @@ Token::operator =(const Token& t)
 	m_position = t.m_position;
 }
 
-Token::operator string() const
+string Token::tostring()
 {		
-	return m_lexeme;
+	return "Unexpected Token."+m_lexeme+(string)m_position.toString();
 }
 
 Token::operator TokenKind() const

@@ -15,7 +15,7 @@ int main()
 	do
 	{
 		token = s->nextToken();
-		cout<<"|  "<< "\t\t\t"<<(string)token <<"\t\t"<<endl;
+		cout<<"|  "<< "\t\t\t"<<token.tostring() <<"\t\t"<<endl;
 	}
 	while((TokenKind)token!= LGC_NIL);
 	cout << "------------------------------------------------\n\n";

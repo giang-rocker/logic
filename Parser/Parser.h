@@ -20,6 +20,7 @@ public:
 	void parseArg_list();
 	void parseArg();
 	void parseArg_tail();
+	string s ;
 private:
 	Scanner* scanner; 
 	Token lookAheadToken;
