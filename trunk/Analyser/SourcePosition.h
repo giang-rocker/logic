@@ -8,6 +8,9 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+#include <string>
+#include <iostream>
+using namespace std;
 
 class SourcePosition  
 {
@@ -20,7 +23,7 @@ public:
 	virtual ~SourcePosition();
 	SourcePosition(const SourcePosition& s);
 	operator = (const SourcePosition& s);
-	
+	string toString();
 	int m_iLineFinish;
 	int m_iLineStart;
 	int m_iCharFinish;

@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "SourcePosition.h"
+#include < sstream >
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -66,4 +67,15 @@ void SourcePosition::EndToken()
 	m_iLineStart = m_iLineFinish;
 }
 
+string Int2Str(int value)
+{
+	ostringstream os;
+	os << value;
+	return os.str();
+}
 
+
+string SourcePosition::toString()
+{
+	return "CharStart:"+ Int2Str(m_iCharStart)+"\tCharFinish:"+ Int2Str(m_iCharFinish);
+}

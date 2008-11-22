@@ -47,7 +47,7 @@ public:
 	Token(const Token& t);
 	virtual ~Token();
 	operator = (const Token& t);
-	operator string() const;
+	string tostring();
 	operator TokenKind() const;
 	operator SourcePosition() const;
 	//string convertToken();
