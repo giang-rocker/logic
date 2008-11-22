@@ -3,6 +3,7 @@
 
 #include "Parser.h"
 
+
 Parser::Parser(Scanner* s)
 {
 	scanner = s;
@@ -34,7 +35,7 @@ void Parser::parse()
 }
 
 //<source>		::= 	<formula> <tail>  
-void parseSource()
+void Parser::parseSource()
 {
 	
 	parseFormula();
@@ -42,9 +43,8 @@ void parseSource()
 }
 
 //<formula>		::=   con	|  'not' <formula>  |  <quantifier> <formula> 	| con <argument-list>	| var <argument-list>	|'(' <source> ')'
-void parseFormula()
-{
-	if(check(LGC_COMMA)){
+void Parser::parseFormula()
+{/*	if(check(LGC_COMMA)){
 		match(LGC_COMMA);
 		parseSource();
 	}
@@ -53,14 +53,12 @@ void parseFormula()
 		parseSource();
 	}
 	else 
-		match(LGC_NIL)
+		match(LGC_NIL)	*/
 }
 
 //<tail>			::= 	',' <source>  	|  <binary-operator><source>  	
-if(check,)
-{
 
-}
+
 
 /*
 var			= 	[abcdefghijklmnopqrstuvwxyz] {Alphanumeric}*
@@ -74,7 +72,7 @@ const		= 	[ABCDEFGHIJKLMNOPQRSTUVWXYZ] {Alphanumeric}*
 
 <formula>			::= 	const
 					|  'not' <formula>  
-					|  <quantifier> <formula> 
+					|  <quantifier> <formula>	
 					| con <argument-list> 
 					| var <argument-list>
 					|'(' <source> ')'
@@ -85,7 +83,7 @@ const		= 	[ABCDEFGHIJKLMNOPQRSTUVWXYZ] {Alphanumeric}*
 					|  ')'
 
 <arg> 				::= 	var
-					| con
+					| const
 
 <binary-operator> 	::= 	'and' 
 					| 'or' 
