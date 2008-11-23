@@ -5,6 +5,7 @@
 
 #include "TermVector.h"
 //#define DEBUG
+#define PRINT_METHOD
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -37,6 +38,9 @@ TermVector::~TermVector()
 
 int TermVector::BeginSentence()
 {
+#ifdef PRINT_METHOD
+	cout<<"Begin Sentence\n";
+#endif
 	lstTerms.clear();
 	lstOpers.clear();
 	quanSize = 0;
@@ -47,6 +51,9 @@ int TermVector::BeginSentence()
 
 int TermVector::EndSentence(bool isCondition)
 {
+#ifdef PRINT_METHOD
+	cout<<"End Sentence\n\n";
+#endif
 	quanSize = 0;
 
 	while ((!lstOpers.empty()) &&lstOpers.back()!=LGC_OP_MARK )
@@ -132,6 +139,9 @@ int TermVector::EndSentence(bool isCondition)
 }
 int TermVector::BeginFunction(string name)
 {
+#ifdef PRINT_METHOD
+	cout<<"Begin Function\n";
+#endif
 	quanSize = 0;
 	int index  = names.GetIndex(name);
 	p = functions.begin();
@@ -168,7 +178,9 @@ int TermVector::BeginFunction(string name)
 
 int TermVector::EndFunction()
 {
-
+#ifdef PRINT_METHOD
+	cout<<"End Function\n";
+#endif
 	quanSize = 0;
 	list<Term>::iterator p = lstTerms.end();
 	int args = 0;
@@ -207,6 +219,9 @@ int TermVector::EndFunction()
 }
 int TermVector::BeginArg()
 {
+#ifdef PRINT_METHOD
+	cout<<"Begin Arg\n";
+#endif
 	quanSize = 0;
 	lstTerms.push_back(Term(LGC_MARK_ARG));
 	lstOpers.push_back(LGC_OP_MARK);
@@ -216,7 +231,9 @@ int TermVector::BeginArg()
 int TermVector::EndArg()
 {
 
-
+#ifdef PRINT_METHOD
+	cout<<"End Arg\n";
+#endif
 	
 	quanSize = 0;
 	while ((!lstOpers.empty()) && lstOpers.back()!=LGC_OP_MARK)
@@ -285,6 +302,9 @@ int TermVector::EndArg()
 
 int TermVector::NewQuan(string var, int kind)
 {
+#ifdef PRINT_METHOD
+	cout<<"New Quan\n";
+#endif
 	if (quanSize == 0)
 	{
 		quanSize++;
@@ -316,6 +336,9 @@ int TermVector::NewQuan(string var, int kind)
 }
 int TermVector::NewVar(string name,int kind)
 {
+#ifdef PRINT_METHOD
+	cout<<"New Var\n";
+#endif
 	quanSize = 0;
 	int index = names.GetIndex(name);
 	vector<Term>::iterator p = variables.begin();
@@ -338,18 +361,12 @@ int TermVector::NewVar(string name,int kind)
 	lstTerms.push_back(t);
 	return LGC_ERR_SUCC;
 }
-int TermVector::NewConst(string name)
-{
-	return LGC_ERR_SUCC;
-}
-
-int TermVector::NewProposition(string name)
-{
-	return LGC_ERR_SUCC;
-}
 
 int TermVector::NewLogicOp(int op)
 {
+#ifdef PRINT_METHOD
+	cout<<"New LogicOP\n";
+#endif
 	
 	quanSize = 0;
 	while ((!lstOpers.empty()) && lstOpers.back() > op && lstOpers.back() <= LGC_OP_NOT )
@@ -366,7 +383,9 @@ int TermVector::NewLogicOp(int op)
 
 int TermVector::LeftPar()
 {
-	
+#ifdef PRINT_METHOD
+	cout<<"LeftPar\n";
+#endif
 	quanSize = 0;
 	lstOpers.push_back(LGC_OP_LPAR);
 	
@@ -375,7 +394,9 @@ int TermVector::LeftPar()
 
 int TermVector::RightPar()
 {
-
+#ifdef PRINT_METHOD
+	cout<<"RightPar\n";
+#endif
 	while ((!lstOpers.empty()) && lstOpers.back()!=LGC_OP_LPAR)
 	{
 		lstTerms.push_back(Term(lstOpers.back()));
@@ -409,7 +430,7 @@ int TermVector::print()
 		switch ((*p).m_kind)
 		{
 		case LGC_TERM_FUNC:
-			cout<<"FunDef\t"<<names.GetString((*p).m_ref)<<"\tArgs="<<(*p).m_info<<"\n";
+			cout<<"FunDefi\t"<<names.GetString((*p).m_ref)<<"\tArgs="<<(*p).m_info<<"\n";
 			break;
 		case LGC_REF_FUNC:
 			cout<<"FunRef\t"<<(*p).m_ref<<"\tQuan="<<(*p).m_info<<"\n";

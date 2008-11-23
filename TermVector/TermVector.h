@@ -142,8 +142,6 @@ public:
 	int RightPar();
 	int LeftPar();
 	int NewLogicOp(int op);
-	int NewProposition(string name);
-	int NewConst(string name);
 	int NewVar(string name,int kind);
 	int NewQuan(string var, int kind);
 	int EndArg();
