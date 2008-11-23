@@ -160,6 +160,15 @@ Token Scanner::nextToken()
 								position.EndToken();
 								return result;
 						}
+						else if(c== '>')				// -> 
+						{
+							lexeme += c;
+							c=nextChar();
+							result = Token(LGC_MAPPING_OP,lexeme,position);
+							position.m_iCharFinish++;
+							position.EndToken();
+							return result;
+						}
 						else
 						{
 								result = Token(LGC_ERROR,lexeme,position)	;
@@ -304,6 +313,10 @@ Token Scanner::nextToken()
 				else if (lexeme == "NOT" || lexeme == "not")
 				{
 					result = Token(LGC_NEGATION_OP,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
+				}
+				else if (lexeme == "map" || lexeme == "MAP")
+				{
+					result = Token(LGC_MAPPING_OP,lexeme,SourcePosition(position.m_iCharStart,position.m_iCharFinish-1,position.m_iLineStart,position.m_iLineFinish));
 				}
 				else if (lexeme == "true" || lexeme == "TRUE"|| lexeme == "FALSE"|| lexeme == "false")
 				{
