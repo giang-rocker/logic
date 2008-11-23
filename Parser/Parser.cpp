@@ -248,7 +248,7 @@ void Parser::parseQuantifier()
 		else if (check(LGC_EXIST_OP))
 		{
 			match(LGC_EXIST_OP);
-			match(LGC_CON);
+			match(LGC_VAR);
 			data.NewQuan(str,LGC_QUAN_EXIST);
 		}
 		else
