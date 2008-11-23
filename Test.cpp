@@ -7,14 +7,20 @@ int main()
 {
 
 
-		TermVector lgc;
-		//Building p(x,y), q(X) AND NOT all x exist y (h(y,k(l)) -> r(M)) 
-		lgc.BeginSentence();
-		lgc.NewVar("P",LGC_TERM_CONST);
-		lgc.NewLogicOp(LGC_OP_AND);
-		lgc.NewVar("Q",LGC_TERM_CONST);
-		lgc.EndSentence();
-		lgc.print();
+	//"a<->a<>abc a V- -]kdj aa ";
+//	string text = "p(x,y), q(X) AND NOT all x h(y,k(l)) -> r(M) ";
+	string text = "P and Q";
+	Scanner* scanner = new Scanner(text);
+	Parser* p = new Parser(scanner);
+	p->parse();
+	if ( p->s != "")
+	{
+		cout<< p->s <<endl;
+	}
+	else
+	{
+		p->data.print();
+	}	
 	return 0;
 	
 }
