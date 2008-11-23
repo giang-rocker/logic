@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "Analyser"=".\Analyser\Analyser.dsp" - Package Owner=<4>
+Project: "Analyser"=.\Analyser\Analyser.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Logic"=".\Logic.dsp" - Package Owner=<4>
+Project: "Logic"=.\Logic.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -29,11 +29,26 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name Parser
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name TermVector
+    End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "Parser"=".\Parser\Parser.dsp" - Package Owner=<4>
+Project: "Natural Deduction"=".\Natural Deduction\Natural Deduction.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Parser"=.\Parser\Parser.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -44,6 +59,18 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name Analyser
     End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "TermVector"=.\TermVector\TermVector.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################

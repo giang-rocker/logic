@@ -60,7 +60,10 @@ Token::operator TokenKind() const
 {
 	return m_kind;
 }
-
+Token::operator string()const
+{
+	return m_lexeme;
+}
 Token::operator SourcePosition()const
 {
 	return m_position;

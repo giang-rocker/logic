@@ -50,6 +50,7 @@ public:
 	string tostring();
 	operator TokenKind() const;
 	operator SourcePosition() const;
+	operator string()const;
 	//string convertToken();
 
 private:
@@ -59,3 +60,4 @@ private:
 };
 
 #endif // !defined(AFX_TOKEN_H__3D82A5A2_765D_4611_879D_1DEAE17211B9__INCLUDED_)
+
