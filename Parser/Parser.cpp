@@ -55,7 +55,6 @@ void Parser::parseSource()
 	{
 		if (check(LGC_CON)||check(LGC_VAR)||check(LGC_ALL_OP)||check(LGC_NEGATION_OP)||check(LGC_EXIST_OP)||check(LGC_LEFTPAR))
 		{
-			
 			parseFormula();
 			parseTail();
 		}
