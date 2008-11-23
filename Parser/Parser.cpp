@@ -19,6 +19,10 @@ void Parser::match(TokenKind tokenKind)
 		currentToken = lookAheadToken;
 		lookAheadToken = scanner->nextToken();
 	}
+	else
+	{
+		s = (string)(((Token)getLookAheadToken()).tostring());
+	}
 }
 
 bool Parser::check(TokenKind tokenKind)
