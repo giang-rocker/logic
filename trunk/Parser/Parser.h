@@ -29,6 +29,7 @@ private:
 	Token lookAheadToken;
 	Token currentToken;
 	bool isStarted ;
+//	bool first;
 //	string error = "" ;
 }
 ;
