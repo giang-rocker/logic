@@ -107,7 +107,7 @@ void Parser::parseFormula()
 	}	
 }
 
-//<tail>				::= 	',' <source> |  <binary-operator><source>  |	eof
+//<tail>				::= 	',' <source> |  <binary-operator><source>  |	
 void Parser::parseTail()
 {
 	if (s == "")
@@ -124,10 +124,11 @@ void Parser::parseTail()
 			parseBin_operator();
 			parseSource();
 		}
-		else if (check(LGC_NIL)){}
+		else //if (check(LGC_NIL))
+		{}
 //			match(LGC_NIL);	
-		else
-			s = (string)(((Token)getLookAheadToken()).tostring()) ;
+//		else if (!check(LGC_ERROR))
+//			s = (string)(((Token)getLookAheadToken()).tostring()) ;
 	}
 }
 
