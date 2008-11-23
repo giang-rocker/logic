@@ -1,24 +1,20 @@
 #include <iostream>
 #include "Analyser/Scanner.h"
-
+#include "Parser/Parser.h"
 using namespace std;
 
 int main()
 {
 
 
-	//"a<->a<>abc a V- -]kdj aa ";
-	string text = "a<->a<>abc a V- -]kdj aa ";
-	Scanner*s = new Scanner(text);
-	Token token;
-	cout << "\n\n\tResult:\n------------------------------------------------\n|  \tKind\t\t\t|\tLexeme\t\t\n------------------------------------------------\n";
-	do
-	{
-		token = s->nextToken();
-		cout<<"|  "<< "\t\t\t"<<token.tostring() <<"\t\t"<<endl;
-	}
-	while((TokenKind)token!= LGC_NIL);
-	cout << "------------------------------------------------\n\n";
+		TermVector lgc;
+		//Building p(x,y), q(X) AND NOT all x exist y (h(y,k(l)) -> r(M)) 
+		lgc.BeginSentence();
+		lgc.NewVar("P",LGC_TERM_CONST);
+		lgc.NewLogicOp(LGC_OP_AND);
+		lgc.NewVar("Q",LGC_TERM_CONST);
+		lgc.EndSentence();
+		lgc.print();
 	return 0;
 	
 }
