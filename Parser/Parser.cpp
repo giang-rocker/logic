@@ -37,8 +37,11 @@ void Parser::parse()
 	lookAheadToken = scanner->nextToken();
 	data.BeginSentence();
 	parseSource();
-	data.EndSentence();
-	
+	if (!check(LGC_NIL))
+	{
+		s = (string)(((Token)getLookAheadToken()).tostring());
+	}
+	data.EndSentence(); 	
 }
 
 //<source>		::= 	<formula> <tail>  
@@ -124,11 +127,7 @@ void Parser::parseTail()
 			parseBin_operator();
 			parseSource();
 		}
-		else //if (check(LGC_NIL))
-		{}
-//			match(LGC_NIL);	
-//		else if (!check(LGC_ERROR))
-//			s = (string)(((Token)getLookAheadToken()).tostring()) ;
+
 	}
 }
 

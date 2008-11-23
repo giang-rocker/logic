@@ -8,7 +8,7 @@ int main()
 
 
 	//"a<->a<>abc a V- -]kdj aa ";
-	string text = "p(Xo,Yo) , all x exists y p (x,y) -> not q(x,y)   ";
+	string text = "p(Xo,Yo) , all x exists y ((p (x,y) -> not q(x,y))  ";
 //	string text = "P and Q";
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
