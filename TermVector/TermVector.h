@@ -32,13 +32,17 @@ using namespace std;
 #define LGC_TERM_CONST	3
 #define LGC_TERM_PROP	4
 
-#define LGC_REF_FUNC	5
-#define LGC_REF_VAR		6
-#define LGC_REF_QUAN	7
 
-#define LGC_MARK_SEN	8
-#define LGC_MARK_FUNC	9
-#define LGC_MARK_ARG	10
+
+#define LGC_USE_FUNC	5
+#define LGC_USE_VAR		6
+#define LGC_USE_QUAN	7
+
+#define LGC_REF			8
+
+#define LGC_MARK_SEN	9
+#define LGC_MARK_FUNC	10
+#define LGC_MARK_ARG	11
 //////////////////////////////////////////////////////////////////////////
 
 
@@ -109,7 +113,9 @@ public:
 	}
 	string GetString(int index)const
 	{
+		if(index>=0 && index<names.size())
 		return names[index].str;
+		return "";
 	}
 	int print()
 	{
