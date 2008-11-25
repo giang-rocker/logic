@@ -175,6 +175,9 @@ private:
 	int quanSize;
 	vector<Term>::const_iterator p;
 	int debug();
+
+	int times ;
+
 };
 
 #endif // !defined(AFX_TERMVECTOR_H__A8AD395A_B758_42CD_A49B_8E488503B9E0__INCLUDED_)

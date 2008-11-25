@@ -14,7 +14,7 @@ TermVector::TermVector()
 {
 
 	quantifiers.push_back(Term(LGC_NULL));
-	functions.push_back(Term(LGC_NULL));
+	//functions.push_back(Term(LGC_NULL));
 
 	addrNOT = functions.size();
 	functions.push_back(Term(LGC_OP_NOT,names.GetIndex(LGC_STR_NOT),1));
@@ -28,7 +28,10 @@ TermVector::TermVector()
 	addrMAP = functions.size();
 	functions.push_back(Term(LGC_OP_MAP,names.GetIndex(LGC_STR_MAP),2));
 
-	
+#ifdef PRINT_METHOD
+	times = 0;
+#endif
+
 	
 }
 TermVector::~TermVector()
@@ -139,20 +142,32 @@ int TermVector::EndSentence(bool isCondition)
 }
 int TermVector::BeginFunction(string name)
 {
+
 #ifdef PRINT_METHOD
-	cout<<"Begin Function\n";
+	cout<<"Begin Function : "<<name<<endl ;
+	if (name == "p")
+	{
+		times++;
+		if (times == 2)
+		{
+			cout<<"Waiting";
+		}
+	}
 #endif
+
 	quanSize = 0;
 	int index  = names.GetIndex(name);
 	p = functions.begin();
 	int func = 0;
-	
+
 	for (;p != functions.end();++p)
 	{
 		if ((*p).m_ref == index && (*p).m_kind == LGC_TERM_FUNC)
 		{
-			func++;
+			
+			break;
 		}
+		func++;
 	}
 
 	if(p == functions.end())
@@ -327,7 +342,7 @@ int TermVector::NewQuan(string var, int kind)
 	}
 	if (p == variables.end())
 	{
-		variables.push_back(Term(kind,index));
+		variables.push_back(Term(LGC_TERM_VAR,index));
 		t.m_ref = variables.size() - 1;
 	}
 	quantifiers[lstQuans.back()].m_info++;
@@ -337,7 +352,11 @@ int TermVector::NewQuan(string var, int kind)
 int TermVector::NewVar(string name,int kind)
 {
 #ifdef PRINT_METHOD
-	cout<<"New Var\n";
+	cout<<"New Var : "<<name<< kind << "\n";
+	if (name == "y" && kind == LGC_TERM_VAR)
+	{
+		cout<<"Wait";
+	}
 #endif
 	quanSize = 0;
 	int index = names.GetIndex(name);
@@ -350,11 +369,13 @@ int TermVector::NewVar(string name,int kind)
 		if ((*p).m_ref == index)
 		{
 			t.m_ref = next;
+			break;
 		}
 		++next;
 	}
 	if (p == variables.end())
 	{
+		cout<<"----------------------------------------------------------"<<kind<<endl;
 		variables.push_back(Term(kind,index));
 		t.m_ref = variables.size() - 1;
 	}
