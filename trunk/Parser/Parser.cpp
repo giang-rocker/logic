@@ -79,7 +79,7 @@ void Parser::parseFormula()
 			}
 			else
 			{
-				data.NewVar(str,LGC_TERM_CONST);
+				data.NewVar(str,LGC_TERM_PROP);
 			}
 		}
 		else if (check(LGC_VAR))
@@ -192,7 +192,7 @@ void Parser::parseArg()
 		else if(check (LGC_CON))
 		{
 			match(LGC_CON);
-			data.NewVar(str,LGC_TERM_CONST);
+			data.NewVar(str,LGC_TERM_PROP);
 		}
 		else if (check(LGC_NEGATION_OP))
 		{
