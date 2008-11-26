@@ -151,15 +151,15 @@ Token Scanner::nextToken()
 								position.EndToken();
 								return result;
 						}
-						else if(c== '|')				// -| 
+/*						else if(c== '|')				// -| 
 						{
 								lexeme += c;
 								c=nextChar();
 								result = Token(LGC_RESULT_OP,lexeme,position);
 								position.m_iCharFinish++;
 								position.EndToken();
-								return result;
-						}
+								return result;			
+						}											*/
 						else if(c== '>')				// -> 
 						{
 							lexeme += c;
@@ -178,6 +178,27 @@ Token Scanner::nextToken()
 						}
 
 				}
+				else if (c== '|') 
+				{
+					c = goAheadOneChar();
+					if(c== '-')
+					{								// |-
+						lexeme += c;
+						c=nextChar();
+						result = Token(LGC_RESULT_OP,lexeme,position);
+						position.m_iCharFinish++;
+						position.EndToken();
+						return result;
+					}
+					else
+					{
+						result = Token(LGC_UNION_OP,"|",position);
+						position.m_iCharFinish++;
+						position.EndToken();
+						return result;
+					}
+				}
+
 				else if (c== '<') 
 				{
 						c = goAheadOneChar();
@@ -239,13 +260,13 @@ Token Scanner::nextToken()
 						position.EndToken();
 						return result;
 				}
-				else if( c=='|')
+/*				else if( c=='|')
 				{
 						result = Token(LGC_UNION_OP,"|",position);
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;
-				}
+				}							*/
 				else if( c=='!')
 				{
 						result = Token(LGC_NEGATION_OP,"!",position);
