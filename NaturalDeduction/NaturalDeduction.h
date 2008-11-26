@@ -15,6 +15,29 @@
 #define LGC_FLAG_RES	-1
 
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//Eliminate rules
+#define LGC_E_AND_1		1
+#define LGC_E_AND_2		2
+#define LGC_E_OR		3
+#define LGC_E_MODUS		4
+#define LGC_E_NOT		5
+#define LGC_E_ALL		6
+#define LGC_E_EXISTS	7
+//introduction rules
+#define LGC_I_AND		8
+#define LGC_I_OR_1		9
+#define LGC_I_OR_2		10
+#define LGC_I_MODUS		11
+#define LGC_I_NOT		12
+#define LGC_I_ALL		13
+#define LGC_I_EXISTS	14
+/////////////////////////
+#define LGC_ID			15
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
 struct NDTerm
 {
 	int m_index;		//Index in term vector
@@ -40,10 +63,12 @@ public:
 	int Eliminate();
 	bool isCompatible(int father,int son);
 	NaturalDeduction(TermVector t);
+	int print();
 
 private:
 	list <NDTerm> condition;
 	list <NDTerm> goal;
+	list <int> andMarked;
 	TermVector database;
 };
 

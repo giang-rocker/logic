@@ -11,10 +11,10 @@
 NaturalDeduction::NaturalDeduction(TermVector t)
 {
 	database = t;
-	list<int>::const_iterator p = t.goals.begin();
-	for (;p!=t.goals.end();++p)
+	list<int>::const_iterator p = t.conditions.begin();
+	for (;p!=t.conditions.end();++p)
 	{
-
+		condition.push_back(NDTerm(*p));
 	}
 }
 
@@ -71,7 +71,51 @@ bool NaturalDeduction::isCompatible(int father, int son)
 
 int NaturalDeduction::Eliminate()
 {
+	list<NDTerm>::const_iterator p ;
 	
+	//////////////////////////////////////////////////////////////////////////
+	////////////////////////////////Eliminate AND////////////////////////////
+	int added = 0;
+	for (p = condition.begin();p!=condition.end();++p)
+	{
+		int next = (*p).m_index;
+		while (database.functions[next].m_kind == LGC_REF)
+		{
+			next = database.functions[next].m_ref;
+		}
+
+		cout<<database.addrAND<<" == " << database.functions[next].m_ref ;
+		
+		if (database.functions[next].m_kind == LGC_TERM_FUNC && database.functions[next].m_ref == database.addrAND)
+		{
+			if (find(andMarked.begin(),andMarked.end(),next) == andMarked.end())
+			{
+				andMarked.push_back((*p).m_index);
+				added++;
+				//Create 2 NDTerms
+				int sub = next + 1;
+				while (database.functions[sub].m_kind == LGC_REF)
+				{
+					sub = database.functions[sub].m_ref;
+				}
+				NDTerm ndT(sub,false,next,0,LGC_E_AND_1);
+				condition.push_back(ndT);
+
+				sub = next + 2;
+				while (database.functions[sub].m_kind == LGC_REF)
+				{
+					sub = database.functions[sub].m_ref;
+				}
+				ndT.m_index = sub;
+				ndT.m_rule = LGC_E_AND_2;
+				condition.push_back(ndT);
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+
+
 	return 0;
 }
 
@@ -82,5 +126,16 @@ int NaturalDeduction::Introduction()
 
 int NaturalDeduction::Contradiction()
 {
+	return 0;
+}
+
+int NaturalDeduction::print()
+{
+	database.print();
+	cout<<"----------------------------------------------------------------\n";
+	for (list<NDTerm>::const_iterator p = condition.begin(); p != condition.end();++p )
+	{
+		cout<< (*p).m_index <<endl;
+	}
 	return 0;
 }

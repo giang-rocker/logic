@@ -13,7 +13,7 @@
 #include <list>
 #include <vector>
 #include <string>
-
+#include <algorithm>
 using namespace std;
 
 //////////////////////////////////////////////////////////////////////////
@@ -27,16 +27,12 @@ using namespace std;
 
 
 //////////////////////////////////////////////////////////////////////////
-#define LGC_TERM_FUNC	1
+#define LGC_FUN_DEF		1
+
 #define LGC_TERM_VAR	2
 #define LGC_TERM_CONST	3
 #define LGC_TERM_PROP	4
-
-
-
-#define LGC_USE_FUNC	5
-#define LGC_USE_VAR		6
-#define LGC_USE_QUAN	7
+#define LGC_TERM_FUNC	5
 
 #define LGC_REF			8
 
@@ -168,15 +164,17 @@ public:
 	list<int> goals;
 	list<int> conditions;
 
+	int addrNOT;
+	int addrAND;
+	int addrOR;
+	int addrMAP;
+
 private:
 	list<Term>lstTerms;
 	list<int>lstOpers;
 	list<int>lstQuans;
 	
-	int addrNOT;
-	int addrAND;
-	int addrOR;
-	int addrMAP;
+
 
 	int quanSize;
 	vector<Term>::const_iterator p;
