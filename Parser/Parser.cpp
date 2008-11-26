@@ -79,7 +79,7 @@ void Parser::parseFormula()
 			}
 			else
 			{
-				data.NewVar(str,LGC_TERM_PROP);
+				data.NewVar(str,LGC_TERM_CONST);
 			}
 		}
 		else if (check(LGC_VAR))
@@ -113,7 +113,7 @@ void Parser::parseFormula()
 	}	
 }
 
-//<tail>				::= 	',' <source> |  <binary-operator><source>  |	
+//<tail>				::= 	',' <source> |  <binary-operator><source>  |	'|-' <source>
 void Parser::parseTail()
 {
 	if (s == "")
@@ -125,12 +125,19 @@ void Parser::parseTail()
 			data.BeginSentence();
 			parseSource();
 		}
+		else if(check(LGC_RESULT_OP))
+		{
+			data.EndSentence();
+			match(LGC_RESULT_OP);
+			data.BeginSentence();
+			parseSource();
+		}
 		else if (check(LGC_INTERSECTION_OP) || check(LGC_UNION_OP) || check(LGC_MAPPING_OP))
 		{
 			parseBin_operator();
 			parseSource();
 		}
-
+		
 	}
 }
 
@@ -192,7 +199,7 @@ void Parser::parseArg()
 		else if(check (LGC_CON))
 		{
 			match(LGC_CON);
-			data.NewVar(str,LGC_TERM_PROP);
+			data.NewVar(str,LGC_TERM_CONST);
 		}
 		else if (check(LGC_NEGATION_OP))
 		{
