@@ -39,13 +39,76 @@ void Parser::parse()
 {
 	s = "";
 	lookAheadToken = scanner->nextToken();
+	parseInput();	
+}
+
+//<input>	::= <source> |- <goal>
+void Parser::parseInput()
+{
 	data.BeginSentence();
 	parseSource();
-	if (!check(LGC_NIL))
+	data.EndSentence();
+	if (check(LGC_RESULT_OP))
 	{
-		s = (string)(((Token)getLookAheadToken()).tostring());
+		match(LGC_RESULT_OP);
+		data.BeginSentence();
+		parseGoal();
+		if (!check(LGC_NIL))
+		{
+			s = (string)(((Token)getLookAheadToken()).tostring());
+		}
+		data.EndSentence();
 	}
-	data.EndSentence(); 	
+	else
+		s =(string)(((Token)getLookAheadToken()).tostring());
+}
+// <goal>	::= <formula>
+void Parser::parseGoal()
+{
+	if (s == "")
+	{	if(check(LGC_CON))
+		{		
+			match(LGC_CON);
+			if(check(LGC_LEFTPAR))
+			{
+				data.BeginFunction(str);
+				parseArg_list();
+				data.EndFunction();
+			}
+		else
+		{
+			data.NewVar(str,LGC_TERM_CONST);
+		}
+		}
+		else if (check(LGC_VAR))
+		{
+			match(LGC_VAR);
+			data.BeginFunction(str);
+			parseArg_list();
+			data.EndFunction();
+		}
+		else if (check(LGC_NEGATION_OP))
+		{
+			match(LGC_NEGATION_OP);
+			data.NewLogicOp(LGC_OP_NOT);
+			parseGoal();
+		}
+		else if (check(LGC_ALL_OP) || check(LGC_EXIST_OP))
+		{
+			parseQuantifier();
+			parseGoal();
+		}
+		else if (check(LGC_LEFTPAR))
+		{
+			match(LGC_LEFTPAR);
+			data.LeftPar();
+			parseGoal();
+			match(LGC_RIGHTPAR);
+			data.RightPar();
+		}
+		else
+			s = (string)(((Token)getLookAheadToken()).tostring());	
+	}
 }
 
 //<source>		::= 	<formula> <tail>  
@@ -56,7 +119,7 @@ void Parser::parseSource()
 		if (check(LGC_CON)||check(LGC_VAR)||check(LGC_ALL_OP)||check(LGC_NEGATION_OP)||check(LGC_EXIST_OP)||check(LGC_LEFTPAR))
 		{
 			parseFormula();
-			parseTail();
+			parseTail();			
 		}
 		else
 			s = (string)(((Token)getLookAheadToken()).tostring());
@@ -113,7 +176,7 @@ void Parser::parseFormula()
 	}	
 }
 
-//<tail>				::= 	',' <source> |  <binary-operator><source>  |	'|-' <source>
+//<tail>				::= 	',' <source> |  <binary-operator><source>  |	'|-' <source> |
 void Parser::parseTail()
 {
 	if (s == "")
@@ -125,13 +188,7 @@ void Parser::parseTail()
 			data.BeginSentence();
 			parseSource();
 		}
-		else if(check(LGC_RESULT_OP))
-		{
-			data.EndSentence();
-			match(LGC_RESULT_OP);
-			data.BeginSentence();
-			parseSource();
-		}
+		
 		else if (check(LGC_INTERSECTION_OP) || check(LGC_UNION_OP) || check(LGC_MAPPING_OP))
 		{
 			parseBin_operator();
