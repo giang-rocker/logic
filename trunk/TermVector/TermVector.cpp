@@ -133,6 +133,10 @@ int TermVector::EndSentence(bool isCondition)
 
 		conditions.push_back(t);
 	}
+	else
+	{
+		goals.push_back(t);
+	}
 	return LGC_ERR_SUCC;
 }
 int TermVector::BeginFunction(string name)
