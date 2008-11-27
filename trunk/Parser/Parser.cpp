@@ -47,67 +47,30 @@ void Parser::parseInput()
 {
 	data.BeginSentence();
 	parseSource();
-	data.EndSentence();
-	if (check(LGC_RESULT_OP))
+	if (s =="")
 	{
-		match(LGC_RESULT_OP);
-		data.BeginSentence();
-		parseGoal();
-		if (!check(LGC_NIL))
+		data.EndSentence();
+		if (check(LGC_RESULT_OP))
 		{
-			s = (string)(((Token)getLookAheadToken()).tostring());
+			match(LGC_RESULT_OP);
+			data.BeginSentence();
+			parseGoal();
+			if (!check(LGC_NIL))
+			{
+				s = (string)(((Token)getLookAheadToken()).tostring());
+			}
+			data.EndSentence(false);
 		}
-		data.EndSentence(false);
+		else
+			s =(string)(((Token)getLookAheadToken()).tostring());
 	}
-	else
-		s =(string)(((Token)getLookAheadToken()).tostring());
 }
 // <goal>	::= <formula>
 void Parser::parseGoal()
 {
 	if (s == "")
-	{	if(check(LGC_CON))
-		{		
-			match(LGC_CON);
-			if(check(LGC_LEFTPAR))
-			{
-				data.BeginFunction(str);
-				parseArg_list();
-				data.EndFunction();
-			}
-		else
-		{
-			data.NewVar(str,LGC_TERM_CONST);
-		}
-		}
-		else if (check(LGC_VAR))
-		{
-			match(LGC_VAR);
-			data.BeginFunction(str);
-			parseArg_list();
-			data.EndFunction();
-		}
-		else if (check(LGC_NEGATION_OP))
-		{
-			match(LGC_NEGATION_OP);
-			data.NewLogicOp(LGC_OP_NOT);
-			parseGoal();
-		}
-		else if (check(LGC_ALL_OP) || check(LGC_EXIST_OP))
-		{
-			parseQuantifier();
-			parseGoal();
-		}
-		else if (check(LGC_LEFTPAR))
-		{
-			match(LGC_LEFTPAR);
-			data.LeftPar();
-			parseGoal();
-			match(LGC_RIGHTPAR);
-			data.RightPar();
-		}
-		else
-			s = (string)(((Token)getLookAheadToken()).tostring());	
+	{	
+		parseSource();
 	}
 }
 
@@ -168,15 +131,20 @@ void Parser::parseFormula()
 			match(LGC_LEFTPAR);
 			data.LeftPar();
 			parseSource();
-			match(LGC_RIGHTPAR);
-			data.RightPar();
+			if (check(LGC_RIGHTPAR))
+			{
+				match(LGC_RIGHTPAR);
+				data.RightPar();
+			}
+			else
+				s = (string)(((Token)getLookAheadToken()).tostring());
 		}
 		else
 			s = (string)(((Token)getLookAheadToken()).tostring());
 	}	
 }
 
-//<tail>				::= 	',' <source> |  <binary-operator><source>  |	'|-' <source> |
+//<tail>				::= 	',' <source> |  <binary-operator><source>  |	
 void Parser::parseTail()
 {
 	if (s == "")
