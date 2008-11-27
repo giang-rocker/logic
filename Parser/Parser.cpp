@@ -8,7 +8,7 @@ Parser::Parser(Scanner* s)
 {
 	scanner = s;
 	lookAheadToken = Token(LGC_NIL);
-	isStarted = false;
+	enterGoal = false;
 }
 
 void Parser::match(TokenKind tokenKind)
@@ -55,21 +55,24 @@ void Parser::parseInput()
 			match(LGC_RESULT_OP);
 			data.BeginSentence();
 			parseGoal();
-			if (!check(LGC_NIL))
+			if (check(LGC_COMMA)){}
+			else if (!check(LGC_NIL))
 			{
 				s = (string)(((Token)getLookAheadToken()).tostring());
 			}
-			data.EndSentence(false);
+			if (s=="")
+				data.EndSentence(false);
 		}
 		else
 			s =(string)(((Token)getLookAheadToken()).tostring());
 	}
 }
-// <goal>	::= <formula>
+// <goal>	::= <new-formula> <new-tail>
 void Parser::parseGoal()
 {
 	if (s == "")
 	{	
+		enterGoal = true;
 		parseSource();
 	}
 }
@@ -151,10 +154,17 @@ void Parser::parseTail()
 	{
 		if(check(LGC_COMMA))
 		{
-			data.EndSentence();
-			match(LGC_COMMA);
-			data.BeginSentence();
-			parseSource();
+			if (enterGoal)
+			{
+				s = (string)(((Token)getLookAheadToken()).tostring());
+			}
+			else
+			{
+				data.EndSentence();
+				match(LGC_COMMA);
+				data.BeginSentence();
+				parseSource();
+			}
 		}
 		
 		else if (check(LGC_INTERSECTION_OP) || check(LGC_UNION_OP) || check(LGC_MAPPING_OP))

@@ -255,7 +255,7 @@ Token Scanner::nextToken()
 				}
 				else if( c==',')
 				{
-						result = Token(LGC_COMMA,"&",position);
+						result = Token(LGC_COMMA,",",position);
 						position.m_iCharFinish++;
 						position.EndToken();
 						return result;

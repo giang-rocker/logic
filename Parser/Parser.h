@@ -30,7 +30,7 @@ private:
 	Scanner* scanner; 
 	Token lookAheadToken;
 	Token currentToken;
-	bool isStarted ;
+	bool enterGoal ;
 //	bool first;
 //	string error = "" ;
 }
