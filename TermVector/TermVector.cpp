@@ -421,12 +421,19 @@ TermVector::operator string()const
 }
 int TermVector::print()
 {
-	cout<<"---------------Conditions-----------------------\n";
+	cout<<"\n\n---------------Conditions-----------------------\n";
 	list<int>::const_iterator lst = conditions.begin();
 	for (;lst!=conditions.end();++lst)
 	{
 		cout<<"\t"<<*lst;
 	}
+	cout<<"\n\n---------------Goals-----------------------\n";
+	lst = goals.begin();
+	for (;lst!=goals.end();++lst)
+	{
+		cout<<"\t"<<*lst;
+	}
+
 	cout<<"\n\n---------------Main---------------------\n";
 	vector<Term>::const_iterator p = functions.begin();
 	int i = 0;

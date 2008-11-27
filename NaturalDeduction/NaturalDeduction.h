@@ -10,9 +10,8 @@
 #endif // _MSC_VER > 1000
 #include "../TermVector/TermVector.h"
 
-#define LGC_FLAG_ANY	1
-#define LGC_FLAG_SOME	0
-#define LGC_FLAG_RES	-1
+#define LGC_FLAG_ABSOLUTE	1		//Eliminate from all
+#define LGC_FLAG_RELATIVE	2		//Eliminate from exists			
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -25,6 +24,7 @@
 #define LGC_E_NOT		5
 #define LGC_E_ALL		6
 #define LGC_E_EXISTS	7
+
 //introduction rules
 #define LGC_I_AND		8
 #define LGC_I_OR_1		9
@@ -34,6 +34,7 @@
 #define LGC_I_ALL		13
 #define LGC_I_EXISTS	14
 /////////////////////////
+
 #define LGC_ID			15
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -68,7 +69,9 @@ public:
 private:
 	list <NDTerm> condition;
 	list <NDTerm> goal;
-	list <int> andMarked;
+	vector <int> andMarked;
+	vector <int> notMarked;
+	vector <int> mdMarked;
 	TermVector database;
 };
 
