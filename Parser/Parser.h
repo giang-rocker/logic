@@ -13,7 +13,9 @@ public:
 	bool check(TokenKind tokenKind);
 	Token getLookAheadToken();
 	void parse();
-	void parseSource();
+	void parseInput();
+	void parseSource();	
+	void parseGoal();
 	void parseFormula();
 	void parseTail();
 	void parseBin_operator();

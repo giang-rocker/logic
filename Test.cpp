@@ -9,7 +9,7 @@ int main()
 	char*data = (char*) GetCommandLineW();
 	cout<<data;
 	//"a<->a<>abc a V- -]kdj aa ";
-	string text = "p(Xo,Yo) , all x exists y (p (x,y) -> not q(x,y)) -| not q(Xo,Yo) ";
+	string text = "p(Xo,Yo) , all x exists y (p (x,y) -> not q(x,y))  |- not q(Xo,Yo) ";
 	//string text = "P and Q";
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
