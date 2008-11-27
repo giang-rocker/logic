@@ -57,7 +57,7 @@ void Parser::parseInput()
 		{
 			s = (string)(((Token)getLookAheadToken()).tostring());
 		}
-		data.EndSentence();
+		data.EndSentence(false);
 	}
 	else
 		s =(string)(((Token)getLookAheadToken()).tostring());
