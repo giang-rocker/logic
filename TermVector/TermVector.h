@@ -33,6 +33,7 @@ using namespace std;
 #define LGC_TERM_CONST	3
 #define LGC_TERM_PROP	4
 #define LGC_TERM_FUNC	5
+#define LGC_TERM_FALSE	6
 
 #define LGC_REF			8
 
@@ -51,7 +52,6 @@ using namespace std;
 #define LGC_OP_AND		-5
 #define LGC_OP_OR		-6
 #define LGC_OP_MAP		-7
-
 //////////////////////////////////////////////////////////////////////////
 
 
@@ -65,10 +65,10 @@ using namespace std;
 
 
 //////////////////////////////////////////////////////////////////////////
-#define LGC_STR_NOT	"~"
-#define LGC_STR_AND	"&"
-#define LGC_STR_OR	"|"
-#define LGC_STR_MAP	"->"
+#define LGC_STR_NOT		"~"
+#define LGC_STR_AND		"&"
+#define LGC_STR_OR		"|"
+#define LGC_STR_MAP		"->"
 //////////////////////////////////////////////////////////////////////////
 
 
@@ -168,7 +168,6 @@ public:
 	int addrAND;
 	int addrOR;
 	int addrMAP;
-
 private:
 	list<Term>lstTerms;
 	list<int>lstOpers;

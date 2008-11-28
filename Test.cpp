@@ -1,15 +1,14 @@
 #include <iostream>
 #include "Analyser/Scanner.h"
 #include "Parser/Parser.h"
+#include "NaturalDeduction/NaturalDeduction.h"
+
 using namespace std;
-#include <windows.h>
 int main()
 {
 
-	char*data = (char*) GetCommandLineW();
-	cout<<data;
-	//"a<->a<>abc a V- -]kdj aa ";
-	string text = "p(Xo,Yo) , all x exists y (p (x,y) -> not q(x,y))  |-  q(Xo,Yo) or p (x,y)and p (y,x) ";
+
+	string text = " P,Q |- Q and P ";
 	//string text = "P and Q";
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
@@ -20,7 +19,10 @@ int main()
 	}
 	else
 	{
-		p->data.print();
+		
+		NaturalDeduction nd(p->data);
+		nd.ProveIt();
+		nd.print();	
 	}	
 	return 0;
 	
