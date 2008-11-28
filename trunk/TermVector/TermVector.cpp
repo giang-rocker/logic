@@ -5,7 +5,7 @@
 
 #include "TermVector.h"
 //#define DEBUG
-#define PRINT_METHOD
+//#define PRINT_METHOD
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -14,7 +14,6 @@ TermVector::TermVector()
 {
 
 	quantifiers.push_back(Term(LGC_NULL));
-	//functions.push_back(Term(LGC_NULL));
 
 	addrNOT = functions.size();
 	functions.push_back(Term(LGC_FUN_DEF ,names.GetIndex(LGC_STR_NOT),1));
@@ -27,6 +26,7 @@ TermVector::TermVector()
 
 	addrMAP = functions.size();
 	functions.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_MAP),2));
+	
 
 #ifdef PRINT_METHOD
 	times = 0;
@@ -306,9 +306,7 @@ int TermVector::EndArg()
 
 int TermVector::NewQuan(string var, int kind)
 {
-#ifdef PRINT_METHOD
-	cout<<"New Quan\n";
-#endif
+
 	if (quanSize == 0)
 	{
 		quanSize++;
@@ -340,13 +338,7 @@ int TermVector::NewQuan(string var, int kind)
 }
 int TermVector::NewVar(string name,int kind)
 {
-#ifdef PRINT_METHOD
-	cout<<"New Var : "<<name<< kind << "\n";
-	if (name == "y" && kind == LGC_TERM_VAR)
-	{
-		cout<<"Wait";
-	}
-#endif
+
 	quanSize = 0;
 	int index = names.GetIndex(name);
 	vector<Term>::iterator p = variables.begin();
@@ -364,7 +356,7 @@ int TermVector::NewVar(string name,int kind)
 	}
 	if (p == variables.end())
 	{
-		cout<<"----------------------------------------------------------"<<kind<<endl;
+		
 		variables.push_back(Term(kind,index));
 		t.m_ref = variables.size() - 1;
 	}
@@ -443,35 +435,37 @@ int TermVector::print()
 	int i = 0;
 	for (;p!=functions.end();++p)
 	{
-		cout<<i++<<".\t";
+		
 		switch ((*p).m_kind)
 		{
 		case LGC_FUN_DEF:
-			cout<<"Fun:\t"<<names.GetString((*p).m_ref)<<"\tArgs="<<(*p).m_info<<"\n";
+			cout<<i++<<"\tFun:\t"<<names.GetString((*p).m_ref)<<"\tArgs="<<(*p).m_info<<"\n";
 			break;
 
 		case LGC_REF:
-			cout<<"Ref:\t"<<(*p).m_ref<<"\n";
+			cout<<i++<<"\tRef:\t"<<(*p).m_ref<<"\n";
 			break;
 
 		case LGC_TERM_VAR:
-			cout<<"Var:\t"<<names.GetString(variables[(*p).m_ref].m_ref)<<"\n";
+			cout<<i++<<"\tVar:\t"<<names.GetString(variables[(*p).m_ref].m_ref)<<"\n";
 			break;
 
 		case LGC_TERM_PROP:
-			cout<<"Prop:\t"<<names.GetString(variables[(*p).m_ref].m_ref)<<"\n";
+			cout<<i++<<"\tProp:\t"<<names.GetString(variables[(*p).m_ref].m_ref)<<"\n";
 			break;
 
 		case LGC_TERM_CONST:
-			cout<<"Const:\t"<<names.GetString(variables[(*p).m_ref].m_ref)<<"\n";
+			cout<<i++<<"\tConst:\t"<<names.GetString(variables[(*p).m_ref].m_ref)<<"\n";
 			break;
 
 		case LGC_TERM_FUNC:
-			cout<<"Call :\t"<<names.GetString(functions[(*p).m_ref].m_ref)<<"\tQuan="<<(*p).m_info<<"\n";
+			cout<<"\n"<<i++<<"\tCall :\t"<<names.GetString(functions[(*p).m_ref].m_ref)<<"\tQuan="<<(*p).m_info<<"\n";
 			break;
-
+		case LGC_TERM_FALSE:
+			cout<<i++<<"\t FALSE\n";
+			break;
 		default:
-			cout<<(*p).m_kind<<"\t"<<(*p).m_ref<<"\t"<<(*p).m_info<<"\n";
+			cout<<i++<<(*p).m_kind<<"\t"<<(*p).m_ref<<"\t"<<(*p).m_info<<"\n";
 		}
 		
 	}
