@@ -53,7 +53,7 @@ Token::operator =(const Token& t)
 
 string Token::tostring()
 {		
-	return "Unexpected Token: "+m_lexeme+"\t"+(string)m_position.toString();
+	return "Unexpected "+convertToken()+"\tLexeme: "+m_lexeme+"\t"+(string)m_position.toString();
 }
 
 Token::operator TokenKind() const
@@ -69,7 +69,7 @@ Token::operator SourcePosition()const
 	return m_position;
 } 
 
-/*
+
 string Token::convertToken()
 {
 	switch (m_kind){
@@ -109,4 +109,3 @@ string Token::convertToken()
 			return "Token.LGC_ERROR";	
 	}
 }
-*/
