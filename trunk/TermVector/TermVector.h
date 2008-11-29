@@ -16,6 +16,7 @@
 #include <algorithm>
 using namespace std;
 
+
 //////////////////////////////////////////////////////////////////////////
 #define LGC_ERR_SUCC	1
 #define LGC_ERR_PARS	2
@@ -71,6 +72,13 @@ using namespace std;
 #define LGC_STR_MAP		"->"
 //////////////////////////////////////////////////////////////////////////
 
+
+//////////////////////////////////////////////////////////////////////////
+#define LGC_ADDR_NOT  0
+#define LGC_ADDR_AND  1
+#define LGC_ADDR_OR   2
+#define LGC_ADDR_MAP  3
+//////////////////////////////////////////////////////////////////////////
 
 
 struct Term  
@@ -164,10 +172,7 @@ public:
 	list<int> goals;
 	list<int> conditions;
 
-	int addrNOT;
-	int addrAND;
-	int addrOR;
-	int addrMAP;
+
 private:
 	list<Term>lstTerms;
 	list<int>lstOpers;

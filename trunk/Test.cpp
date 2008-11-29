@@ -8,8 +8,8 @@ int main()
 {
 
 
-	string text = " P,Q |- Q and P ";
-	//string text = "P and Q";
+
+	string text = "!B,  B | A  , A -> Q |- A & Q | X";
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
 	p->parse();
@@ -21,6 +21,7 @@ int main()
 	{
 		
 		NaturalDeduction nd(p->data);
+		p->data.print();
 		nd.ProveIt();
 		nd.print();	
 	}	
