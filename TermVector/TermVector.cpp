@@ -15,16 +15,9 @@ TermVector::TermVector()
 
 	quantifiers.push_back(Term(LGC_NULL));
 
-	addrNOT = functions.size();
 	functions.push_back(Term(LGC_FUN_DEF ,names.GetIndex(LGC_STR_NOT),1));
-
-	addrAND = functions.size();
 	functions.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_AND),2));
-
-	addrOR = functions.size();
 	functions.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_OR),2));
-
-	addrMAP = functions.size();
 	functions.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_MAP),2));
 	
 
@@ -77,14 +70,14 @@ int TermVector::EndSentence(bool isCondition)
 		switch ((*p).m_kind)
 		{
 		case LGC_OP_NOT:
-			functions.push_back(Term(LGC_TERM_FUNC,addrNOT,0));
+			functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_NOT,0));
 			--p;
 			functions.push_back(*p);
 			p = lstTerms.erase(p);
 			*p = Term(LGC_REF,functions.size() - 2,0);
 			break;
 		case LGC_OP_AND:
-			functions.push_back(Term(LGC_TERM_FUNC,addrAND,0));
+			functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_AND,0));
 			--p;
 			--p;
 			functions.push_back(*p);
@@ -94,7 +87,7 @@ int TermVector::EndSentence(bool isCondition)
 			*p = Term(LGC_REF,functions.size() - 3,-0);
 			break;
 		case LGC_OP_OR:
-			functions.push_back(Term(LGC_TERM_FUNC,addrOR,0));
+			functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_OR,0));
 			--p;
 			--p;
 			functions.push_back(*p);
@@ -104,7 +97,7 @@ int TermVector::EndSentence(bool isCondition)
 			*p = Term(LGC_REF,functions.size() - 3,0);
 			break;
 		case LGC_OP_MAP:
-			functions.push_back(Term(LGC_TERM_FUNC,addrMAP,0));
+			functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_MAP,0));
 			--p;
 			--p;
 			functions.push_back(*p);
@@ -255,14 +248,14 @@ int TermVector::EndArg()
 	switch ((*p).m_kind)
 	{
 	case LGC_OP_NOT:
-		functions.push_back(Term(LGC_TERM_FUNC,addrNOT,0));
+		functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_NOT,0));
 		--p;
 		functions.push_back(*p);
 		p = lstTerms.erase(p);
 		*p = Term(LGC_REF,functions.size() - 2,0);
 		break;
 	case LGC_OP_AND:
-		functions.push_back(Term(LGC_TERM_FUNC,addrAND,0));
+		functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_AND,0));
 		--p;
 		--p;
 		functions.push_back(*p);
@@ -272,7 +265,7 @@ int TermVector::EndArg()
 		*p = Term(LGC_REF,functions.size() - 3,-0);
 		break;
 	case LGC_OP_OR:
-		functions.push_back(Term(LGC_TERM_FUNC,addrOR,0));
+		functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_OR,0));
 		--p;
 		--p;
 		functions.push_back(*p);
@@ -282,7 +275,7 @@ int TermVector::EndArg()
 		*p = Term(LGC_REF,functions.size() - 3,0);
 		break;
 	case LGC_OP_MAP:
-		functions.push_back(Term(LGC_TERM_FUNC,addrMAP,0));
+		functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_MAP,0));
 		--p;
 		--p;
 		functions.push_back(*p);
