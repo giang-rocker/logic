@@ -51,7 +51,7 @@ public:
 	operator TokenKind() const;
 	operator SourcePosition() const;
 	operator string()const;
-	//string convertToken();
+	string convertToken();
 
 private:
 	SourcePosition m_position;
