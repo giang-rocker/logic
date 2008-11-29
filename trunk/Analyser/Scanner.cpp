@@ -253,6 +253,13 @@ Token Scanner::nextToken()
 						position.EndToken();
 						return result;
 				}
+				else if( c=='~')
+				{
+					result = Token(LGC_NEGATION_OP,"~",position);
+					position.m_iCharFinish++;
+					position.EndToken();
+					return result;
+				}
 				else if( c==',')
 				{
 						result = Token(LGC_COMMA,",",position);
