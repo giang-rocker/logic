@@ -74,10 +74,11 @@ using namespace std;
 
 
 //////////////////////////////////////////////////////////////////////////
-#define LGC_ADDR_NOT  0
-#define LGC_ADDR_AND  1
-#define LGC_ADDR_OR   2
-#define LGC_ADDR_MAP  3
+#define LGC_ADDR_NOT	0
+#define LGC_ADDR_AND	1
+#define LGC_ADDR_OR		2
+#define LGC_ADDR_MAP	3
+#define LGC_ADDR_FALSE	4
 //////////////////////////////////////////////////////////////////////////
 
 

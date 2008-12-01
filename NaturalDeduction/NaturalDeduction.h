@@ -30,21 +30,21 @@
 #define LGC_E_OR_1		4
 #define LGC_E_OR_2		5
 #define LGC_E_MODUS		6
-#define LGC_E_NOT		7
+#define LGC_E_DNEG		7
 #define LGC_E_ALL		8
 #define LGC_E_EXISTS	9
-
+#define LGC_E_NOT		10
 
 //////////////////////////////////////////////////////////////////////////
 
 
-#define LGC_I_AND		10
-#define LGC_I_OR_1		11
-#define LGC_I_OR_2		12
-#define LGC_I_MODUS		13
-#define LGC_I_NOT		14
-#define LGC_I_ALL		15
-#define LGC_I_EXISTS	16
+#define LGC_I_AND		11
+#define LGC_I_OR_1		12
+#define LGC_I_OR_2		13
+#define LGC_I_MODUS		14
+#define LGC_I_NOT		15
+#define LGC_I_ALL		16
+#define LGC_I_EXISTS	17
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -64,8 +64,14 @@
 #define LGC_FLAG_I_OR1	0x1000
 #define LGC_FLAG_I_OR2	0x1001
 #define LGC_FLAG_I_OR3	0x1002
+#define LGC_FLAG_I_NOT	0x1004
+#define LGC_FLAG_I_MAP	0x1008
 
-
+#define LGC_FLAG_C_OR1	0x0100
+#define LGC_FLAG_C_OR2	0x0101
+#define LGC_FLAG_C_OR3	0x0102
+#define LGC_FLAG_C_NOT	0x0104
+#define LGC_FLAG_C_MAP	0x0108
 //////////////////////////////////////////////////////////////////////////
 
 struct NDTerm
@@ -110,8 +116,7 @@ private:
 	int isReached(int subgoal);
 	list <NDTerm> conditions;
 	list <NDTerm> goals;
-	list <NDTerm> proveds;
-
+	list <NDTerm> proveds; 
 
 	TermVector database;
 
