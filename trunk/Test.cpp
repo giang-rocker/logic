@@ -9,7 +9,7 @@ int main()
 
 
 
-	string text = "!B,  B | A  , A -> Q |- A & Q | X";
+	string text = "P, P| Q -> Q |- Q";
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
 	p->parse();

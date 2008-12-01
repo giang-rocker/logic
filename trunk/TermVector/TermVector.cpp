@@ -19,7 +19,7 @@ TermVector::TermVector()
 	functions.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_AND),2));
 	functions.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_OR),2));
 	functions.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_MAP),2));
-	
+	functions.push_back(Term(LGC_TERM_FALSE));
 
 #ifdef PRINT_METHOD
 	times = 0;
