@@ -34,7 +34,8 @@ TermVector::~TermVector()
 
 int TermVector::BeginSentence()
 {
-#ifdef PRINT_METHOD
+
+#ifdef _DEBUG
 	cout<<"Begin Sentence\n";
 #endif
 	lstTerms.clear();
