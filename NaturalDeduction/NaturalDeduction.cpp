@@ -108,7 +108,7 @@ int NaturalDeduction::Eliminate()
 					
 					if (database.functions[arg1].m_kind == LGC_TERM_FUNC && database.functions[arg1].m_ref == LGC_ADDR_NOT)
 					{
-						if ((*p).m_status & LGC_FLAG_E_NOT == 0)
+						if (((*p).m_status & LGC_FLAG_E_NOT) != LGC_FLAG_E_NOT)
 						{
 							(*p).m_status |= LGC_FLAG_E_NOT;
 							arg2 = arg1 + 1;
@@ -127,7 +127,7 @@ int NaturalDeduction::Eliminate()
 					break;
 	
 				case LGC_ADDR_AND:
-					if (((*p).m_status & LGC_FLAG_E_AND) == 0)
+					if (((*p).m_status & LGC_FLAG_E_AND) != LGC_FLAG_E_AND)
 					{
 						(*p).m_status |= LGC_FLAG_E_AND;
 						int arg1 = main + 1;
@@ -159,7 +159,7 @@ int NaturalDeduction::Eliminate()
 				case LGC_ADDR_OR:		
 					// A v B , not(A) -> B
 
-					if ( ((*p).m_status & LGC_FLAG_E_OR1) == 0)
+					if ( ((*p).m_status & LGC_FLAG_E_OR1) != LGC_FLAG_E_OR1)
 					{
 						arg1 = main + 1;
 						arg2 = main + 2;
@@ -196,7 +196,7 @@ int NaturalDeduction::Eliminate()
 						
 					}
 
-					if (((*p).m_status & LGC_FLAG_E_OR2) == 0)
+					if (((*p).m_status & LGC_FLAG_E_OR2) != LGC_FLAG_E_OR2)
 					{
 						arg1 = main + 1;
 						arg2 = main + 2;
@@ -237,7 +237,7 @@ int NaturalDeduction::Eliminate()
 					break;
 
 				case LGC_ADDR_MAP:
-					if (((*p).m_status & LGC_FLAG_E_MAP) == 0)
+					if (((*p).m_status & LGC_FLAG_E_MAP) != LGC_FLAG_E_MAP)
 					{
 						
 						arg1 = main + 1;
@@ -337,6 +337,7 @@ int NaturalDeduction::Introduction()
 					return 1;
 				}
 				break;
+
 			// |- P ^ Q => |- P ^ Q , P, Q
 			case LGC_ADDR_AND:
 				if ((status & LGC_FLAG_I_AND) !=LGC_FLAG_I_AND)
@@ -362,6 +363,7 @@ int NaturalDeduction::Introduction()
 					return 1;
 				}
 				break;
+
 
 			// |- P | Q -> |- P -> |- Q -> NOT(P|Q) |- FALSE
 			case LGC_ADDR_OR:
@@ -605,9 +607,31 @@ int NaturalDeduction::ProveIt()
 
 	while (!goals.empty())
 	{
+
+
 #if _DEBUG
-		cout<<"Last goal :"<<goals.back().m_index<<endl;
+		cout <<"\n-----------------------Conditions------------------------------\n";
+		for (list<NDTerm>::iterator c = conditions.begin();c!=conditions.end();++c)
+		{
+			cout<<"\t"<<(*c).m_index;
+		}
+
+		cout <<"\n-----------------------Goals------------------------------\n";
+		for (list<NDTerm>::iterator g = goals.begin();g!=goals.end();++g)
+		{
+				cout<<"\t"<<(*g).m_index;
+		}
+		
+		cout <<"\n-----------------------Proved List------------------------------\n";
+		for (list<NDTerm>::iterator p = proveds.begin();p!=proveds.end();++p)
+		{
+				cout<<"\t"<<(*p).m_index;
+		}
+
+
+
 #endif
+		
 		if (goals.back().m_pendings > 0)
 		{
 			conditions.push_back(goals.back());
@@ -629,15 +653,7 @@ int NaturalDeduction::ProveIt()
 			else
 			{
 				bool applied = false;
-#if _DEBUG
-				cout<<"Conditions\n";
-				for (list<NDTerm>::iterator p = conditions.begin();p!=conditions.end();++p)
-				{
-					cout<<"\t"<<(*p).m_index;
-				}
-				cout<<"\n";
-#endif
-				while (Eliminate() > 0)
+		while (Eliminate() > 0)
 				{ 
 
 					applied = true;
