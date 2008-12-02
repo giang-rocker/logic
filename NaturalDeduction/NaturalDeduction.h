@@ -53,25 +53,28 @@
 #define LGC_LST_PROVED		2
 #define LGC_LST_CONDITION	3
 
+
 //////////////////////////////////////////////////////////////////////////
-#define LGC_FLAG_E_NOT	0x0001
-#define LGC_FLAG_E_AND	0x0002
-#define LGC_FLAG_E_OR1	0x0004
-#define LGC_FLAG_E_OR2	0x0008
-#define LGC_FLAG_E_OR3	0x0010
-#define LGC_FLAG_E_MAP	0x0011
+#define LGC_FLAG_E_NOT	0x00000001
+#define LGC_FLAG_E_AND	0x00000002
+#define LGC_FLAG_E_OR1	0x00000004
+#define LGC_FLAG_E_OR2	0x00000008
+#define LGC_FLAG_E_MAP	0x00000010
 
-#define LGC_FLAG_I_OR1	0x1000
-#define LGC_FLAG_I_OR2	0x1001
-#define LGC_FLAG_I_OR3	0x1002
-#define LGC_FLAG_I_NOT	0x1004
-#define LGC_FLAG_I_MAP	0x1008
+#define LGC_FLAG_I_OR1	0x00000020
+#define LGC_FLAG_I_OR2	0x00000040
+#define LGC_FLAG_I_OR3	0x00000080
+#define LGC_FLAG_I_NOT	0x00000100
+#define LGC_FLAG_I_MAP	0x00000200
+#define LGC_FLAG_I_AND	0x00000400
 
-#define LGC_FLAG_C_OR1	0x0100
-#define LGC_FLAG_C_OR2	0x0101
-#define LGC_FLAG_C_OR3	0x0102
-#define LGC_FLAG_C_NOT	0x0104
-#define LGC_FLAG_C_MAP	0x0108
+//0x01000000 -> 0x80000000
+#define LGC_FLAG_C_OR1	0x01000000
+#define LGC_FLAG_C_OR2	0x02000000
+#define LGC_FLAG_C_NOT	0x04000000
+#define LGC_FLAG_C_MAP	0x08000000
+#define LGC_FLAG_CONTR	0xFF000000
+
 //////////////////////////////////////////////////////////////////////////
 
 struct NDTerm
@@ -84,6 +87,7 @@ struct NDTerm
 	int m_assume;
 	int m_pendings;
 	int m_status;
+
 	NDTerm(int index = 0, int rule = 0, int first = 0, int second = 0)
 	{
 		m_index = index ;
@@ -103,6 +107,7 @@ class NaturalDeduction
 {
 public:
 	int InsertTerm(NDTerm term);
+	int insertGoal(NDTerm term);
 	int ProveIt();
 	bool isComplement(int active, int negative) const;
 	int Contradiction();
@@ -110,14 +115,15 @@ public:
 	int Eliminate();
 	bool isCompatible(int father,int son)const;
 	NaturalDeduction(TermVector t);
+	int turnIt();
 	int print();
-
+	
 private:
 	int isReached(int subgoal);
 	list <NDTerm> conditions;
 	list <NDTerm> goals;
 	list <NDTerm> proveds; 
-
+	list <int> branches;
 	TermVector database;
 
 };
