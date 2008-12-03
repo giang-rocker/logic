@@ -162,10 +162,11 @@ public:
 	int EndSentence(bool isCondition = true);
 	int BeginSentence();
 	int print();
+	string GetString(int index)const;
 	TermVector();
 	virtual ~TermVector();
 	operator string()const;
-
+	
 	vector<Term>functions;
 	vector<Term>variables;
 	vector<Term>quantifiers;
@@ -183,7 +184,7 @@ private:
 
 	int quanSize;
 	vector<Term>::const_iterator p;
-	int debug();
+
 
 	int times ;
 

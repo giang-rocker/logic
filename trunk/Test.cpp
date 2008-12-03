@@ -9,7 +9,7 @@ int main()
 
 
 
-	string text = "A |- B | A ";
+	string text = "A |- !F | F";//"HCl & NaOH -> NaCl & H20 , C &O2 -> CO2,CO2 & H2O -> H2CO3, HCl, NaOH,O2,C |- H2CO3";
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
 	p->parse();
@@ -21,9 +21,9 @@ int main()
 	{
 		
 		NaturalDeduction nd(p->data);
-		p->data.print();
+		//p->data.print();
 		nd.ProveIt();
-		nd.print();	
+		//nd.print();	
 	}	
 	return 0;
 	
