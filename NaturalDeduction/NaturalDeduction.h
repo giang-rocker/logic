@@ -106,7 +106,8 @@ struct NDTerm
 class NaturalDeduction  
 {
 public:
-	int InsertTerm(NDTerm term);
+	string GetString()const;
+	int InsertCondition(NDTerm term);
 	int insertGoal(NDTerm term);
 	int ProveIt();
 	bool isComplement(int active, int negative) const;
@@ -123,6 +124,7 @@ private:
 	list <NDTerm> conditions;
 	list <NDTerm> goals;
 	list <NDTerm> proveds; 
+	
 	list <int> branches;
 	TermVector database;
 
