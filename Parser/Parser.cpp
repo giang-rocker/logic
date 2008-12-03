@@ -45,26 +45,47 @@ void Parser::parse()
 //<input>	::= <source> |- <goal>
 void Parser::parseInput()
 {
-	data.BeginSentence();
-	parseSource();
-	if (s =="")
+	if (check(LGC_RESULT_OP))
 	{
+		data.BeginSentence();
+		data.NewVar("*1",LGC_TERM_PROP);
 		data.EndSentence();
-		if (check(LGC_RESULT_OP))
+		match(LGC_RESULT_OP);
+		data.BeginSentence();
+		parseGoal();
+		if (check(LGC_COMMA)){}
+		else if (!check(LGC_NIL))
 		{
-			match(LGC_RESULT_OP);
-			data.BeginSentence();
-			parseGoal();
-			if (check(LGC_COMMA)){}
-			else if (!check(LGC_NIL))
-			{
-				s = (string)(((Token)getLookAheadToken()).tostring());
-			}
-			if (s=="")
-				data.EndSentence(false);
+			s = (string)(((Token)getLookAheadToken()).tostring());
 		}
-		else
-			s =(string)(((Token)getLookAheadToken()).tostring());
+		if (s=="")
+			data.EndSentence(false);
+
+	}
+	else
+	{
+		data.BeginSentence();
+		parseSource();
+		if (s =="")
+		{
+			data.EndSentence();
+			if (check(LGC_RESULT_OP))
+			{
+				match(LGC_RESULT_OP);
+				data.BeginSentence();
+				parseGoal();
+				if (check(LGC_COMMA)){}
+				
+				else if (!check(LGC_NIL))
+				{
+					s = (string)(((Token)getLookAheadToken()).tostring());
+				}
+				if (s=="")
+					data.EndSentence(false);
+			}
+			else
+				s =(string)(((Token)getLookAheadToken()).tostring());
+	}
 	}
 }
 // <goal>	::= <new-formula> <new-tail>
