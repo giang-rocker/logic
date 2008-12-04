@@ -9,7 +9,7 @@ int main()
 
 
 
-	string text = "F -> G |- !G -> !F ,F";//"P, Q, (P & Q) -> (R & S) |- S";//"HCl & NaOH -> NaCl & H20 , C &O2 -> CO2,CO2 & H2O -> H2CO3, HCl, NaOH,O2,C |- H2CO3";
+	string text = "A ,B , A -> C |- C & A & B" ;//"P, Q, (P & Q) -> (R & S) |- S";//"HCl & NaOH -> NaCl & H20 , C &O2 -> CO2,CO2 & H2O -> H2CO3, HCl, NaOH,O2,C |- H2CO3";
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
 	p->parse();
@@ -23,7 +23,7 @@ int main()
 		NaturalDeduction nd(p->data);
 		//p->data.print();
 		nd.ProveIt();
-		//nd.print();	
+		cout<<nd.Result()<<endl<<endl<<endl;	
 	}	
 	return 0;
 	
