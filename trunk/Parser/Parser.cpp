@@ -50,12 +50,12 @@ void Parser::parseInput()
 		data.BeginSentence();
 		data.NewVar("*1",LGC_TERM_PROP);
 		data.EndSentence();
-		if (check(LGC_RESULT_OP))
+		if (check(LGC_RESULT_OP)) // unnecessary
 		{
 			match(LGC_RESULT_OP);
 			data.BeginSentence();
 			parseGoal();
-			if (check(LGC_COMMA)){}
+			if (check(LGC_COMMA)){} // do nothing to hold string s. and do not call EndSentence()
 			
 			else if (!check(LGC_NIL))
 			{
@@ -64,8 +64,8 @@ void Parser::parseInput()
 			if (s=="")
 				data.EndSentence(false);
 		}
-		else
-				s =(string)(((Token)getLookAheadToken()).tostring());
+		else			//unnecessary
+				s =(string)(((Token)getLookAheadToken()).tostring()); //unnecessary
 	}
 	else
 	{
@@ -186,7 +186,7 @@ void Parser::parseTail()
 			}
 			else
 			{
-				data.EndSentence();
+				data.EndSentence();	
 				match(LGC_COMMA);
 				data.BeginSentence();
 				parseSource();
