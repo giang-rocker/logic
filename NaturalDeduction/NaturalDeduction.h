@@ -9,7 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 #include "../TermVector/TermVector.h"
-
+#include "Utils.h"
+#include <sstream>
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -76,6 +77,9 @@
 #define LGC_FLAG_ASS	0x20000000
 //////////////////////////////////////////////////////////////////////////
 
+
+//////////////////////////////////////////////////////////////////////////
+
 struct NDTerm
 {
 	int m_index;	
@@ -87,7 +91,8 @@ struct NDTerm
 	int m_pendings;
 	int m_status;
 	int m_line;
-	NDTerm(int index = 0, int rule = 0, int first = -1, int second = -1)
+	
+	NDTerm(int index = -1, int rule = 0, int first = -1, int second = -1)
 	{
 		m_index = index ;
 		m_rule = rule ;
@@ -98,36 +103,44 @@ struct NDTerm
 		m_path = 0;
 		m_status = 0;
 	}
-
+	
 };
 
 
 class NaturalDeduction  
 {
 public:
-	string GetString()const;
+	string Result();
+	
 	int ProveIt();
 	NaturalDeduction(TermVector t);
-	
-	
+
 private:
+
+
+
+	bool isReached(int &active);
+	bool isReached(int &active, int& negative);
+	bool isCompatible(int father,int son)const;
+	bool isComplement(int active, int negative) const;
 	int disable(int assume);
+	int InsertCondition(NDTerm term);
+	int insertGoal(NDTerm term);
 	int Contradiction();
 	int Introduction();
 	int Eliminate();
+	int GetNDTerm(int index);
+	string GetString(int index);
+
 	int turnIt();
-	int InsertCondition(NDTerm term);
-	int insertGoal(NDTerm term);
-	bool isReached(int &active);
-	bool isReached(int &active, int& negative);
-	bool isComplement(int active, int negative) const;
-	bool isCompatible(int father,int son)const;
-	
-	vector<NDTerm> conditions;
-	vector<NDTerm> goals;
-	list <int>proved;
+	list <NDTerm> conditions;
+	list <NDTerm> goals;
+	list <int> proveds; 
 	list <int> branches;
 	TermVector database;
+	list<NDTerm>::iterator cond;
+	int lastLine;
+
 };
 
 #endif // !defined(AFX_NATURALDEDUCTION_H__492CA570_429A_43E2_B2B6_E40C8EFCCA2C__INCLUDED_)
