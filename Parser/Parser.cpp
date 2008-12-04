@@ -50,17 +50,22 @@ void Parser::parseInput()
 		data.BeginSentence();
 		data.NewVar("*1",LGC_TERM_PROP);
 		data.EndSentence();
-		match(LGC_RESULT_OP);
-		data.BeginSentence();
-		parseGoal();
-		if (check(LGC_COMMA)){}
-		else if (!check(LGC_NIL))
+		if (check(LGC_RESULT_OP))
 		{
-			s = (string)(((Token)getLookAheadToken()).tostring());
+			match(LGC_RESULT_OP);
+			data.BeginSentence();
+			parseGoal();
+			if (check(LGC_COMMA)){}
+			
+			else if (!check(LGC_NIL))
+			{
+				s = (string)(((Token)getLookAheadToken()).tostring());
+			}
+			if (s=="")
+				data.EndSentence(false);
 		}
-		if (s=="")
-			data.EndSentence(false);
-
+		else
+				s =(string)(((Token)getLookAheadToken()).tostring());
 	}
 	else
 	{
