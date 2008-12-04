@@ -90,7 +90,7 @@ void Parser::parseInput()
 			}
 			else
 				s =(string)(((Token)getLookAheadToken()).tostring());
-	}
+		}
 	}
 }
 // <goal>	::= <new-formula> <new-tail>
