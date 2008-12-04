@@ -124,7 +124,7 @@ private:
 	bool isCompatible(int father,int son)const;
 	bool isComplement(int active, int negative) const;
 	int disable(int assume);
-	int InsertCondition(NDTerm term);
+	int InsertCondition(NDTerm term,int&index);
 	int insertGoal(NDTerm term);
 	int Contradiction();
 	int Introduction();
