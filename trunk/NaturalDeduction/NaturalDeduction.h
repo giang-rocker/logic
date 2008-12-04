@@ -49,10 +49,6 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-#define LGC_LST_GOAL		1
-#define LGC_LST_PROVED		2
-#define LGC_LST_CONDITION	3
-
 
 //////////////////////////////////////////////////////////////////////////
 #define LGC_FLAG_E_NOT	0x00000001
@@ -67,14 +63,17 @@
 #define LGC_FLAG_I_NOT	0x00000100
 #define LGC_FLAG_I_MAP	0x00000200
 #define LGC_FLAG_I_AND	0x00000400
+//////////////////////////////////////////////////////////////////////////
 
-//0x01000000 -> 0x80000000
 #define LGC_FLAG_C_OR1	0x01000000
 #define LGC_FLAG_C_OR2	0x02000000
 #define LGC_FLAG_C_NOT	0x04000000
 #define LGC_FLAG_C_MAP	0x08000000
-#define LGC_FLAG_CONTR	0xFF000000
+#define LGC_FLAG_CONTR	0x0F000000
 
+//////////////////////////////////////////////////////////////////////////
+#define LGC_FLAG_DIS	0x10000000	
+#define LGC_FLAG_ASS	0x20000000
 //////////////////////////////////////////////////////////////////////////
 
 struct NDTerm
@@ -87,14 +86,14 @@ struct NDTerm
 	int m_assume;
 	int m_pendings;
 	int m_status;
-
-	NDTerm(int index = 0, int rule = 0, int first = 0, int second = 0)
+	int m_line;
+	NDTerm(int index = 0, int rule = 0, int first = -1, int second = -1)
 	{
 		m_index = index ;
 		m_rule = rule ;
 		m_first = first ;
 		m_second = second ;
-		m_assume = 0 ;
+		m_assume = -1 ;
 		m_pendings = 0 ;
 		m_path = 0;
 		m_status = 0;
@@ -107,27 +106,28 @@ class NaturalDeduction
 {
 public:
 	string GetString()const;
-	int InsertCondition(NDTerm term);
-	int insertGoal(NDTerm term);
 	int ProveIt();
-	bool isComplement(int active, int negative) const;
+	NaturalDeduction(TermVector t);
+	
+	
+private:
+	int disable(int assume);
 	int Contradiction();
 	int Introduction();
 	int Eliminate();
-	bool isCompatible(int father,int son)const;
-	NaturalDeduction(TermVector t);
 	int turnIt();
-	int print();
+	int InsertCondition(NDTerm term);
+	int insertGoal(NDTerm term);
+	bool isReached(int &active);
+	bool isReached(int &active, int& negative);
+	bool isComplement(int active, int negative) const;
+	bool isCompatible(int father,int son)const;
 	
-private:
-	int isReached(int subgoal);
-	list <NDTerm> conditions;
-	list <NDTerm> goals;
-	list <NDTerm> proveds; 
-	
+	vector<NDTerm> conditions;
+	vector<NDTerm> goals;
+	list <int>proved;
 	list <int> branches;
 	TermVector database;
-
 };
 
 #endif // !defined(AFX_NATURALDEDUCTION_H__492CA570_429A_43E2_B2B6_E40C8EFCCA2C__INCLUDED_)

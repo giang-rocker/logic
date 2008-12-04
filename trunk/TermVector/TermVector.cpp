@@ -469,7 +469,7 @@ string TermVector::GetString(int index)const
 	switch (functions[index].m_kind)
 	{
 	case LGC_REF:
-		result = GetString(functions[index].m_ref);
+		result =GetString(functions[index].m_ref);
 		break;
 
 	case LGC_TERM_FALSE:
