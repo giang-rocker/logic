@@ -15,7 +15,9 @@ NaturalDeduction::NaturalDeduction(TermVector t)
 	list<int>::const_iterator p = t.conditions.begin();
 	for (;p!=t.conditions.end();++p)
 	{
-		conditions.push_back(NDTerm(*p));
+		NDTerm t(*p);
+		t.m_source = LGC_SRC_ASSUME;
+		conditions.push_back(t);
 	}
 	for (p = t.goals.begin();p!=t.goals.end();++p)
 	{
@@ -83,12 +85,12 @@ int NaturalDeduction::Eliminate()
 	int added = 0;
 	int arg1 = 0;
 	int arg2 = 0;
-	NDTerm ndTerm;
 	int outside = -1;
 	int index;
 	for (p = conditions.begin();p!=conditions.end();++p)
 	{
 		outside++;
+		NDTerm ndTerm;
 		int main = (*p).m_index;
 		while (database.functions[main].m_kind == LGC_REF)
 		{
@@ -112,9 +114,9 @@ int NaturalDeduction::Eliminate()
 					
 					if (database.functions[arg1].m_kind == LGC_TERM_FUNC && database.functions[arg1].m_ref == LGC_ADDR_NOT)
 					{
-						if (((*p).m_status & LGC_FLAG_E_NOT) != LGC_FLAG_E_NOT)
+						if (((*p).m_proceed & LGC_PRC_E_NOT) != LGC_PRC_E_NOT)
 						{
-							(*p).m_status |= LGC_FLAG_E_NOT;
+							(*p).m_proceed |= LGC_PRC_E_NOT;
 							arg2 = arg1 + 1;
 							while (database.functions[arg2].m_kind == LGC_REF)
 							{
@@ -123,7 +125,7 @@ int NaturalDeduction::Eliminate()
 							ndTerm.m_index = arg2;
 							ndTerm.m_rule = LGC_E_DNEG;
 							ndTerm.m_path = (*p).m_path + 1;
-							ndTerm.m_first = outside; //(*p).m_index;
+							ndTerm.m_first = outside;
 							added += InsertCondition(ndTerm,index);
 							
 						}
@@ -131,9 +133,9 @@ int NaturalDeduction::Eliminate()
 					break;
 	
 				case LGC_ADDR_AND:
-					if (((*p).m_status & LGC_FLAG_E_AND) != LGC_FLAG_E_AND)
+					if (((*p).m_proceed & LGC_PRC_E_AND) != LGC_PRC_E_AND)
 					{
-						(*p).m_status |= LGC_FLAG_E_AND;
+						(*p).m_proceed |= LGC_PRC_E_AND;
 						int arg1 = main + 1;
 						while (database.functions[arg1].m_kind == LGC_REF)
 						{
@@ -142,7 +144,7 @@ int NaturalDeduction::Eliminate()
 
 						ndTerm.m_index = arg1;
 						ndTerm.m_rule = LGC_E_AND_1;
-						ndTerm.m_first = outside; //(*p).m_index;
+						ndTerm.m_first = outside;
 						ndTerm.m_path = (*p).m_path + 1;
 						added += InsertCondition(ndTerm,index);
 
@@ -163,7 +165,7 @@ int NaturalDeduction::Eliminate()
 				case LGC_ADDR_OR:		
 					// A v B , not(A) -> B
 					
-					if ( ((*p).m_status & LGC_FLAG_E_OR1) != LGC_FLAG_E_OR1)
+					if ( ((*p).m_proceed & LGC_PRC_E_OR1) != LGC_PRC_E_OR1)
 					{
 						arg1 = main + 1;
 						arg2 = main + 2;
@@ -195,15 +197,15 @@ int NaturalDeduction::Eliminate()
 								ndTerm.m_path = (*p).m_path < (*leftOp).m_path ? (*p).m_path + 1 : (*leftOp).m_path + 1; 
 								ndTerm.m_rule = LGC_E_OR_1;
 								added += InsertCondition(ndTerm,index);
-								(*p).m_status |= LGC_FLAG_E_OR1;
-								(*p).m_status |= LGC_FLAG_C_OR1;
+								(*p).m_proceed |= LGC_PRC_E_OR1;
+								(*p).m_proceed |= LGC_PRC_C_OR1;
 							}
 							
 						}
 						
 					}
 
-					if (((*p).m_status & LGC_FLAG_E_OR2) != LGC_FLAG_E_OR2)
+					if (((*p).m_proceed & LGC_PRC_E_OR2) != LGC_PRC_E_OR2)
 					{
 						arg1 = main + 1;
 						arg2 = main + 2;
@@ -236,8 +238,8 @@ int NaturalDeduction::Eliminate()
 								ndTerm.m_path = (*p).m_path < (*leftOp).m_path ? (*p).m_path + 1 : (*leftOp).m_path + 1; 
 								ndTerm.m_rule = LGC_E_OR_2;
 								added += InsertCondition(ndTerm,index);
-								(*p).m_status |= LGC_FLAG_E_OR2;
-								(*p).m_status |= LGC_FLAG_C_OR2;
+								(*p).m_proceed |= LGC_PRC_E_OR2;
+								(*p).m_proceed |= LGC_PRC_C_OR2;
 							}
 							
 						}
@@ -247,7 +249,7 @@ int NaturalDeduction::Eliminate()
 					break;
 
 				case LGC_ADDR_MAP:
-					if (((*p).m_status & LGC_FLAG_E_MAP) != LGC_FLAG_E_MAP)
+					if (((*p).m_proceed & LGC_PRC_E_MAP) != LGC_PRC_E_MAP)
 					{
 						
 						arg1 = main + 1;
@@ -280,8 +282,8 @@ int NaturalDeduction::Eliminate()
 								ndTerm.m_path = (*p).m_path < (*leftOp).m_path ? (*p).m_path + 1 : (*leftOp).m_path + 1; 
 								ndTerm.m_rule = LGC_E_MODUS;
 								added += InsertCondition(ndTerm,index);
-								(*p).m_status |= LGC_FLAG_E_MAP;
-								(*p).m_status |= LGC_FLAG_C_MAP;
+								(*p).m_proceed |= LGC_PRC_E_MAP;
+								(*p).m_proceed |= LGC_PRC_C_MAP;
 							}
 							
 						}
@@ -321,7 +323,7 @@ int NaturalDeduction::Introduction()
 
 	int arg1 = 0;
 	int arg2 = 0;
-	int status = goals.back().m_status;
+	int status = goals.back().m_proceed;
 	NDTerm t;
 	int added = 0;
 	if(database.functions[subgoal].m_info == 0)
@@ -333,7 +335,7 @@ int NaturalDeduction::Introduction()
 
 			// |- NOT F => F |- NOT F, FALSE
 			case LGC_ADDR_NOT:
-				if ((status & LGC_FLAG_I_NOT) !=LGC_FLAG_I_NOT)
+				if ((status & LGC_PRC_I_NOT) !=LGC_PRC_I_NOT)
 				{
 					arg1 = subgoal + 1;
 					while (database.functions[arg1].m_kind == LGC_REF)
@@ -341,20 +343,22 @@ int NaturalDeduction::Introduction()
 						arg1 = database.functions[arg1].m_ref;
 					}
 					t.m_index = arg1;
-					t.m_assume = subgoal;
+					t.m_source |= LGC_SRC_ASSUME;
 					InsertCondition(t,assume);
 					goals.back().m_pendings = 1;
 					goals.back().m_rule = LGC_I_NOT;
-					goals.back().m_status |= LGC_FLAG_I_NOT;
+					goals.back().m_proceed |= LGC_PRC_I_NOT;
 					goals.back().m_assume = assume;
-					goals.push_back(NDTerm(LGC_ADDR_FALSE));
+					NDTerm conclusion(LGC_ADDR_FALSE);
+					conclusion.m_source |= LGC_SRC_CONCLUSION;
+					goals.push_back(NDTerm(conclusion));
 					return 1;
 				}
 				break;
 
 			// |- P ^ Q => |- P ^ Q , P, Q
 			case LGC_ADDR_AND:
-				if ((status & LGC_FLAG_I_AND) !=LGC_FLAG_I_AND)
+				if ((status & LGC_PRC_I_AND) !=LGC_PRC_I_AND)
 				{
 					arg1 = subgoal + 1;
 					arg2 = subgoal + 2;
@@ -371,7 +375,7 @@ int NaturalDeduction::Introduction()
 
 					goals.back().m_pendings = 2;
 					goals.back().m_rule = LGC_I_AND;
-					goals.back().m_status |= LGC_FLAG_I_AND;
+					goals.back().m_proceed |= LGC_PRC_I_AND;
 					goals.push_back(NDTerm(arg2));
 					goals.push_back(NDTerm(arg1));
 					return 1;
@@ -382,7 +386,7 @@ int NaturalDeduction::Introduction()
 			// |- P | Q -> |- P -> |- Q -> NOT(P|Q) |- FALSE
 			case LGC_ADDR_OR:
 				
-				if ((status & LGC_FLAG_I_OR1) !=LGC_FLAG_I_OR1)
+				if ((status & LGC_PRC_I_OR1) !=LGC_PRC_I_OR1)
 				{
 					arg1 = subgoal + 1;
 					while (database.functions[arg1].m_kind == LGC_REF)
@@ -390,15 +394,15 @@ int NaturalDeduction::Introduction()
 						arg1 = database.functions[arg1].m_ref;
 					}
 					goals.back().m_pendings = 1;
-					goals.back().m_rule = LGC_FLAG_I_OR1;
-					goals.back().m_status |= LGC_FLAG_I_OR1;
+					goals.back().m_rule = LGC_PRC_I_OR1;
+					goals.back().m_proceed |= LGC_PRC_I_OR1;
 					branches.push_back(goals.size());
 					branches.push_back(conditions.size());
 					branches.push_back(proveds.size());
 					goals.push_back(NDTerm(arg1));
 				} 
 
-				else if ((status & LGC_FLAG_I_OR2) !=LGC_FLAG_I_OR2)
+				else if ((status & LGC_PRC_I_OR2) !=LGC_PRC_I_OR2)
 				{
 					arg2 = subgoal + 2;
 					while (database.functions[arg2].m_kind == LGC_REF)
@@ -406,8 +410,8 @@ int NaturalDeduction::Introduction()
 						arg2 = database.functions[arg2].m_ref;
 					}
 					goals.back().m_pendings = 1;
-					goals.back().m_rule = LGC_FLAG_I_OR2;
-					goals.back().m_status |= LGC_FLAG_I_OR2;
+					goals.back().m_rule = LGC_PRC_I_OR2;
+					goals.back().m_proceed |= LGC_PRC_I_OR2;
 					branches.push_back(goals.size());
 					branches.push_back(conditions.size());
 					branches.push_back(proveds.size());
@@ -415,18 +419,21 @@ int NaturalDeduction::Introduction()
 					
 				}
 
-				else if((status & LGC_FLAG_I_OR3) !=LGC_FLAG_I_OR3)
+				else if((status & LGC_PRC_I_OR3) !=LGC_PRC_I_OR3)
 				{
 					database.functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_NOT));
 					database.functions.push_back(Term(LGC_REF,subgoal));
 					arg1 = database.functions.size() - 2;
 					t.m_index = arg1;
+					t.m_source = LGC_SRC_ASSUME;
 					InsertCondition(t,assume);
 					goals.back().m_pendings = 1;
 					goals.back().m_rule = LGC_I_NOT;
 					goals.back().m_assume = assume;
-					goals.back().m_status |= LGC_FLAG_I_OR3;
-					goals.push_back(NDTerm(LGC_ADDR_FALSE));	
+					goals.back().m_proceed |= LGC_PRC_I_OR3;
+					NDTerm conclusion(LGC_ADDR_FALSE);
+					conclusion.m_source = LGC_SRC_CONCLUSION;
+					goals.push_back(NDTerm(conclusion));	
 				}
 				else
 				{
@@ -436,7 +443,7 @@ int NaturalDeduction::Introduction()
 
 			// |- P -> Q => P |- Q
 			case LGC_ADDR_MAP:
-				if ((status & LGC_FLAG_I_MAP) !=LGC_FLAG_I_MAP)
+				if ((status & LGC_PRC_I_MAP) !=LGC_PRC_I_MAP)
 				{
 					arg1 = subgoal + 1;
 					arg2 = subgoal + 2;
@@ -449,30 +456,36 @@ int NaturalDeduction::Introduction()
 						arg2 = database.functions[arg2].m_ref;
 					}
 					t.m_index = arg1;
+					t.m_source = LGC_SRC_ASSUME;
 					added += InsertCondition(t,assume);
 					goals.back().m_pendings = 1;
 					goals.back().m_rule = LGC_I_MODUS;
-					goals.back().m_status |= LGC_FLAG_I_MAP;
+					goals.back().m_proceed |= LGC_PRC_I_MAP;
 					goals.back().m_assume = arg1;
-					goals.push_back(NDTerm(arg2));
+					NDTerm conclusion(arg2);
+					conclusion.m_source = LGC_SRC_CONCLUSION;
+					goals.push_back(NDTerm(conclusion));
 				}
 				break;
 
 			//	|- P	=>	NOT P |- P , FALSE
 			default:
-				if ((status & LGC_FLAG_I_NOT) !=LGC_FLAG_I_NOT)
+				if ((status & LGC_PRC_I_NOT) !=LGC_PRC_I_NOT)
 				{
 					database.functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_NOT));
 					database.functions.push_back(Term(LGC_REF,subgoal));
 					arg1 = database.functions.size() - 2;
 					t.m_index = arg1;
-					t.m_status |= LGC_FLAG_C_NOT;
+					t.m_proceed |= LGC_PRC_C_NOT;
+					t.m_source = LGC_SRC_ASSUME;
 					added += InsertCondition(t,assume);
 					goals.back().m_pendings = 1;
 					goals.back().m_rule = LGC_I_NOT;
-					goals.back().m_status |= LGC_FLAG_I_NOT;
+					goals.back().m_proceed |= LGC_PRC_I_NOT;
 					goals.back().m_assume = arg1;
-					goals.push_back(NDTerm(LGC_ADDR_FALSE));	
+					NDTerm conclusion(LGC_ADDR_FALSE);
+					conclusion.m_source = LGC_SRC_CONCLUSION;
+					goals.push_back(NDTerm(conclusion));	
 				}
 				break;
 			}
@@ -480,19 +493,21 @@ int NaturalDeduction::Introduction()
 
 		else if(subgoal!=LGC_ADDR_FALSE)
 		{
-			if ((status & LGC_FLAG_I_NOT) !=LGC_FLAG_I_NOT)
+			if ((status & LGC_PRC_I_NOT) !=LGC_PRC_I_NOT)
 			{
 				database.functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_NOT));
 				database.functions.push_back(Term(LGC_REF,subgoal));
 				arg1 = database.functions.size() - 2;
 				t.m_index = arg1;
-				t.m_status |= LGC_FLAG_C_NOT;
+				t.m_proceed |= LGC_PRC_C_NOT;
 				added += InsertCondition(t,assume);
 				goals.back().m_pendings = 1;
 				goals.back().m_rule = LGC_I_NOT;
-				goals.back().m_status |= LGC_FLAG_I_NOT;
+				goals.back().m_proceed |= LGC_PRC_I_NOT;
 				goals.back().m_assume = arg1;
-				goals.push_back(NDTerm(LGC_ADDR_FALSE));
+				NDTerm conclusion(LGC_ADDR_FALSE);
+				conclusion.m_source = LGC_SRC_CONCLUSION;
+				goals.push_back(NDTerm(conclusion));
 			}
 		}
 
@@ -520,31 +535,32 @@ int NaturalDeduction::Contradiction()
 		}
 		int arg1 = source + 1;
 		int arg2 = source + 2;
-		int status = (*p).m_status;
+		int status = (*p).m_proceed;
 		NDTerm t;
 		if (database.functions[source].m_info == 0 && database.functions[source].m_kind == LGC_TERM_FUNC)
 		{
 			switch (database.functions[source].m_ref)
 			{
 			case LGC_ADDR_NOT:
-				if (((*p).m_status & LGC_FLAG_C_NOT)!=LGC_FLAG_C_NOT)
+				if (((*p).m_proceed & LGC_PRC_C_NOT)!=LGC_PRC_C_NOT)
 				{
-					(*p).m_status |=LGC_FLAG_C_NOT;
+					(*p).m_proceed |=LGC_PRC_C_NOT;
 					while (database.functions[arg1].m_kind == LGC_REF)
 					{
 						arg1 = database.functions[arg1].m_ref;
 					}
 					t.m_index = arg1;
-					t.m_status |= LGC_FLAG_C_NOT;
+					t.m_proceed |= LGC_PRC_C_NOT;
+					t.m_source	= LGC_SRC_HOPING;
 					return insertGoal(t);
 					
 				}
 				break;
 
 			case LGC_ADDR_OR:
-				if (((*p).m_status & LGC_FLAG_C_OR1)!=LGC_FLAG_C_OR1)
+				if (((*p).m_proceed & LGC_PRC_C_OR1)!=LGC_PRC_C_OR1)
 				{
-					(*p).m_status |= LGC_FLAG_C_OR1;
+					(*p).m_proceed |= LGC_PRC_C_OR1;
 					while (database.functions[arg1].m_kind == LGC_REF)
 					{
 						arg1 = database.functions[arg1].m_ref;
@@ -555,9 +571,9 @@ int NaturalDeduction::Contradiction()
 					return insertGoal(t);
 					
 				}
-				else if (((*p).m_status & LGC_FLAG_C_OR2)!=LGC_FLAG_C_OR2)
+				else if (((*p).m_proceed & LGC_PRC_C_OR2)!=LGC_PRC_C_OR2)
 				{
-					(*p).m_status |= LGC_FLAG_C_OR2;
+					(*p).m_proceed |= LGC_PRC_C_OR2;
 					while (database.functions[arg2].m_kind == LGC_REF)
 					{
 						arg2 = database.functions[arg1].m_ref;
@@ -570,15 +586,15 @@ int NaturalDeduction::Contradiction()
 				break;
 
 			case LGC_ADDR_MAP:
-				if (((*p).m_status & LGC_FLAG_C_MAP)!=LGC_FLAG_C_MAP)
+				if (((*p).m_proceed & LGC_PRC_C_MAP)!=LGC_PRC_C_MAP)
 				{
-					(*p).m_status |=LGC_FLAG_C_MAP;
+					(*p).m_proceed |=LGC_PRC_C_MAP;
 					while (database.functions[arg1].m_kind == LGC_REF)
 					{
 						arg1 = database.functions[arg1].m_ref;
 					}
 					t.m_index = arg1;
-					t.m_status |=LGC_FLAG_C_MAP;
+					t.m_proceed |=LGC_PRC_C_MAP;
 					return insertGoal(t);
 				}
 				break;
@@ -617,12 +633,14 @@ int NaturalDeduction::ProveIt()
 {
 	
 	int times = 0;
+	int active;
+	int negative;
 	while (!goals.empty())
 	{
 
 
 #if _DEBUG
-		if (times == 1)
+		if (times == 16)
 		{
 			int dummy = 0;
 		}
@@ -650,8 +668,25 @@ int NaturalDeduction::ProveIt()
 		
 		if (goals.back().m_pendings > 0)
 		{
-
-			//InsertCondition(goals.back());
+			//Disable assumption n derivings 
+			if (goals.back().m_assume >= 0)
+			{
+				disable(goals.back().m_assume);
+			}
+			GetNDTerm(proveds.back());
+			if ((*cond).m_index == LGC_ADDR_FALSE)
+			{
+				if (isReached(active))
+				{
+					conditions.push_back(proveds.back());
+					proveds.pop_back();
+					conditions.back().m_assume |= LGC_SRC_DISABLE;
+					proveds.push_back(active);
+					goals.pop_back();
+					continue;
+					
+				}
+			}
 			goals.back().m_first = proveds.back();
 			proveds.pop_back();
 			if (goals.back().m_pendings == 2)
@@ -666,8 +701,7 @@ int NaturalDeduction::ProveIt()
 		else
 		{
 			int subgoal = goals.back().m_index;
-			int active;
-			int negative;
+
 
 			if (subgoal == LGC_ADDR_FALSE)
 			{
@@ -713,7 +747,7 @@ int NaturalDeduction::ProveIt()
 				}
 			}
 
-			if ((goals.back().m_status & LGC_FLAG_CONTR)!= 0)
+			if ((goals.back().m_proceed & LGC_PRC_CONTR)!= 0)
 			{
 				goals.pop_back();
 				continue;
@@ -812,7 +846,7 @@ int NaturalDeduction::turnIt()
 		goals.back().m_pendings = 0;
 		for (list<NDTerm>::iterator p = conditions.begin(); p!= conditions.end();++p)
 		{
-			(*p).m_status = 0x00000000;
+			(*p).m_proceed = 0x00000000;
 		}
 
 		return 1;
@@ -833,9 +867,13 @@ string NaturalDeduction::GetString(int index)
 
 	if (goal.m_assume >= 0)
 	{
-		result += "if\t"+ToString(lastLine++) + ".\t"+ database.GetString(goal.m_assume) + "\t\t\t\t\t\n";
-		result += "nif\t" + GetString(goal.m_first);
-		result += ToString(lastLine++) + ".\t\t" + database.GetString(goal.m_index) + "\t\t\t\t\trule = " + ToString(goal.m_rule) +"\n";
+		result += ToString(lastLine++) + ".\t"+ database.GetString(goal.m_assume) + "\t\t\t\t\n";
+		result +=  GetString(goal.m_first);
+		result += ToString(lastLine++) + ".\t" + database.GetString(goal.m_index) + "\t\t\t\t" + rule2Str(goal.m_rule);
+		GetNDTerm(goal.m_assume);
+		result += ToString((*cond).m_line) + ",";
+		GetNDTerm(goal.m_first);
+		result += ToString((*cond).m_line) + "\n";
 		goal.m_line = lastLine - 1;
 	}
 	
@@ -844,31 +882,43 @@ string NaturalDeduction::GetString(int index)
 		if(goal.m_pendings == 1)
 		{
 			result += GetString(goal.m_first);
-			result += ToString(lastLine++) + ".\t\t" + database.GetString(goal.m_index) + "\t\t\t\t\trule = " + ToString(goal.m_rule) + "\n";
+			result += ToString(lastLine++) + ".\t" + database.GetString(goal.m_index) + "\t\t\t\t" + rule2Str(goal.m_rule) ;
+			GetNDTerm(goal.m_first);
+			result += ToString((*cond).m_line) + "\n";
 		}
 		else if ( goal.m_pendings ==2)
 		{
 			result += GetString(goal.m_second);
 			result += GetString(goal.m_first);
-			result += ToString(lastLine++) + ".\t\t" + database.GetString(goal.m_index) + "\t\t\t\t\trule = " + ToString(goal.m_rule) + "\n";
+			result += ToString(lastLine++) + ".\t" + database.GetString(goal.m_index) + "\t\t\t\t" + rule2Str(goal.m_rule);
+			GetNDTerm(goal.m_second);
+			result += " " + ToString((*cond).m_line) + ",";
+			GetNDTerm(goal.m_first);
+			result += ToString((*cond).m_line) + "\n";
 		}
 		else
 		{
 			if(goal.m_rule == LGC_RULE_PREMISE)
 			{
-				result = ToString(lastLine++) + ".\t\t"+ database.GetString(goal.m_index) + "\t\t\t\t\tTien de \n";
+				result = ToString(lastLine++) + ".\t"+ database.GetString(goal.m_index) + "\t\t\t\tTien de\n";
 			}
 			else if (goal.m_second == -1)
 			{
 				result += GetString(goal.m_second);
 				result += GetString(goal.m_first);
-				result += ToString(lastLine++) + ".\t\t" + database.GetString(goal.m_index) + "\t\t\t\t\trule = " + ToString(goal.m_rule) + "\n";
+				result += ToString(lastLine++) + ".\t" + database.GetString(goal.m_index) + "\t\t\t\t" + rule2Str(goal.m_rule) ;
+				GetNDTerm(goal.m_first);
+				result += ToString((*cond).m_line) + "\n";
 			}
 			else
 			{
 				result += GetString(goal.m_second);
 				result += GetString(goal.m_first);
-				result += ToString(lastLine++) + ".\t\t" + database.GetString(goal.m_index) + "\t\t\t\t\trule = " + ToString(goal.m_rule) + "\n";
+				result += ToString(lastLine++) + ".\t" + database.GetString(goal.m_index) + "\t\t\t\t" + rule2Str(goal.m_rule) ;
+				GetNDTerm(goal.m_second);
+				result += ToString((*cond).m_line) + ",";
+				GetNDTerm(goal.m_first);
+				result += ToString((*cond).m_line) + "\n";
 			}
 		}
 		
@@ -889,7 +939,7 @@ bool NaturalDeduction::isReached(int &active)
 	for (list<NDTerm>::const_iterator p = conditions.begin(); p!= conditions.end();++p)
 	{
 		++outside;
-		if(((*p).m_status & LGC_FLAG_DIS) == LGC_FLAG_DIS)
+		if(((*p).m_source & LGC_SRC_DISABLE) == LGC_SRC_DISABLE)
 		{
 			continue;
 		}
@@ -919,7 +969,7 @@ bool NaturalDeduction::isReached(int &active, int& negative)
 	for (list<NDTerm>::const_iterator p = conditions.begin();p!=conditions.end();++p)
 	{
 		++outside;
-		if(((*p).m_status & LGC_FLAG_DIS) == LGC_FLAG_DIS)
+		if(((*p).m_source & LGC_SRC_DISABLE) == LGC_SRC_DISABLE)
 		{
 			continue;
 		}
@@ -927,7 +977,7 @@ bool NaturalDeduction::isReached(int &active, int& negative)
 		for (list<NDTerm>::const_iterator q = conditions.begin();q!=conditions.end();++q)
 		{
 			++inside;
-			if(((*q).m_status & LGC_FLAG_DIS) == LGC_FLAG_DIS)
+			if(((*q).m_source & LGC_SRC_DISABLE) == LGC_SRC_DISABLE)
 			{
 				continue;
 			}
@@ -948,28 +998,28 @@ bool NaturalDeduction::isReached(int &active, int& negative)
 
 int NaturalDeduction::disable(int assume)
 {
-	// 	for (list<NDTerm>::iterator p = )
-	// 	{
-	// 	}
-	// 	if ((conditions..m_status & LGC_FLAG_ASS) != LGC_FLAG_ASS)
-	// 	{
-	// 		return 0;
-	// 	}
-	// 	list<int>parent;
-	// 	parent.push_back(assume);
-	// 	conditions[assume].m_status |=LGC_FLAG_DIS;
-	// 	for (int index = 0; index < conditions.size();index++)
-	// 	{
-	// 		if ((conditions[index].m_status&LGC_FLAG_DIS)==LGC_FLAG_DIS)
-	// 		{
-	// 			continue;
-	// 		}
-	// 		if ((find(parent.begin(),parent.end(),conditions[index].m_first)!= parent.end()) || (find(parent.begin(),parent.end(),conditions[index].m_second)!= parent.end()))
-	// 		{
-	// 			parent.push_back(index);
-	// 			conditions[index].m_status |= LGC_FLAG_DIS;
-	// 		}
-	// 	}
+	GetNDTerm(assume);
+	if ((*cond).m_source & LGC_SRC_ASSUME != LGC_SRC_ASSUME)
+	{
+		return 0;
+	}
+	list<int>parents;
+	parents.push_back(assume);
+	(*cond).m_source |= LGC_SRC_DISABLE;
+	int index = -1;
+	for (list<NDTerm>::iterator p = conditions.begin(); p != conditions.end();++p)
+	{
+		++index;
+		if ( ((*p).m_source & LGC_SRC_DISABLE) == LGC_SRC_DISABLE)
+		{
+			continue;
+		}
+		if (find(parents.begin(),parents.end(),(*p).m_first) != parents.end() || find(parents.begin(),parents.end(),(*p).m_second) != parents.end() )
+		{
+			parents.push_back(index);
+			(*p).m_source |= LGC_SRC_DISABLE;
+		}
+	}
 	return 0;
 }
 
@@ -991,4 +1041,70 @@ string NaturalDeduction::Result()
 
 	cout<<"----------------------------------------------------------------------\n\n\n";
 	return GetString(proveds.back());
+}
+
+string NaturalDeduction::rule2Str(int rule)
+{
+	string result = "";
+	switch (rule)
+	{
+	case LGC_RULE_PREMISE:
+		result = "tien de";
+		break;
+	case LGC_RULE_ID:
+		result = "id";
+		break;
+	case LGC_E_AND_1:
+		result = "&e1";
+		break;
+	case LGC_E_AND_2:
+		result = "&e2";
+		break;
+	case LGC_E_OR_1:
+		result = "|e1";
+		break;
+	case LGC_E_OR_2:
+		result = "|e2";
+		break;
+	case LGC_E_MODUS:
+		result = "->e";
+		break;
+	case LGC_E_DNEG:
+		result = "!!";
+		break;
+	case LGC_E_ALL:
+		result = "Ve";
+		break;
+	case LGC_E_EXISTS:
+		result = "-]e";
+		break;
+	case LGC_E_NOT:
+		result = "!e";
+		break;
+	case LGC_I_AND:
+		result = "&i";
+		break;
+	case LGC_I_OR_1:
+		result = "|i1";
+		break;
+	case LGC_I_OR_2:
+		result = "|i2";
+		break;
+	case LGC_I_MODUS:
+		result = "->i";
+		break;
+	case LGC_I_NOT:
+		result = "!i";
+		break;
+	case LGC_I_ALL:
+		result = "Vi";
+		break;
+	case LGC_I_EXISTS:
+		result = "-]i";
+		break;
+	default:
+		break;
+
+	}
+	return  result + " ";
 }

@@ -9,7 +9,9 @@ int main()
 
 
 
-	string text = "F->G |- !F | G"; //"HCl & NaOH -> NaCl & H20 , C &O2 -> CO2,CO2 & H2O -> H2CO3, HCl, NaOH,O2,C |- H2CO3";
+	//string text = "P, Q, (P & Q) -> (R & S) |- S";
+	string text = "HCl & NaOH -> NaCl & H2O , C &O2 -> CO2,CO2 & H2O -> H2CO3, HCl, NaOH,O2,C |- H2CO3";
+	//string text = "|- F -> F";
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
 	p->parse();
