@@ -16,7 +16,8 @@ NaturalDeduction::NaturalDeduction(TermVector t)
 	for (;p!=t.conditions.end();++p)
 	{
 		NDTerm t(*p);
-		t.m_source = LGC_SRC_ASSUME;
+		t.m_source = LGC_SRC_PREMISE;
+
 		conditions.push_back(t);
 	}
 	for (p = t.goals.begin();p!=t.goals.end();++p)
@@ -803,14 +804,17 @@ int NaturalDeduction::ProveIt()
 int NaturalDeduction::insertCondition(NDTerm term, int&index)
 {
 	list<NDTerm>::iterator found;
+	int outside = -1;
 	for(found = conditions.begin();found!=conditions.end();++found)
 	{
-
+		++outside;
 		if ((*found).m_index != LGC_ADDR_FALSE && (*found).m_index == term.m_index)
 		{
+			index = outside;
 			return 0;
 		}
 	}
+	index = conditions.size();
 	conditions.push_back(term);
 	return 1;
 }
@@ -1070,6 +1074,7 @@ string NaturalDeduction::Result()
 
 	cout<<"----------------------------------------------------------------------\n\n\n";
 	getString(proveds.back());
+	//Arrange it
 	string s = "";
 
 	for (int i = 0; i < lstpLines.size(); i++)
