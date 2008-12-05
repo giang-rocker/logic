@@ -632,6 +632,7 @@ bool NaturalDeduction::isComplement(int active, int negative) const
 }
 
 int NaturalDeduction::ProveIt()
+
 {
 	
 	int times = 0;
@@ -721,6 +722,14 @@ int NaturalDeduction::ProveIt()
 			} 
 			else if (isReached(active))
 			{
+				getNDTerm(active);
+				if (((*cond).m_source & LGC_SRC_ASSUME)== LGC_SRC_ASSUME)
+				{
+					NDTerm id((*cond).m_index,LGC_RULE_ID,active);
+					active = conditions.size();
+					conditions.push_back(id);
+					(*cond).m_source|=LGC_SRC_DISABLE;
+				}
 				proveds.push_back(active);
 				goals.pop_back();
 				continue;
@@ -871,8 +880,9 @@ int NaturalDeduction::getString(int index)
 	if (goal.m_assume >= 0)
 	{
 		getNDTerm(goal.m_assume);
-		pLine pline(lastLine++,ifs++," if " ,database.GetString((*cond).m_index));
-		(*cond).m_line = lastLine;
+		pLine pline(lastLine,ifs++," if " ,database.GetString((*cond).m_index));
+		(*cond).m_line = lastLine++;
+
 		lstpLines.push_back(pline);
 
 		getString(goal.m_first);
@@ -890,9 +900,6 @@ int NaturalDeduction::getString(int index)
 		lstpLines.push_back(last);
 
 	}
-
-	
-
 	else
 	{
 		if(goal.m_pendings == 1)
