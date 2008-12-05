@@ -80,9 +80,6 @@
 #define LGC_SRC_HOPING		0x00000010
 //////////////////////////////////////////////////////////////////////////
 
-
-//////////////////////////////////////////////////////////////////////////
-
 struct NDTerm
 {
 	int m_index;	
@@ -130,13 +127,14 @@ private:
 	bool isCompatible(int father,int son)const;
 	bool isComplement(int active, int negative) const;
 	int disable(int assume);
-	int InsertCondition(NDTerm term,int&index);
+	int insertCondition(NDTerm term,int&index);
 	int insertGoal(NDTerm term);
-	int Contradiction();
-	int Introduction();
-	int Eliminate();
-	int GetNDTerm(int index);
-	string GetString(int index);
+	int contradiction();
+	int introduction();
+	int eliminate();
+	int getNDTerm(int index);
+	int getString(int index);
+
 
 	int turnIt();
 	list <NDTerm> conditions;
@@ -145,7 +143,12 @@ private:
 	list <int> branches;
 	TermVector database;
 	list<NDTerm>::iterator cond;
+
+
 	int lastLine;
+	int ifs;
+
+	vector<pLine> lstpLines;
 
 };
 
