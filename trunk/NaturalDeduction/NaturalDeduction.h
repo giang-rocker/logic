@@ -78,6 +78,7 @@
 #define LGC_SRC_CONCLUSION  0x00000004
 #define LGC_SRC_PREMISE		0x00000008
 #define LGC_SRC_HOPING		0x00000010
+#define LGC_SRC_DUPLICATE	0x00000020
 //////////////////////////////////////////////////////////////////////////
 
 struct NDTerm
