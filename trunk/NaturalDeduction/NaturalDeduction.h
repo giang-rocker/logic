@@ -52,29 +52,32 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-#define LGC_FLAG_E_NOT	0x00000001
-#define LGC_FLAG_E_AND	0x00000002
-#define LGC_FLAG_E_OR1	0x00000004
-#define LGC_FLAG_E_OR2	0x00000008
-#define LGC_FLAG_E_MAP	0x00000010
+#define LGC_PRC_E_NOT		0x00000001
+#define LGC_PRC_E_AND		0x00000002
+#define LGC_PRC_E_OR1		0x00000004
+#define LGC_PRC_E_OR2		0x00000008
+#define LGC_PRC_E_MAP		0x00000010
 
-#define LGC_FLAG_I_OR1	0x00000020
-#define LGC_FLAG_I_OR2	0x00000040
-#define LGC_FLAG_I_OR3	0x00000080
-#define LGC_FLAG_I_NOT	0x00000100
-#define LGC_FLAG_I_MAP	0x00000200
-#define LGC_FLAG_I_AND	0x00000400
+#define LGC_PRC_I_OR1		0x00000020
+#define LGC_PRC_I_OR2		0x00000040
+#define LGC_PRC_I_OR3		0x00000080
+#define LGC_PRC_I_NOT		0x00000100
+#define LGC_PRC_I_MAP		0x00000200
+#define LGC_PRC_I_AND		0x00000400
 //////////////////////////////////////////////////////////////////////////
 
-#define LGC_FLAG_C_OR1	0x01000000
-#define LGC_FLAG_C_OR2	0x02000000
-#define LGC_FLAG_C_NOT	0x04000000
-#define LGC_FLAG_C_MAP	0x08000000
-#define LGC_FLAG_CONTR	0x0F000000
+#define LGC_PRC_C_OR1		0x01000000
+#define LGC_PRC_C_OR2		0x02000000
+#define LGC_PRC_C_NOT		0x04000000
+#define LGC_PRC_C_MAP		0x08000000
+#define LGC_PRC_CONTR		0x0F000000
 
 //////////////////////////////////////////////////////////////////////////
-#define LGC_FLAG_DIS	0x10000000	
-#define LGC_FLAG_ASS	0x20000000
+#define LGC_SRC_DISABLE		0x00000001	
+#define LGC_SRC_ASSUME		0x00000002
+#define LGC_SRC_CONCLUSION  0x00000004
+#define LGC_SRC_PREMISE		0x00000008
+#define LGC_SRC_HOPING		0x00000010
 //////////////////////////////////////////////////////////////////////////
 
 
@@ -89,7 +92,8 @@ struct NDTerm
 	int m_path;
 	int m_assume;
 	int m_pendings;
-	int m_status;
+	int m_proceed;
+	int m_source;
 	int m_line;
 	
 	NDTerm(int index = -1, int rule = 0, int first = -1, int second = -1)
@@ -101,7 +105,8 @@ struct NDTerm
 		m_assume = -1 ;
 		m_pendings = 0 ;
 		m_path = 0;
-		m_status = 0;
+		m_proceed = 0;
+		m_source = 0;
 	}
 	
 };
@@ -116,6 +121,7 @@ public:
 	NaturalDeduction(TermVector t);
 
 private:
+	string rule2Str (int rule);
 
 
 
