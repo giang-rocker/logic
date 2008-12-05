@@ -176,6 +176,7 @@ public:
 
 
 private:
+	bool isOperator(int index)const;
 	list<Term>lstTerms;
 	list<int>lstOpers;
 	list<int>lstQuans;

@@ -510,34 +510,94 @@ string TermVector::GetString(int index)const
 				result += names.GetString(quantifiers[i+quan].m_ref)+ " ";
 			}
 		}
+
 		int func = functions[index].m_ref;
+		bool pars =  false;
 		switch (func)
 		{
 		case LGC_ADDR_NOT:
 			result += " !";
+			pars  = isOperator(index+1);
+			if (pars)
+			{
+				result += "(";
+			}
 			result += GetString(index + 1);
+			if (pars)
+			{
+				result += ")";
+			}
 			result += " ";
 			break;
 		case LGC_ADDR_AND:
-			//result += " ( ";
+			pars  = isOperator(index+1);
+			if (pars)
+			{
+				result += "(";
+			}
 			result += GetString(index + 1);
+			if (pars)
+			{
+				result += ")";
+			}
 			result += " & ";
+			pars  = isOperator(index+2);
+			if (pars)
+			{
+				result += "(";
+			}
 			result += GetString(index + 2);
-			//result += " ) ";
+			pars  = isOperator(index+2);
+			if (pars)
+			{
+				result += ")";
+			}
 			break;
 		case LGC_ADDR_OR:
-			//result += " ( ";
+			pars  = isOperator(index+1);
+			if (pars)
+			{
+				result += "(";
+			}
 			result += GetString(index + 1);
+			if (pars)
+			{
+				result += ")";
+			}
 			result += " | ";
+			pars  = isOperator(index+2);
+			if (pars)
+			{
+				result += "(";
+			}
 			result += GetString(index + 2);
-			//result += " ) ";
+			if (pars)
+			{
+				result += ")";
+			}
 			break;
 		case LGC_ADDR_MAP:
-			//result += " ( ";
+			pars  = isOperator(index+1);
+			if (pars)
+			{
+				result += "(";
+			}
 			result += GetString(index + 1);
+			if (pars)
+			{
+				result += ")";
+			}
 			result += " -> ";
+			pars  = isOperator(index+2);
+			if (pars)
+			{
+				result += "(";
+			}
 			result += GetString(index + 2);
-			//result += " ) ";
+			if (pars)
+			{
+				result += ")";
+			}
 			break;
 		default:
 			int args = functions[index].m_info;
@@ -554,4 +614,21 @@ string TermVector::GetString(int index)const
 		break;
 	}
 	return result;
+}
+
+bool TermVector::isOperator(int index)const
+{
+	int i = index;
+	while (functions[i].m_kind ==LGC_REF)
+	{
+		i = functions[i].m_ref;
+	}
+	if (functions[i].m_kind == LGC_TERM_FUNC)
+	{
+		if (functions[i].m_ref == LGC_ADDR_NOT || functions[i].m_ref == LGC_ADDR_AND ||functions[i].m_ref == LGC_ADDR_OR ||functions[i].m_ref == LGC_ADDR_MAP)
+		{
+			return true;
+		}
+	}
+	return false;
 }
