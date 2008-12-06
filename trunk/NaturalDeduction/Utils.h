@@ -75,12 +75,12 @@ inline std::string pLine2Str(const pLine& p, int max)
 
 	if (p.m_second > -1)
 	{
-		s += " " + ToString(p.m_second) + ",";
+		s += " " + ToString(p.m_second) + "," + ToString(p.m_first);
 	}
 
-	if (p.m_first > -1)
+	else if (p.m_first > -1)
 	{
-		s += ToString(p.m_first);
+		s += " " + ToString(p.m_first);
 	}
 
 	return s;

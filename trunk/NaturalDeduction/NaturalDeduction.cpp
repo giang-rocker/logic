@@ -240,7 +240,7 @@ int NaturalDeduction::eliminate()
 						}
 						
 					}
-
+					// A v B , not(B) -> A
 					if (((*p).m_proceed & LGC_PRC_E_OR2) != LGC_PRC_E_OR2)
 					{
 						arg1 = main + 1;
@@ -268,7 +268,7 @@ int NaturalDeduction::eliminate()
 									arg1 = database.functions[arg1].m_ref;
 								}
 								
-								ndTerm.m_index = arg2;
+								ndTerm.m_index = arg1;
 								ndTerm.m_first =  outside;//(*p).m_index;
 								ndTerm.m_second = inside ;//(*leftOp).m_index;
 								ndTerm.m_path = (*p).m_path < (*leftOp).m_path ? (*p).m_path + 1 : (*leftOp).m_path + 1; 
@@ -748,8 +748,8 @@ int NaturalDeduction::ProveIt()
 				if (isReached(active,negative))
 				{
 					goals.back().m_rule = LGC_E_NOT;
-					goals.back().m_first = active;
-					goals.back().m_second = negative;
+					goals.back().m_first = negative;
+					goals.back().m_second = active;
 					proveds.clear();
 					proveds.push_back(conditions.size());
 					conditions.push_back(goals.back());
