@@ -625,7 +625,7 @@ bool TermVector::isOperator(int index)const
 	}
 	if (functions[i].m_kind == LGC_TERM_FUNC)
 	{
-		if (functions[i].m_ref == LGC_ADDR_NOT || functions[i].m_ref == LGC_ADDR_AND ||functions[i].m_ref == LGC_ADDR_OR ||functions[i].m_ref == LGC_ADDR_MAP)
+		if ( functions[i].m_ref == LGC_ADDR_AND ||functions[i].m_ref == LGC_ADDR_OR ||functions[i].m_ref == LGC_ADDR_MAP)
 		{
 			return true;
 		}
