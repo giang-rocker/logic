@@ -128,6 +128,7 @@ int NaturalDeduction::eliminate()
 							ndTerm.m_rule = LGC_E_DNEG;
 							ndTerm.m_path = (*p).m_path + 1;
 							ndTerm.m_first = outside;
+							//ndTerm.m_source |= (ndTerm.m_source & LGC_SRC_ASS_DERI);
 							added += insertCondition(ndTerm,index);
 						}
 						else if(database.functions[arg1].m_ref == LGC_ADDR_OR && ((*p).m_proceed & LGC_PRC_DEMOR)!=LGC_PRC_DEMOR)
@@ -144,6 +145,7 @@ int NaturalDeduction::eliminate()
 							ndTerm.m_first = outside;
 							ndTerm.m_rule = LGC_DEMOR_OR;
 							ndTerm.m_proceed |= LGC_PRC_MORGAN;
+							//ndTerm.m_source |= (ndTerm.m_source & LGC_SRC_ASS_DERI);
 							conditions.push_back(ndTerm);
 							return 1;
 						}
@@ -161,6 +163,7 @@ int NaturalDeduction::eliminate()
 							ndTerm.m_first = outside;
 							ndTerm.m_rule = LGC_DEMOR_AND;
 							ndTerm.m_proceed |= LGC_PRC_MORGAN;
+							//ndTerm.m_source |= (ndTerm.m_source & LGC_SRC_ASS_DERI);
 							conditions.push_back(ndTerm);
 							return 1;
 						}
@@ -182,6 +185,7 @@ int NaturalDeduction::eliminate()
 						ndTerm.m_rule = LGC_E_AND_1;
 						ndTerm.m_first = outside;
 						ndTerm.m_path = (*p).m_path + 1;
+					//	ndTerm.m_source |= (ndTerm.m_source & LGC_SRC_ASS_DERI);
 						added += insertCondition(ndTerm,index);
 
 						arg2 = main + 2;
@@ -228,8 +232,13 @@ int NaturalDeduction::eliminate()
 								}
 
 								ndTerm.m_index = arg2;
-								ndTerm.m_first =  outside; //(*p).m_index;
-								ndTerm.m_second = inside;  //(*leftOp).m_index;
+								ndTerm.m_first =  outside;
+								ndTerm.m_second = inside;
+// 								if (((*p).m_source & LGC_SRC_ASS_DERI) == LGC_SRC_ASS_DERI && ((*leftOp).m_source & LGC_SRC_ASS_DERI) != LGC_SRC_ASS_DERI )
+// 								{	
+// 									ndTerm.m_first =  inside;
+// 									ndTerm.m_second = outside;
+// 								}
 								ndTerm.m_path = (*p).m_path < (*leftOp).m_path ? (*p).m_path + 1 : (*leftOp).m_path + 1; 
 								ndTerm.m_rule = LGC_E_OR_1;
 								added += insertCondition(ndTerm,index);
@@ -269,8 +278,13 @@ int NaturalDeduction::eliminate()
 								}
 								
 								ndTerm.m_index = arg1;
-								ndTerm.m_first =  outside;//(*p).m_index;
-								ndTerm.m_second = inside ;//(*leftOp).m_index;
+								ndTerm.m_first =  outside;
+								ndTerm.m_second = inside ;
+// 								if (((*p).m_source & LGC_SRC_ASS_DERI) == LGC_SRC_ASS_DERI && ((*leftOp).m_source & LGC_SRC_ASS_DERI) != LGC_SRC_ASS_DERI )
+// 								{	
+// 									ndTerm.m_first =  inside;
+// 									ndTerm.m_second = outside;
+// 								}
 								ndTerm.m_path = (*p).m_path < (*leftOp).m_path ? (*p).m_path + 1 : (*leftOp).m_path + 1; 
 								ndTerm.m_rule = LGC_E_OR_2;
 								added += insertCondition(ndTerm,index);
@@ -313,8 +327,13 @@ int NaturalDeduction::eliminate()
 									arg2 = database.functions[arg2].m_ref;
 								}
 								ndTerm.m_index = arg2;
-								ndTerm.m_first = outside;  //(*p).m_index;
-								ndTerm.m_second = inside ; //(*leftOp).m_index;
+								ndTerm.m_first = outside; 
+								ndTerm.m_second = inside ; 
+// 								if (((*p).m_source & LGC_SRC_ASS_DERI) == LGC_SRC_ASS_DERI && ((*leftOp).m_source & LGC_SRC_ASS_DERI) != LGC_SRC_ASS_DERI )
+// 								{	
+// 									ndTerm.m_first =  inside;
+// 									ndTerm.m_second = outside;
+// 								}
 								ndTerm.m_path = (*p).m_path < (*leftOp).m_path ? (*p).m_path + 1 : (*leftOp).m_path + 1; 
 								ndTerm.m_rule = LGC_E_MODUS;
 								added += insertCondition(ndTerm,index);
@@ -734,6 +753,14 @@ int NaturalDeduction::ProveIt()
 			if (goals.back().m_pendings == 2)
 			{
 				goals.back().m_second = proveds.back();
+				NDTerm first = getNDTerm(goals.back().m_first);
+				NDTerm second = getNDTerm(goals.back().m_second);
+// 				if ((second.m_source & LGC_SRC_ASS_DERI) == LGC_SRC_ASS_DERI && (first.m_source & LGC_SRC_ASS_DERI) != LGC_SRC_ASS_DERI )
+// 				{	
+// 
+// 					goals.back().m_second = goals.back().m_first;
+// 					goals.back().m_first = proveds.back();
+// 				}
 				proveds.pop_back();
 			}
 			proveds.push_back(conditions.size());
