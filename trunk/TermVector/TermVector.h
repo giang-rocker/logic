@@ -174,7 +174,6 @@ public:
 	list<int> goals;
 	list<int> conditions;
 
-
 private:
 	bool isOperator(int index)const;
 	list<Term>lstTerms;

@@ -18,36 +18,34 @@
 #define LGC_FLAG_RELATIVE	2		//Eliminate from exists			
 
 
-//////////////////////////////////////////////////////////////////////////
-
-#define LGC_RULE_PREMISE	0
-#define LGC_RULE_ID			1
-
-
-//////////////////////////////////////////////////////////////////////////
-
-#define LGC_E_AND_1		2
-#define LGC_E_AND_2		3
-#define LGC_E_OR_1		4
-#define LGC_E_OR_2		5
-#define LGC_E_MODUS		6
-#define LGC_E_DNEG		7
-#define LGC_E_ALL		8
-#define LGC_E_EXISTS	9
-#define LGC_E_NOT		10
-
-//////////////////////////////////////////////////////////////////////////
-
-
-#define LGC_I_AND		11
-#define LGC_I_OR_1		12
-#define LGC_I_OR_2		13
-#define LGC_I_MODUS		14
-#define LGC_I_NOT		15
-#define LGC_I_ALL		16
-#define LGC_I_EXISTS	17
-
-
+////////////////////////////
+#define LGC_RULE_PREMISE	0x00000001
+#define LGC_RULE_ID			0x00000002
+////////////////////////////
+#define LGC_E_AND_1			0x00000004
+#define LGC_E_AND_2			0x00000008
+#define LGC_E_OR_1			0x00000010
+#define LGC_E_OR_2			0x00000020
+#define LGC_E_MODUS			0x00000040
+#define LGC_E_DNEG			0x00000080
+#define LGC_E_ALL			0x00000100
+#define LGC_E_EXISTS		0x00000200
+#define LGC_E_NOT			0x00000400
+////////////////////////////
+#define LGC_I_AND			0x00000800
+#define LGC_I_OR_1			0x00001000
+#define LGC_I_OR_2			0x00002000
+#define LGC_I_MODUS			0x00004000
+#define LGC_I_NOT			0x00008000
+#define LGC_I_ALL			0x00010000
+#define LGC_I_EXISTS		0x00020000
+////////////////////////////
+#define LGC_DEMOR_OR		0x00040000
+#define LGC_DEMOR_AND		0x00080000
+#define LGC_PRC_DEMOR		0x000C0000
+#define LGC_MORGAN_OR		0x00100000
+#define LGC_MORGAN_AND		0x00200000
+#define LGC_PRC_MORGAN		0x00300000
 //////////////////////////////////////////////////////////////////////////
 
 
@@ -148,7 +146,6 @@ private:
 
 	int lastLine;
 	int ifs;
-
 	vector<pLine> lstpLines;
 
 };
