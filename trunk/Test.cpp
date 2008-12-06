@@ -41,7 +41,8 @@ int main()
 	//	"F & ( G | H ) |- (F & G ) | ( F & H )";
 	//	"F -> (G->H) , F, !H |- !G";
 	//"F | H, !F |- H";
-	"((A&B)&C)&D , B, C->A, B -> A |- A";
+	//"((A&B)&C)&D , B, C->A, B -> A |- A";
+	"(P -> Q) -> (P & Q) |- (Q -> P)&(!P -> Q) ";
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
 	p->parse();

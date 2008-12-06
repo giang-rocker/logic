@@ -516,7 +516,7 @@ int NaturalDeduction::introduction()
 					goals.back().m_pendings = 1;
 					goals.back().m_rule = LGC_I_MODUS;
 					goals.back().m_proceed |= LGC_PRC_I_MAP;
-					goals.back().m_assume = conditions.size()-1;
+					goals.back().m_assume = conditions.size() - 1;
 					NDTerm conclusion(arg2);
 					conclusion.m_source = LGC_SRC_CONCLUSION;
 					goals.push_back(NDTerm(conclusion));
@@ -706,7 +706,10 @@ int NaturalDeduction::ProveIt()
 		cout <<++times<<"_________________________Conditions__________________________________\n";
 		for (list<NDTerm>::iterator c = conditions.begin();c!=conditions.end();++c)
 		{
+			if(((*c).m_source&LGC_SRC_DISABLE)!= LGC_SRC_DISABLE )
 			cout<<"\t"<<database.GetString((*c).m_index);
+			else 
+			cout<<"\t*"<<database.GetString((*c).m_index);
 		}
 
 		cout <<"\n_______________________________Goals__________________________________\n";
@@ -722,7 +725,7 @@ int NaturalDeduction::ProveIt()
 			cout<<"\t"<<database.GetString((*cond).m_index);
 		}
 		cout<<"\n______________________________________________________________________\n\n\n";
-		if (times == 11)
+		if (times == 9)
 		{
 			int dummy = 0;
 		}
@@ -742,25 +745,22 @@ int NaturalDeduction::ProveIt()
 				{
 					conditions.push_back(proveds.back());
 					proveds.pop_back();
-					conditions.back().m_assume |= LGC_SRC_DISABLE;
+					conditions.back().m_source |= LGC_SRC_DISABLE;
 					proveds.push_back(active);
 					goals.pop_back();
 					continue;
 				}
 			}
 			goals.back().m_first = proveds.back();
+#if _DEBUG
+			cout<<goals.back().m_first;
+#endif
 			proveds.pop_back();
 			if (goals.back().m_pendings == 2)
 			{
 				goals.back().m_second = proveds.back();
 				NDTerm first = getNDTerm(goals.back().m_first);
 				NDTerm second = getNDTerm(goals.back().m_second);
-// 				if ((second.m_source & LGC_SRC_ASS_DERI) == LGC_SRC_ASS_DERI && (first.m_source & LGC_SRC_ASS_DERI) != LGC_SRC_ASS_DERI )
-// 				{	
-// 
-// 					goals.back().m_second = goals.back().m_first;
-// 					goals.back().m_first = proveds.back();
-// 				}
 				proveds.pop_back();
 			}
 			proveds.push_back(conditions.size());
@@ -777,7 +777,7 @@ int NaturalDeduction::ProveIt()
 					goals.back().m_rule = LGC_E_NOT;
 					goals.back().m_first = negative;
 					goals.back().m_second = active;
-					proveds.clear();
+					//proveds.clear();
 					proveds.push_back(conditions.size());
 					conditions.push_back(goals.back());
 					goals.pop_back();
@@ -837,32 +837,38 @@ int NaturalDeduction::ProveIt()
 		
 	}
 
+
 #if _DEBUG
-	if (times == 5)
-	{
-		int dummy = 0;
-	}
-	//database.print();
-	cout <<++times<<"_________________________Conditions__________________________________\n";
-	for (list<NDTerm>::iterator c = conditions.begin();c!=conditions.end();++c)
-	{
-		cout<<"\t"<<database.GetString((*c).m_index);
-	}
 	
-	cout <<"\n_______________________________Goals__________________________________\n";
-	for (list<NDTerm>::iterator g = goals.begin();g!=goals.end();++g)
-	{
-		cout<<"\t"<<database.GetString((*g).m_index);
-	}
-	
-	cout <<"\n________________________________Proved________________________________\n";
-	for (list<int>::iterator p = proveds.begin();p!=proveds.end();++p)
-	{
-		getNDTerm(*p);
-		cout<<"\t"<<database.GetString((*cond).m_index);
-	}
-	cout<<"\n______________________________________________________________________\n\n\n";
+		//database.print();
+		cout <<++times<<"_________________________Conditions__________________________________\n";
+		for (list<NDTerm>::iterator c = conditions.begin();c!=conditions.end();++c)
+		{
+			if(((*c).m_source&LGC_SRC_DISABLE)!= LGC_SRC_DISABLE )
+			cout<<"\t"<<database.GetString((*c).m_index);
+			else 
+			cout<<"\t*"<<database.GetString((*c).m_index);
+		}
+
+		cout <<"\n_______________________________Goals__________________________________\n";
+		for (list<NDTerm>::iterator g = goals.begin();g!=goals.end();++g)
+		{
+			cout<<"\t"<<database.GetString((*g).m_index);
+		}
+		
+		cout <<"\n________________________________Proved________________________________\n";
+		for (list<int>::iterator p = proveds.begin();p!=proveds.end();++p)
+		{
+			getNDTerm(*p);
+			cout<<"\t"<<database.GetString((*cond).m_index);
+		}
+		cout<<"\n______________________________________________________________________\n\n\n";
+		if (times == 9)
+		{
+			int dummy = 0;
+		}
 #endif
+		
 
 #if _DEBUG
 	cout <<++times<<"_________________________Conditions__________________________________\n";
@@ -1138,7 +1144,13 @@ int NaturalDeduction::disable(int assume)
 			{
 				(*p).m_source |= LGC_SRC_DISABLE;
 				parents.push_back(index);
-			}	
+			}
+			else if((*p).m_rule == LGC_RULE_ID && (*p).m_first < assume)
+			{
+				(*p).m_source |= LGC_SRC_DISABLE;
+				getNDTerm((*p).m_assume);
+				(*cond).m_source &= (LGC_SRC_DISABLE ^ 0xFFFFFFFF);
+			}
 		}
 	}
 	
