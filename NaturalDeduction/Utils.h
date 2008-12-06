@@ -11,9 +11,10 @@ inline std::string ToString (const T& t)
 }
 
 template <class T>
-inline std::string ToStringX (const T& t,int width, int align = 0)
+inline std::string ToStringX (const T& t,int width)
 {
 	std::stringstream ss;
+	ss.setf(ios_base::left,ios_base::adjustfield);
 	ss.width(width);
 	ss << t;
 	return ss.str();
@@ -57,22 +58,31 @@ struct pLine
 	int m_second;
 	
 };
-
-inline std::string pLine2Str(const pLine& p, int max)
+inline std::string pLine2Str(const pLine& p)
 {
 	string s = "";
 	s += ToStringX(ToString(p.m_line)+".",4) ;
-	s += ToStringX("",p.m_indent * 4) ;
-	s += p.m_assumption + " ";
-	s += ToStringX(p.m_content,max)+"\t\t\t\t" ;
-	s += p.m_rule + " ";
+	s += ToStringX("",p.m_indent * 5) ;
+	s += p.m_assumption + p.m_content;
+	return s;
+}
+
+inline std::string pLine2Str(const pLine& p, int max)
+{
+	string s = "";	
+	s = ToStringX(pLine2Str(p),max) + " ";
+	s += p.m_rule ;
+
 	if (p.m_second > -1)
 	{
 		s += " " + ToString(p.m_second) + ",";
 	}
+
 	if (p.m_first > -1)
 	{
 		s += ToString(p.m_first);
 	}
+
 	return s;
 }
+

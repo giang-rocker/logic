@@ -6,18 +6,28 @@
 using namespace std;
 int main()
 {
-
-
-
-	string text = "P, Q, (P & Q) -> (R & S) |- S";
+	//string text = "P, Q, (P & Q) -> (R & S) |- S";
 	//string text = "HCl & NaOH -> NaCl & H2O , C &O2 -> CO2,CO2 & H2O -> H2CO3, HCl, NaOH,O2,C |- H2CO3";
-	//string text = "A |- F -> A ";
+	//string text = "A , B|- F -> A&B ";
 	//string text = "F |- G -> F";
 	//string text = "|- F -> F";
-	 //string text = "|- ((P->Q)->P)->P";
+	//string text = "|- ((P->Q)->P)->P";
 	//string text = "|- F -> (G -> F)";
 	//string text = "F -> G , F -> !G |- !F";
-
+	//string text = "!A | !B |- !(A&B)";
+	//string text = "!(A & B) |- !A | !B";
+	//string text = " A , B |- A & B ";
+	//string text = "G->H|- F|G -> F|H";
+	//string text = "F->G |- !F |G";
+	//string text = "!F | G |- F -> G";
+	//string text = "F|-!!F";
+	//string text = "F->G , !G |- !F";
+	//string text = "F->(G->H), F, !H |- !G";
+	//string text = "F->G |- !G -> !F";
+	//string text = "|- F | !F";
+	//string text = "!F | !G |- !(F & G)";
+	//string text = "F -> !F |- !F";
+	//string text = "(F & !G) -> H, !H,F |- !G ";
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
 	p->parse();
@@ -31,6 +41,7 @@ int main()
 		NaturalDeduction nd(p->data);
 		//p->data.print();
 		nd.ProveIt();
+		cout<<text<<endl<<endl;
 		cout<<nd.Result()<<endl<<endl<<endl;	
 	}	
 	return 0;

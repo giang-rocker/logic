@@ -516,7 +516,7 @@ string TermVector::GetString(int index)const
 		switch (func)
 		{
 		case LGC_ADDR_NOT:
-			result += " !";
+			result += "!";
 			pars  = isOperator(index+1);
 			if (pars)
 			{
@@ -632,3 +632,4 @@ bool TermVector::isOperator(int index)const
 	}
 	return false;
 }
+
