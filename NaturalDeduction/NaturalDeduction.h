@@ -91,7 +91,8 @@ struct NDTerm
 	int m_proceed;
 	int m_source;
 	int m_line;
-	
+	int m_deviring;
+	bool isPremise;
 	NDTerm(int index = -1, int rule = 0, int first = -1, int second = -1)
 	{
 		m_index = index ;
@@ -103,6 +104,8 @@ struct NDTerm
 		m_path = 0;
 		m_proceed = 0;
 		m_source = 0;
+		m_deviring = -1;
+		isPremise = false;
 	}
 	
 };
@@ -147,7 +150,7 @@ private:
 	int lastLine;
 	int ifs;
 	vector<pLine> lstpLines;
-
+	list<int>assumptions;
 };
 
 #endif // !defined(AFX_NATURALDEDUCTION_H__492CA570_429A_43E2_B2B6_E40C8EFCCA2C__INCLUDED_)

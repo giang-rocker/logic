@@ -21,8 +21,9 @@ inline std::string ToStringX (const T& t,int width)
 }
 struct pLine 
 {
-	pLine(int line, int indent, string assump, string content, string rule = "", int first = -1, int second = -1 )
+	pLine(int index ,int line, int indent, string assump, string content, string rule = "", int first = -1, int second = -1 )
 	{
+		m_index = index;
 		m_line = line;
 		m_indent = indent;
 		m_assumption = assump;
@@ -56,7 +57,7 @@ struct pLine
 	string m_rule;
 	int m_first;
 	int m_second;
-	
+	int m_index;
 };
 inline std::string pLine2Str(const pLine& p)
 {

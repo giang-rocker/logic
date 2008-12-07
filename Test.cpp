@@ -10,12 +10,12 @@ int main()
 
 	// 	"P, Q, (P & Q) -> (R & S) |- S";
 	// 	"HCl & NaOH -> NaCl & H2O , C &O2 -> CO2,CO2 & H2O -> H2CO3, HCl, NaOH,O2,C |- H2CO3";
-	//	"A , B|- F -> A&B ";
+	//	"A , B|- (F -> (A&B)) & (G -> (A&B)&(A&B)) ";
 	// 	"F |- G -> F";
 	// 	"|- F -> F";
 	// 	"|- ((P->Q)->P)->P";
 	// 	"|- F -> (G -> F)";
-	// 	"F -> G , F -> !G |- !F";
+	 //	"F -> G , F -> !G |- !F";
 	// 	"!A | !B |- !(A&B)";
 	// 	"!(A & B) |- !A | !B";
 	// 	" A , B |- A & B ";
@@ -43,6 +43,10 @@ int main()
 	//"F | H, !F |- H";
 	//"((A&B)&C)&D , B, C->A, B -> A |- A";
 	"(P -> Q) -> (P & Q) |- (Q -> P)&(!P -> Q) ";
+	//	"|- ((F->G) & F) -> G";
+	//	"P & Q & (!P | !Q) |- !P & !Q & ( P | Q )";
+	//	"(P -> Q) & (P -> R) |- P -> (R & Q)";
+	//	"P & (P -> (P & Q)) |- !P | !Q | (P & Q)";
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
 	p->parse();
