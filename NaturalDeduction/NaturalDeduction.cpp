@@ -829,14 +829,15 @@ int NaturalDeduction::ProveIt()
 			else if (isReached(active))
 			{
 				getNDTerm(active);
-				if (((*cond).m_source & LGC_SRC_ASSUME)== LGC_SRC_ASSUME)
-				{
-					NDTerm id((*cond).m_index,LGC_RULE_ID,active);
-					active = conditions.size();
-					conditions.push_back(id);
-					(*cond).m_source|=LGC_SRC_DISABLE;
-				}
-				else if ((goals.back().m_source & LGC_SRC_CONCLUSION) ==  LGC_SRC_CONCLUSION && (*cond).isPremise)
+				//if (((*cond).m_source & LGC_SRC_ASSUME)== LGC_SRC_ASSUME  )
+				//{
+				//	NDTerm id((*cond).m_index,LGC_RULE_ID,active);
+				//	active = conditions.size();
+				//	conditions.push_back(id);
+				//	(*cond).m_source|=LGC_SRC_DISABLE;
+				//}
+				//else 
+				if ((goals.back().m_source & LGC_SRC_CONCLUSION) ==  LGC_SRC_CONCLUSION && (isDerived(active,goals.back().m_assume)))
 				{
 					NDTerm id((*cond).m_index,LGC_RULE_ID,active);
 					active = conditions.size();
@@ -1535,4 +1536,39 @@ string NaturalDeduction::rule2Str(int rule)
 
 	}
 	return  ToStringX(result + " ",4);
+}
+
+int NaturalDeduction::isDerived(int child, int parent)
+{
+	list<int>parents;
+	list<int>passed;
+	parents.push_back(parent);
+	while (!parents.empty())
+	{
+		int last = parents.back();
+		passed.push_back(last);
+		parents.pop_back();
+		int index = child - 1;
+		getNDTerm(child);
+		list<NDTerm>::iterator p = cond;
+		for (; p != conditions.end();++p)
+		{
+			++index;
+			if (((*p).m_first == last) || ((*p).m_second == last))
+			{
+				{
+					if (index == child)
+					{
+						return 1;
+					}
+					if (find(passed.begin(),passed.end(),index)==passed.end())
+					{
+						parents.push_back(index);
+					}
+					
+				}
+			}
+		}
+	}
+	return 0;
 }
