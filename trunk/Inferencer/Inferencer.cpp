@@ -25,7 +25,7 @@ extern "C" __declspec (dllexport) char* inferencer(char* text)
 		if(nd.ProveIt())
 			result = nd.Result();
 		else
-			result = " Cannot prove ";	
+			result = " Cannot SOLVE !!! ";	
 	}	
 	char* cstr = new char [result.size()+1];
 	strcpy (cstr, result.c_str());
