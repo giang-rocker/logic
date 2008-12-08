@@ -145,8 +145,8 @@ private:
 	list <int> branches;
 	TermVector database;
 	list<NDTerm>::iterator cond;
-
-
+	
+	int isDerived(int child, int parent);
 	int lastLine;
 	int ifs;
 	vector<pLine> lstpLines;
