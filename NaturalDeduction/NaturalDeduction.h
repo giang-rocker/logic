@@ -21,12 +21,12 @@
 ////////////////////////////
 #define LGC_RULE_PREMISE	0x00000001
 #define LGC_RULE_ID			0x00000002
+#define LGC_RULE_LEM		0x00000004
 ////////////////////////////
-#define LGC_E_AND_1			0x00000004
-#define LGC_E_AND_2			0x00000008
-#define LGC_E_OR_1			0x00000010
-#define LGC_E_OR_2			0x00000020
-#define LGC_E_MODUS			0x00000040
+#define LGC_E_AND_1			0x00000008
+#define LGC_E_AND_2			0x00000010
+#define LGC_E_OR			0x00000020
+#define LGC_E_MAP			0x00000040
 #define LGC_E_DNEG			0x00000080
 #define LGC_E_ALL			0x00000100
 #define LGC_E_EXISTS		0x00000200
@@ -35,7 +35,7 @@
 #define LGC_I_AND			0x00000800
 #define LGC_I_OR_1			0x00001000
 #define LGC_I_OR_2			0x00002000
-#define LGC_I_MODUS			0x00004000
+#define LGC_I_MAP			0x00004000
 #define LGC_I_NOT			0x00008000
 #define LGC_I_ALL			0x00010000
 #define LGC_I_EXISTS		0x00020000
@@ -77,13 +77,21 @@
 #define LGC_SRC_PREMISE		0x00000008
 #define LGC_SRC_HOPING		0x00000010
 #define LGC_SRC_DUPLICATE	0x00000020
+#define LGC_SRC_LEM			0x00000040
+
+#define LGC_SRC_OR_GOAL		0x10000000
+#define LGC_SRC_OR_SUB_1	0x20000000
+#define LGC_SRC_OR_SUB_2	0x40000000
+#define LGC_SRC_OR_CONC		0x80000000
+
 //////////////////////////////////////////////////////////////////////////
 
 struct NDTerm
 {
 	int m_index;	
 	int m_first;		
-	int m_second;		
+	int m_second;
+	int m_third;
 	int m_rule;	
 	int m_path;
 	int m_assume;
@@ -91,8 +99,11 @@ struct NDTerm
 	int m_proceed;
 	int m_source;
 	int m_line;
-	int m_deviring;
-	bool isPremise;
+	int m_derivation;
+	bool m_isPremise;
+	bool m_OrEnable;
+	bool m_isOrStart;
+	int m_OrGoal;
 	NDTerm(int index = -1, int rule = 0, int first = -1, int second = -1)
 	{
 		m_index = index ;
@@ -104,8 +115,11 @@ struct NDTerm
 		m_path = 0;
 		m_proceed = 0;
 		m_source = 0;
-		m_deviring = -1;
-		isPremise = false;
+		m_derivation = -1;
+		m_isPremise = false;
+		m_OrEnable = true;
+		m_third = -1;
+		m_isOrStart = false;
 	}
 	
 };
@@ -120,6 +134,10 @@ public:
 	NaturalDeduction(TermVector t);
 
 private:
+	int insertLEMs();
+	int NegContradiction();
+	int NegIntrodution();
+	int OrEliminate();
 	string rule2Str (int rule);
 
 
@@ -151,6 +169,8 @@ private:
 	int ifs;
 	vector<pLine> lstpLines;
 	list<int>assumptions;
+	int debug(int n);
+	bool isInsert;
 };
 
 #endif // !defined(AFX_NATURALDEDUCTION_H__492CA570_429A_43E2_B2B6_E40C8EFCCA2C__INCLUDED_)

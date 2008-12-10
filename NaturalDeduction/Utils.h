@@ -1,3 +1,6 @@
+#ifndef NDUtils
+#define NDUtils
+
 #include <sstream>
 #include <string>
 using namespace std;
@@ -21,7 +24,7 @@ inline std::string ToStringX (const T& t,int width)
 }
 struct pLine 
 {
-	pLine(int index ,int line, int indent, string assump, string content, string rule = "", int first = -1, int second = -1 )
+	pLine(int index ,int line, int indent, string assump, string content, string rule = "", int first = -1, int second = -1 , int third = -1)
 	{
 		m_index = index;
 		m_line = line;
@@ -31,6 +34,7 @@ struct pLine
 		m_rule = rule;
 		m_first=  first;
 		m_second = second;
+		m_third = third;
 	}
 	string ToString(int max = 0)
 	{
@@ -57,6 +61,7 @@ struct pLine
 	string m_rule;
 	int m_first;
 	int m_second;
+	int m_third;
 	int m_index;
 };
 inline std::string pLine2Str(const pLine& p)
@@ -73,8 +78,11 @@ inline std::string pLine2Str(const pLine& p, int max)
 	string s = "";	
 	s = ToStringX(pLine2Str(p),max) + " ";
 	s += p.m_rule ;
-
-	if (p.m_second > -1)
+	if (p.m_third > -1)
+	{
+		s += " " + ToString(p.m_third) + ","+ ToString(p.m_second) + "," + ToString(p.m_first);
+	}
+	else if (p.m_second > -1)
 	{
 		s += " " + ToString(p.m_second) + "," + ToString(p.m_first);
 	}
@@ -87,3 +95,5 @@ inline std::string pLine2Str(const pLine& p, int max)
 	return s;
 }
 
+
+#endif
