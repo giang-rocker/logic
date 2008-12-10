@@ -347,7 +347,7 @@ int TermVector::NewLogicOp(int op)
 
 	
 	quanSize = 0;
-	while ((!lstOpers.empty()) && lstOpers.back() > op && lstOpers.back() <= LGC_OP_NOT )
+	while ((!lstOpers.empty()) && lstOpers.back() >= op && lstOpers.back() <= LGC_OP_NOT )
 	{
 		lstTerms.push_back(Term(lstOpers.back()));
 		lstOpers.pop_back();

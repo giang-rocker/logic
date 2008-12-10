@@ -3,33 +3,35 @@
 #include "Parser/Parser.h"
 #include "NaturalDeduction/NaturalDeduction.h"
 
+
 using namespace std;
 int main()
 {
 	string text = 
-
-	// 	"P, Q, (P & Q) -> (R & S) |- S";
-	 	"HCl & NaOH -> NaCl & H2O , C &O2 -> CO2,CO2 & H2O -> H2CO3, HCl, NaOH,O2,C |- H2CO3";
+		"A1&A2->A3,A3|A1,A2|A3 |- A3 | H";
+	//	"F|(G|H) |- (F|G)|H";
+	//	"P, Q, (P & Q) -> (R & S) |- S";
+	//	"HCl & NaOH -> NaCl & H2O , C &O2 -> CO2,CO2 & H2O -> H2CO3, HCl, NaOH,O2,C |- H2CO3";
 	//	"A , B|- (F -> (A&B)) & (G -> (A&B)&(A&B)) ";
-	// 	"F |- G -> F";
+	//	"F |- G -> F";
 	// 	"|- F -> F";
 	// 	"|- ((P->Q)->P)->P";
 	// 	"|- F -> (G -> F)";
-	 //	"F -> G , F -> !G |- !F";
+	// 	"F -> G , F -> !G |- !F";
 	// 	"!A | !B |- !(A&B)";
-	// 	"!(A & B) |- !A | !B";
+	//	"!(A & B) |- !A | !B";
 	// 	" A , B |- A & B ";
-	// 	"G->H|- F|G -> F|H";
-	// 	"F->G |- !F |G";
+	//	"G->H  |- F | G -> F|H|R";
+	//	"F->G |- !F |G";
 	// 	"!F | G |- F -> G";
 	// 	"F|-!!F";
 	// 	"F->G , !G |- !F";
-	 	"F->(G->H), F, !H |- !G";
+	// 	"F->(G->H), F, !H |- !G";
 	// 	"F->G |- !G -> !F";
 	// 	"|- F | !F";
 	// 	"!F | !G |- !(F & G)";
 	// 	"F -> !F |- !F";
-	// 	"(F & !G) -> H, !H,F |- G ";
+	//	"(F & !G) -> H, !H,F |- G ";
 	// 	"A |- A | B";
 	// 	"F |- !!F";
 	// 	"!G->!F |- F ->!!G ";
@@ -52,8 +54,12 @@ int main()
 	//	"P -> (R & Q) |- (P -> Q) & (P -> R)";
 	//	"!(P | (!P & Q)) |- !P & !Q";
 	//	"!P & !Q|-!(P | (!P & Q))  ";
-	//	"( P & Q) -> R |-  !P | ! Q | R";
+	//	"( P & Q) -> R |-  (!P | ! Q) | R";
 	//	"!P | ! Q | R |-( P & Q) -> R  ";
+	//	"A,B , A&B -> F  |- G | F ";
+	//	"F -> G |- F|H -> G|H";
+	//	"|- (P&Q)|(P&!Q)|(!P&Q)|(!P&!Q)";
+
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
 	p->parse();
@@ -65,10 +71,16 @@ int main()
 	{
 		
 		NaturalDeduction nd(p->data);
-		//p->data.print();
-		nd.ProveIt();
-		cout<<text<<endl<<endl;
-		cout<<nd.Result()<<endl<<endl<<endl;	
+		if(nd.ProveIt())
+		{
+			cout<<text<<endl<<endl;
+			cout<<nd.Result()<<endl<<endl<<endl;
+		}
+		else
+		{
+			cout<<":((\n\n";
+		}
+	
 	}	
 	return 0;
 	
