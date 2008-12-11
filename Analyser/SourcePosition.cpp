@@ -54,9 +54,11 @@ SourcePosition::operator =(const SourcePosition& s)
 
 void SourcePosition::NewLine()
 {
-	m_iCharStart = ++m_iLineFinish;
 	m_iCharStart = 1;
 	m_iCharFinish = 0;
+	m_iLineStart++;
+	m_iLineFinish++;
+	
 }
 
 
@@ -77,5 +79,5 @@ string Int2Str(int value)
 
 string SourcePosition::toString()
 {
-	return "CharStart:"+ Int2Str(m_iCharStart)+"\tCharFinish:"+ Int2Str(m_iCharFinish);
+	return "CharStart:"+ Int2Str(m_iCharStart)+"\tCharFinish:"+ Int2Str(m_iCharFinish)+"\tLineStart:"+Int2Str(m_iLineStart)+"\tLineFinish:"+Int2Str(m_iLineFinish);
 }
