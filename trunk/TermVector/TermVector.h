@@ -118,7 +118,7 @@ public:
 	}
 	string GetString(int index)const
 	{
-		if(index>=0 && index<names.size())
+		if(index >= 0 && index < names.size())
 		return names[index].str;
 		return "";
 	}
