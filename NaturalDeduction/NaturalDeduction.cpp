@@ -1908,7 +1908,8 @@ string NaturalDeduction::rule2Str(int rule)
 		break;
 
 	}
-	return  ToStringX(result + " ",4);
+	//return  ToStringX(result + " ",4);
+	return  ToString(result + "\t");
 }
 
 int NaturalDeduction::isDerived(int child, int parent)

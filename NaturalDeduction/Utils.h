@@ -67,6 +67,7 @@ struct pLine
 inline std::string pLine2Str(const pLine& p)
 {
 	string s = "";
+	//s += ToStringX(ToString(p.m_line)+".",4) ;
 	s += ToStringX(ToString(p.m_line)+".",4) ;
 	s += ToStringX("",p.m_indent * 5) ;
 	s += p.m_assumption + p.m_content;
@@ -76,7 +77,7 @@ inline std::string pLine2Str(const pLine& p)
 inline std::string pLine2Str(const pLine& p, int max)
 {
 	string s = "";	
-	s = ToStringX(pLine2Str(p),max) + " ";
+	s = ToString(pLine2Str(p)) + "#";
 	s += p.m_rule ;
 	if (p.m_third > -1)
 	{
