@@ -345,16 +345,18 @@ int TermVector::NewVar(string name,int kind)
 int TermVector::NewLogicOp(int op)
 {
 
-	
 	quanSize = 0;
+	if (op == LGC_OP_NOT && lstOpers.back() == op)
+	{
+		lstOpers.push_back(op);
+		return LGC_ERR_SUCC;
+	}
 	while ((!lstOpers.empty()) && lstOpers.back() >= op && lstOpers.back() <= LGC_OP_NOT )
 	{
 		lstTerms.push_back(Term(lstOpers.back()));
 		lstOpers.pop_back();
 	}
-	lstOpers.push_back(op);
-
-
+	lstOpers.push_back(op);	
 
 	return LGC_ERR_SUCC;
 }
@@ -389,20 +391,6 @@ TermVector::operator string()const
 }
 int TermVector::print()
 {
-	/*
-	cout<<"\n\n---------------Conditions-----------------------\n";
-	list<int>::const_iterator lst = conditions.begin();
-	for (;lst!=conditions.end();++lst)
-	{
-		cout<<"\t"<<*lst;
-	}
-	cout<<"\n\n---------------Goals-----------------------\n";
-	lst = goals.begin();
-	for (;lst!=goals.end();++lst)
-	{
-		cout<<"\t"<<*lst;
-	}
-	*/
 	cout<<"\n\n---------------Main---------------------\n";
 	vector<Term>::const_iterator p = functions.begin();
 	int i = 0;
@@ -465,6 +453,10 @@ int TermVector::print()
 
 string TermVector::GetString(int index)const
 {
+	if (index < 0 || index >= functions.size())
+	{
+		cout << "Error!";
+	}
 	string result = "";
 	switch (functions[index].m_kind)
 	{

@@ -83,7 +83,8 @@
 #define LGC_SRC_OR_SUB_1	0x20000000
 #define LGC_SRC_OR_SUB_2	0x40000000
 #define LGC_SRC_OR_CONC		0x80000000
-
+#define LGC_SRC_OR_PART1	0x01000000
+#define LGC_SRC_OR_PART2	0x02000000
 //////////////////////////////////////////////////////////////////////////
 
 struct NDTerm
@@ -103,7 +104,7 @@ struct NDTerm
 	bool m_isPremise;
 	bool m_OrEnable;
 	bool m_isOrStart;
-	int m_OrGoal;
+	int m_OrAssume;
 	NDTerm(int index = -1, int rule = 0, int first = -1, int second = -1)
 	{
 		m_index = index ;
@@ -134,6 +135,8 @@ public:
 	NaturalDeduction(TermVector t);
 
 private:
+	
+	int getFarest(int& first, int& second, int sub1, int sub2);
 	int insertLEMs();
 	int NegContradiction();
 	int NegIntrodution();
