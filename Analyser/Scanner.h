@@ -38,6 +38,7 @@ private:
 		
 	void goBackOneChar();
 	char goAheadOneChar();
+	char goAheadTwoChar();
 	char nextChar();
 };
 
