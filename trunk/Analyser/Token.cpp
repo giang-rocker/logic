@@ -104,7 +104,7 @@ string Token::convertToken()
 		case LGC_COMMA:
 			return "Token.COMMA";
 		case LGC_CON:
-			return "Token.CON";
+			return "Token.CONST";
 		default: 
 			return "Token.LGC_ERROR";	
 	}

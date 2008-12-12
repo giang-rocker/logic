@@ -44,6 +44,14 @@ char Scanner::goAheadOneChar()
 	}
 	return m_text.at(index+1);
 }
+char Scanner::goAheadTwoChar()
+{
+	if((index == m_text.length() - 1)|| (index == m_text.length() - 2))
+	{
+		return (char)0;
+	}
+	return m_text.at(index+2);
+}
 
 void Scanner::goBackOneChar()
 {
@@ -99,6 +107,23 @@ Token Scanner::nextToken()
 								position.EndToken();
 								return result;
 						}
+				}
+				else if (c == '_')
+				{
+					c = goAheadOneChar();
+					if (c =='|')
+					{
+						c = goAheadTwoChar();
+						if (c=='_')
+						{
+							c = nextChar();
+							c = nextChar();
+							result = Token(LGC_CONTRADITION_OP,"_|_",position);
+							position.m_iCharFinish++;
+							position.EndToken();
+							return result;							
+						}
+					}
 				}
 
 				else if (isalpha(c)) 

@@ -26,7 +26,7 @@ enum TokenKind
 	LGC_LEFTPAR			=	8,	// (
 	LGC_RIGHTPAR		=	9,	// )
 	LGC_BOOLEANLITERAL	=	10,	//	TRUE FALSE true false
-	LGC_CONTRADITION_OP	=	11,	//	<>
+	LGC_CONTRADITION_OP	=	11,	//	<> _|_
 	LGC_ALL_OP			=	12, // V-	
 	LGC_EXIST_OP		=	13, // -]
 	LGC_RESULT_OP		=	14, // =|
