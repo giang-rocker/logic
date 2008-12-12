@@ -48,7 +48,9 @@ namespace Logic
             this.ClientSize = new System.Drawing.Size(426, 412);
             this.Controls.Add(this.webBrowser1);
             this.Name = "frmEquiv";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmEquiv";
+            this.Load += new System.EventHandler(this.frmEquiv_Load);
             this.ResumeLayout(false);
 
         }
