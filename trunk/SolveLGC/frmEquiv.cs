@@ -22,5 +22,10 @@ namespace Logic
         {
 
         }
+
+        private void frmEquiv_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
