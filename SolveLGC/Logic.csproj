@@ -42,17 +42,17 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form2.cs">
+    <Compile Include="frmInstruction.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form2.Designer.cs">
-      <DependentUpon>Form2.cs</DependentUpon>
+    <Compile Include="frmInstruction.Designer.cs">
+      <DependentUpon>frmInstruction.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form3.cs">
+    <Compile Include="frmEquiv.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form3.Designer.cs">
-      <DependentUpon>Form3.cs</DependentUpon>
+    <Compile Include="frmEquiv.Designer.cs">
+      <DependentUpon>frmEquiv.cs</DependentUpon>
     </Compile>
     <Compile Include="frmAbout.cs">
       <SubType>Form</SubType>
@@ -66,13 +66,13 @@
       <SubType>Designer</SubType>
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form2.resx">
+    <EmbeddedResource Include="frmInstruction.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>Form2.cs</DependentUpon>
+      <DependentUpon>frmInstruction.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form3.resx">
+    <EmbeddedResource Include="frmEquiv.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>Form3.cs</DependentUpon>
+      <DependentUpon>frmEquiv.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmAbout.resx">
       <SubType>Designer</SubType>
@@ -87,6 +87,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
