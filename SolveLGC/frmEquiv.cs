@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Logic
 {
@@ -13,7 +14,8 @@ namespace Logic
         public frmEquiv()
         {
             InitializeComponent();
-            webBrowser1.Navigate("C:\\a.html");
+            string dir = Directory.GetCurrentDirectory().Replace("/", @"\");
+            webBrowser1.Navigate(dir + @"\Equivalence.html");
         }
 
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
