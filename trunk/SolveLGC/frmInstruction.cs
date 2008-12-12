@@ -5,7 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
+
 
 namespace Logic
 {
@@ -15,7 +15,7 @@ namespace Logic
         {
             InitializeComponent();
             webBrowser1.Navigate(@"C:\Documents and Settings\Ngoc Phuoc\Desktop\About.html");
-            MessageBox.Show(Directory.GetCurrentDirectory());
+         //   MessageBox.Show(Directory.GetCurrentDirectory());
         }
 
         private void frmInstruction_Load(object sender, EventArgs e)
