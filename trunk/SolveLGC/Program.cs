@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
+using System.IO;
 namespace Logic
 {
     static class Program
@@ -14,6 +15,7 @@ namespace Logic
         {             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Directory.SetCurrentDirectory("../../..");
             Application.Run(new SolveLGC());           
             
         }
