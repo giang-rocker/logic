@@ -9,25 +9,28 @@ using namespace std;
 int main()
 {
 	string text = 
+	//	"A,B , A&B -> F |- F ->A";
 	//	"A&B&C|- A";
-	//	"A1&A2->A3,A3|A1,A2|A3 |- A3 |H ";
+		"A1&A2->A3,A3|A1,A2|A3 |- A3 | H | F";
+	//	"F|F |- F";
 	//	"A,B |- A & B";
-	//	"A,B,A&B->C, D|E |- C";
-	//	"F|(G|H) |- (F|G)|H";
+	//	"A,B,A&B->C |- C";
+	//	"(F|G)|H |- F|(G|H)";
 	//	"P, Q, (P & Q) -> (R & S) |- S";
 	//	"HCl & NaOH -> NaCl & H2O , C &O2 -> CO2,CO2 & H2O -> H2CO3, HCl, NaOH,O2,C |- H2CO3";
 	//	"A , B |- (F -> (A&B)) & (G -> (A&B)&(A&B)) ";
 	//	"F |- G -> F";
-	// 	"|- F -> F";
-	// 	"|- ((P->Q)->P)->P";
-	// 	"|- F -> (G -> F)";
+	//	"|- F -> F";
+	//	"|- ((P->Q)->P)->P";
+	//	"|- F -> (G -> F)";
 	//	"F -> G , F -> !G |- !F";
 	// 	"!A | !B |- !(A&B)";
 	//	"!(A & B) |- !A | !B";
 	// 	" A , B |- A & B ";
-		"G->H  |- F | G -> F|H|R";
-	//	"F->G |- !F | G";
-	//	"!F | G |- F -> G";
+	//	"G->H  |- F | G -> F|H";
+	//	"G|!G,F | !F , !F->G |- !F | G";
+	//	"F|!F,G|!G,  F->G |- !F | G";
+	//	"!F |F , F -> G |- !F | G ";
 	// 	"F |- !!F";
 	//	"F->G , !G |- !F";
 	// 	"F->(G->H), F, !H |- !G";
@@ -35,7 +38,7 @@ int main()
 	// 	"|- F | !F";
 	// 	"!F | !G |- !(F & G)";
 	// 	"F -> !F |- !F";
-	//	"(F & !G) -> H, !H,F |- G ";
+ 	// "(F & !G) -> H, !H,F |- G ";
 	// 	"A |- A | B";
 	// 	"F |- !!F";
 	//	"!G->!F |- F ->!!G ";
@@ -72,18 +75,20 @@ int main()
 	}
 	else
 	{
-		p->data.print();
+		//p->data.print();
 		NaturalDeduction nd(p->data);
+		//nd.insertLEMs();
 		if(nd.ProveIt())
 		{
 			cout<<text<<endl<<endl;
 			cout<<nd.Result()<<endl<<endl<<endl;
 		}
-		else
+		else 
 		{
-			cout<<":((\n\n";
+			
+			cout<<"Chiu chit! Giai? khong ra dau"<<endl<<endl;
+
 		}
-	
 	}	
 	return 0;
 	

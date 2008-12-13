@@ -455,7 +455,7 @@ string TermVector::GetString(int index)const
 {
 	if (index < 0 || index >= functions.size())
 	{
-		cout << "Error!";
+		cout << "Error while retrieve string!";
 	}
 	string result = "";
 	switch (functions[index].m_kind)
@@ -519,7 +519,7 @@ string TermVector::GetString(int index)const
 			{
 				result += ")";
 			}
-			result += " ";
+			//result += " ";
 			break;
 		case LGC_ADDR_AND:
 			pars  = isOperator(index+1);
