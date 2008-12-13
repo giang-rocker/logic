@@ -121,6 +121,7 @@ struct NDTerm
 		m_OrEnable = true;
 		m_third = -1;
 		m_isOrStart = false;
+		m_line = -1;
 	}
 	
 };
@@ -133,11 +134,11 @@ public:
 	
 	int ProveIt();
 	NaturalDeduction(TermVector t);
-
+	int insertLEMs();
 private:
 	
 	int getFarest(int& first, int& second, int sub1, int sub2);
-	int insertLEMs();
+	
 	int NegContradiction();
 	int NegIntrodution();
 	int OrEliminate();
@@ -156,7 +157,7 @@ private:
 	int introduction();
 	int eliminate();
 	int getNDTerm(int index);
-	int getString(int index);
+	int getString(int index, bool isFixed = false, bool prefix = false);
 
 
 	int turnIt();
@@ -171,9 +172,32 @@ private:
 	int lastLine;
 	int ifs;
 	vector<pLine> lstpLines;
-	list<int>assumptions;
+	list<int>ndAssumes;
 	int debug(int n);
 	bool isInsert;
+
+
+	void dprintLines()
+	{
+		return;
+		cout<<"Line of: ";
+		for (vector<pLine>::const_iterator p = lstpLines.begin();p!=lstpLines.end();++p)
+		{
+			cout<<ToString(pLine2Str((*p)))<<endl;
+		}
+	}
+	
+	void PrintIndex()
+	{
+		//database.print();
+		cout <<"_________________________Conditions__________________________________\n";
+		int i = 0;
+		for (list<NDTerm>::iterator c = conditions.begin();c!=conditions.end();++c)
+		{
+			cout<<(i++)<<",\t"<<"Index = "<<(*c).m_index<<"\tFirst = "<<(*c).m_first<<"\t Second = "<<(*c).m_second<<"\t Third = "<<(*c).m_third<<"\t Pending = "<<(*c).m_pendings<<"\t OrAssume = "<<(*c).m_OrAssume<< endl; 
+		}
+	
+	}
 };
 
 #endif // !defined(AFX_NATURALDEDUCTION_H__492CA570_429A_43E2_B2B6_E40C8EFCCA2C__INCLUDED_)

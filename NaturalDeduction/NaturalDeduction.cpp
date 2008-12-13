@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <math.h>
 #if _DEBUG
+//#undef  _DEBUG
 #include <crtdbg.h>
 #endif
 //////////////////////////////////////////////////////////////////////
@@ -805,13 +806,9 @@ int NaturalDeduction::ProveIt()
 				break;
 			}
 		}
-		if ((goals.back().m_source & LGC_SRC_OR_GOAL ) == LGC_SRC_OR_GOAL)
+		if ((goals.back().m_source & LGC_SRC_OR_SUB_1 ) == LGC_SRC_OR_SUB_1) 
 		{
-			
-		}
-		else if ((goals.back().m_source & LGC_SRC_OR_SUB_1 ) == LGC_SRC_OR_SUB_1) 
-		{
-			getNDTerm(goals.back().m_assume);
+			getNDTerm(goals.back().m_derivation);
 			int subgoal = (*cond).m_index;
 			int arg1 = subgoal + 1;
 			while (database.functions[arg1].m_kind == LGC_REF)
@@ -823,18 +820,17 @@ int NaturalDeduction::ProveIt()
 			t.m_path = (*cond).m_path + 1;
 			t.m_index = arg1;
 			t.m_source = LGC_SRC_ASSUME;
-			t.m_derivation = goals.back().m_assume;
+			t.m_derivation = goals.back().m_derivation;
 			int assume = conditions.size();
 			conditions.push_back(t);
 			goals.back().m_source = LGC_SRC_CONCLUSION | LGC_SRC_OR_CONC  ;
-			goals.back().m_assume = assume;
 			goals.back().m_derivation = assume;
 			goals.back().m_OrAssume = assume;
 		}
 
 		else if ((goals.back().m_source & LGC_SRC_OR_SUB_2 ) == LGC_SRC_OR_SUB_2)
 		{
-			getNDTerm(goals.back().m_assume);
+			getNDTerm(goals.back().m_derivation);
 			int subgoal = (*cond).m_index;
 			int arg2= subgoal + 2;
 			while (database.functions[arg2].m_kind == LGC_REF)
@@ -845,11 +841,10 @@ int NaturalDeduction::ProveIt()
 			t.m_isPremise = false;
 			t.m_index = arg2;
 			t.m_source = LGC_SRC_ASSUME;
-			t.m_derivation = goals.back().m_assume;
+			t.m_derivation = goals.back().m_derivation;
 			int assume = conditions.size();
 			conditions.push_back(t);
 			goals.back().m_source = LGC_SRC_CONCLUSION | LGC_SRC_OR_CONC  ;
-			goals.back().m_assume = assume;
 			goals.back().m_derivation = assume;
 			goals.back().m_OrAssume = assume;
 		}
@@ -861,9 +856,9 @@ int NaturalDeduction::ProveIt()
 			getNDTerm(proveds.back());
 			if ((*cond).m_index == LGC_ADDR_FALSE)
 			{
-				if ((*cond).m_assume >= 0)
+				if ((goals.back()).m_assume >= 0 && goals.back().m_assume < conditions.size())
 				{
-					disable((*cond).m_assume);
+					disable((goals.back()).m_assume);
 				}
 				if (isReached(active))
 				{
@@ -871,16 +866,15 @@ int NaturalDeduction::ProveIt()
 					conditions.back().m_source |= LGC_SRC_DISABLE;
 					getNDTerm(active);
 					NDTerm t = (*cond);
-					//t.m_derivation = goals.back().m_derivation;
 					t.m_OrAssume = goals.back().m_OrAssume;
 					proveds.push_back(conditions.size());
 					conditions.push_back(t);
-					if (t.m_OrAssume >= 0)
+					if (t.m_OrAssume >= 0 && t.m_OrAssume < conditions.size())
 					{
 						disable(t.m_OrAssume);
 					}
 					
-					else if (t.m_assume >= 0)
+					else if (t.m_assume >= 0 && t.m_assume < conditions.size())
 					{
 						disable(t.m_assume);
 					}
@@ -900,7 +894,7 @@ int NaturalDeduction::ProveIt()
 				goals.back().m_isPremise = goals.back().m_isPremise & (*cond).m_isPremise;
 				if ((goals.back().m_source & LGC_SRC_OR_GOAL) == LGC_SRC_OR_GOAL)
 				{
-					//Change something here
+					PrintIndex();
 					int f1 = goals.back().m_first;
 					getNDTerm(f1);
 					int s1 = (*cond).m_OrAssume;
@@ -918,10 +912,11 @@ int NaturalDeduction::ProveIt()
 						getNDTerm(f1);
 						(*cond).m_OrAssume = nd1.m_OrAssume;
 						(*cond).m_source |= (LGC_SRC_CONCLUSION | LGC_SRC_OR_CONC);
-						
+
 						getNDTerm(goals.back().m_first);
 						(*cond).m_source &=  (0xFFFFFFFF ^ LGC_SRC_OR_CONC);
 						(*cond).m_OrAssume = -1;
+						(*cond).m_derivation = -1;
 
 						getNDTerm(goals.back().m_second);
 						(*cond).m_source |= LGC_SRC_DISABLE;
@@ -930,61 +925,113 @@ int NaturalDeduction::ProveIt()
 						(*cond).m_OrAssume = nd2.m_OrAssume;
 						(*cond).m_source |= (LGC_SRC_CONCLUSION | LGC_SRC_OR_CONC);
 
+
 						getNDTerm(goals.back().m_second);
 						(*cond).m_source &=  (0xFFFFFFFF ^ LGC_SRC_OR_CONC);
 						(*cond).m_OrAssume = -1;
-						
+						(*cond).m_derivation = -1;
+
 						NDTerm subGoal = goals.back();
 						goals.back().m_first = f1;
 						goals.back().m_second = f2;
+						getNDTerm(f1);
 						goals.back().m_index = (*cond).m_index;
+
 						getNDTerm(goals.back().m_third);
 						(*cond).m_OrEnable = true;
 						goals.back().m_rule = LGC_E_OR;
-						if (goals.back().m_OrAssume >= 0)
-						{
-							disable(goals.back().m_OrAssume);
-						}
 						conditions.push_back(goals.back());
 						goals.pop_back();
-						subGoal.m_source &= (0xFFFFFFFF ^ LGC_SRC_OR_GOAL);
-						subGoal.m_pendings = 0;
-						subGoal.m_third = -1;
-						subGoal.m_derivation = -1;
-						subGoal.m_first = -1;
-						subGoal.m_second = -1;
-						goals.push_back(subGoal);
+						PrintIndex();
+						for (int i = f1 + 1; i <= subGoal.m_first; i++)
+						{
+							getNDTerm(i);
+							if ((*cond).m_third == f1)
+							{
+								(*cond).m_third = conditions.size() - 1;
+							}
+							if ((*cond).m_second == f1)
+							{
+								(*cond).m_second = conditions.size() - 1;
+							}
+							if ((*cond).m_first == f1)
+							{
+								(*cond).m_first = conditions.size() - 1;
+							}
+						}
+						getNDTerm(subGoal.m_first);
+						NDTerm lastGoal = *cond;
+						lastGoal.m_OrAssume = subGoal.m_OrAssume;
+						lastGoal.m_source |= (subGoal.m_source & LGC_SRC_OR_CONC);
+						lastGoal.m_source &= (0xFFFFFFFF ^ LGC_SRC_OR_GOAL);
+						proveds.push_back(conditions.size());
+						conditions.push_back(lastGoal);
+						PrintIndex();
 						continue;
-					}
-					else
+					} 
+					else 
 					{
 						getNDTerm(goals.back().m_third);
 						(*cond).m_OrEnable = true;
 						goals.back().m_rule = LGC_E_OR;
 						goals.back().m_source |= LGC_SRC_DISABLE;
+
 					}
 					
 				}
 
 			}
+
 			conditions.push_back(goals.back());	
-			if (goals.back().m_assume >= 0)
+			if (goals.back().m_assume >= 0 && goals.back().m_assume < conditions.size())
 			{
 				disable(goals.back().m_assume);
 				
 			}
-			if (goals.back().m_OrAssume >= 0)
+			if (goals.back().m_OrAssume >= 0 && goals.back().m_OrAssume < conditions.size())
 			{
 				disable(goals.back().m_OrAssume);
 			}
-			debug(0);
-			if ((goals.back().m_source & LGC_SRC_CONCLUSION) ==  LGC_SRC_CONCLUSION && (active == goals.back().m_assume) && active >=0)
-			{
-				NDTerm id(goals.back().m_index,LGC_RULE_ID,conditions.size() -1);
-				conditions.push_back(id);
-			}
 			proveds.push_back(conditions.size() - 1);
+			
+			if ((goals.back().m_source & LGC_SRC_OR_CONC) == LGC_SRC_OR_CONC)
+			{	
+				
+				if (isReached(active))
+				{
+					conditions.back().m_source &= 0xFFFFFFFF ^ LGC_SRC_OR_CONC;
+					conditions.back().m_OrAssume = -1;
+					proveds.pop_back();
+					if ((goals.back().m_source & LGC_SRC_OR_SUB_2) == LGC_SRC_OR_SUB_2)
+					{
+						proveds.pop_back(); 
+					}	
+					else
+					{
+						goals.pop_back();
+					}
+					goals.pop_back();
+					getNDTerm(active);
+					NDTerm term = *cond;
+					term.m_source &= 0xFFFFFFFF ^ LGC_SRC_OR_GOAL;
+					term.m_third = -1;
+					term.m_OrAssume = goals.back().m_OrAssume;
+					term.m_source |= (goals.back().m_source & LGC_SRC_OR_CONC);
+					proveds.push_back(conditions.size());
+					conditions.push_back(term);
+					getNDTerm(goals.back().m_third);
+					(*cond).m_OrEnable = true;
+					if (goals.back().m_OrAssume >=0 && goals.back().m_OrAssume < conditions.size())
+					{
+						disable(goals.back().m_OrAssume);
+					}
+					goals.pop_back();
+					continue;
+				}
+				
+			}
 			goals.pop_back();
+			
 			
 		}
 		else
@@ -999,7 +1046,7 @@ int NaturalDeduction::ProveIt()
 					goals.back().m_second = active;
 					proveds.push_back(conditions.size());
 					conditions.push_back(goals.back());
-					if (goals.back().m_assume >= 0)
+					if (goals.back().m_assume >= 0 && goals.back().m_assume< conditions.size())
 					{
 						disable(goals.back().m_assume);
 					}
@@ -1009,65 +1056,68 @@ int NaturalDeduction::ProveIt()
 			} 
 			else if (isReached(active))
 			{
-				getNDTerm(active); 
-				if ((goals.back().m_source & LGC_SRC_CONCLUSION) ==  LGC_SRC_CONCLUSION && (active == goals.back().m_assume) && active >=0)
-				{
-					NDTerm id((*cond).m_index,LGC_RULE_ID,active);
-					id.m_assume = goals.back().m_assume;
-					id.m_OrAssume = goals.back().m_OrAssume;
-					active = conditions.size();
-					conditions.push_back(id);
-				}
-				else if ((goals.back().m_source & LGC_SRC_OR_CONC ) == LGC_SRC_OR_CONC)
+				proveds.push_back(active);
+				if ((goals.back().m_source & LGC_SRC_OR_CONC) == LGC_SRC_OR_CONC)
 				{	
+					if (goals.back().m_OrAssume>=0 && goals.back().m_OrAssume <  conditions.size())
+					{
+						disable(goals.back().m_OrAssume);
+					}
 					if (isReached(active))
 					{
-						goals.pop_back();
+						proveds.pop_back();
 						if ((goals.back().m_source & LGC_SRC_OR_SUB_2) == LGC_SRC_OR_SUB_2)
+						{
+							proveds.pop_back(); 
+						}	
+						else
 						{
 							goals.pop_back();
 						}
-						else
-						{
-							proveds.pop_back();
-						}
-						proveds.push_back(active);
-						getNDTerm(active); 
-						(*cond).m_derivation = goals.back().m_derivation;
-						(*cond).m_OrAssume = goals.back().m_OrAssume;
-						if ((*cond).m_derivation >= 0 )
-						{
-							disable((*cond).m_OrAssume);
-						}
-						
+						goals.pop_back();
+						getNDTerm(active);
+						NDTerm term = *cond;
+						term.m_source &= 0xFFFFFFFF ^ LGC_SRC_OR_GOAL;
+						term.m_third = -1;
+						term.m_OrAssume = goals.back().m_OrAssume;
+						term.m_source |= (goals.back().m_source & LGC_SRC_OR_CONC);
+						conditions.push_back(term);
 						getNDTerm(goals.back().m_third);
 						(*cond).m_OrEnable = true;
 						goals.pop_back();
-						conditions.pop_back();
+						proveds.push_back(conditions.size());
 						continue;
 					}
 					else
 					{
-						if ((*cond).m_assume >= 0)
-						{
-							disable((*cond).m_assume);
-						}
-						
-						getNDTerm(active); 
-						(*cond).m_OrAssume = goals.back().m_OrAssume;
-						(*cond).m_derivation = goals.back().m_derivation;
+						active = proveds.back();
+						getNDTerm(active);
+						NDTerm term = *cond;
+						term.m_OrAssume = goals.back().m_OrAssume;
+						term.m_derivation = goals.back().m_derivation;
+						term.m_source |=  (LGC_SRC_OR_CONC|LGC_SRC_CONCLUSION);
+						term.m_source |= LGC_SRC_DISABLE;
+						proveds.pop_back();
+						proveds.push_back(conditions.size());
+						conditions.push_back(term);
+						goals.pop_back();
+						continue;
 					}
-					
+
 				}
-				proveds.push_back(active);
-				if (goals.back().m_assume>=0)
+				else
 				{
-					disable(goals.back().m_assume);
+					if (goals.back().m_assume>=0 && goals.back().m_assume <  conditions.size())
+					{
+						disable(goals.back().m_assume);
+					}
 				}
-				
 				goals.pop_back();
 				continue;
 			}
+
+
+			
 			bool applied = false;
 			while (eliminate() > 0)
 			{ 
@@ -1091,7 +1141,6 @@ int NaturalDeduction::ProveIt()
 			if (NegIntrodution())
 			{
 				continue;
-				debug(0);
 			}
 			if (contradiction())
 			{
@@ -1127,28 +1176,25 @@ int NaturalDeduction::ProveIt()
 		for (list<NDTerm>::iterator c = conditions.begin();c!=conditions.end();++c)
 		{
 			if(((*c).m_source&LGC_SRC_DISABLE)!= LGC_SRC_DISABLE )
-			cout<<"\t"<<database.GetString((*c).m_index);
+			cout<<",\t"<<database.GetString((*c).m_index);
 			else 
-			cout<<"\t*"<<database.GetString((*c).m_index);
+			cout<<",\t*"<<database.GetString((*c).m_index);
 		}
 
 		cout <<"\n_______________________________Goals__________________________________\n";
 		for (list<NDTerm>::iterator g = goals.begin();g!=goals.end();++g)
 		{
-			cout<<"\t"<<database.GetString((*g).m_index);
+			cout<<",\t"<<database.GetString((*g).m_index);
 		}
 		
 		cout <<"\n________________________________Proved________________________________\n";
 		for (list<int>::iterator p = proveds.begin();p!=proveds.end();++p)
 		{
 			getNDTerm(*p);
-			cout<<"\t"<<database.GetString((*cond).m_index);
+			cout<<",\t"<<database.GetString((*cond).m_index);
 		}
 		cout<<"\n______________________________________________________________________\n\n\n";
-		if (times == 9)
-		{
-			int dummy = 0;
-		}
+
 #endif
 		
 
@@ -1157,20 +1203,20 @@ int NaturalDeduction::ProveIt()
 	int i = 0;
 	for (c = conditions.begin();c!=conditions.end();++c)
 	{
-		cout<<(i++)<<"\t"<<"Index = "<<(*c).m_index<<"\tFirst = "<<(*c).m_first<<"\t Second = "<<(*c).m_second<<"\t Third = "<<(*c).m_third<<"\t Pending = "<<(*c).m_pendings<<"\t Assume = "<<(*c).m_assume<< endl; 
+		cout<<(i++)<<",\t"<<"Index = "<<(*c).m_index<<"\tFirst = "<<(*c).m_first<<"\t Second = "<<(*c).m_second<<"\t Third = "<<(*c).m_third<<"\t Pending = "<<(*c).m_pendings<<"\t Assume = "<<(*c).m_assume<< endl; 
 	}
 	
 	cout <<"\n_______________________________Goals__________________________________\n";
 	for (g = goals.begin();g!=goals.end();++g)
 	{
-		cout<<"\t"<<database.GetString((*g).m_index);
+		cout<<",\t"<<database.GetString((*g).m_index);
 	}
 	
 	cout <<"\n________________________________Proved________________________________\n";
 	for (p = proveds.begin();p!=proveds.end();++p)
 	{
 		getNDTerm(*p);
-		cout<<"\t"<<database.GetString((*cond).m_index);
+		cout<<",\t"<<database.GetString((*cond).m_index);
 	}
 	cout<<"\n______________________________________________________________________\n\n\n";
 #endif
@@ -1259,63 +1305,68 @@ int NaturalDeduction::turnIt()
 }
 
 
-int NaturalDeduction::getString(int index) 
+int NaturalDeduction::getString(int index, bool isFixed, bool prefix) 
 {
-
-	if (index < 0 || index >=  conditions.size())
+#if _DEBUG
+	if (index == 0)
 	{
-		return 0;
+		cout<<"";
 	}
+	_ASSERT(index >= 0 && index < conditions.size());
+#endif
 
 	string result = "";
 	getNDTerm(index);
 	NDTerm goal = *cond;
-
-	if(goal.m_line > 0)
+	if (!isFixed)
 	{
-		return 0;
+		if(goal.m_line > 0)
+		{
+			return 0;
+		}
 	}
+		
 	if (goal.m_third >= 0 )
 	{
 		
-		getString(goal.m_third);
-		
+		getString(goal.m_third,true);
+		debug(999);
 		getNDTerm(goal.m_second);
 		NDTerm second = (*cond);
 		getNDTerm(second.m_OrAssume);
 		pLine pline2(second.m_OrAssume,lastLine,ifs++,"if   " , database.GetString((*cond).m_index));
-
-		assumptions.push_back(lastLine);
+		pline2.m_isPrefix = true;
 		(*cond).m_line = lastLine++;
+		ndAssumes.push_front(second.m_OrAssume);
 		lstpLines.push_back(pline2);
+		debug(999);
 		getNDTerm(goal.m_second);
 		(*cond).m_assume = -1;
-		getString(goal.m_second);
+		getString(goal.m_second,true,true);
 		ifs--;
 		lstpLines.back().m_indent--;
 		lstpLines.back().m_assumption = "nif  ";
-		
-		
+		lstpLines.back().m_isPrefix = true;
+		debug(999);
 
 		getNDTerm(goal.m_first);
 		NDTerm first = (*cond);
-		
 		getNDTerm(first.m_OrAssume);
 		pLine pline1(first.m_OrAssume,lastLine,ifs++,"if   " , database.GetString((*cond).m_index));
-		
-		assumptions.push_back(lastLine);
+		pline1.m_isPrefix = true;
 		(*cond).m_line = lastLine++;
+		ndAssumes.push_front(first.m_OrAssume);
 		lstpLines.push_back(pline1);
 		getNDTerm(goal.m_first);
 		(*cond).m_assume = -1;
-		getString(goal.m_first);
+		getString(goal.m_first,true,true);
 		ifs--;
 		lstpLines.back().m_indent--;
 		lstpLines.back().m_assumption = "nif  ";
-		
+		lstpLines.back().m_isPrefix = true;
 
 		pLine last(index,lastLine++,ifs,"",database.GetString(goal.m_index),rule2Str(goal.m_rule));
-		assumptions.pop_back();
+		ndAssumes.pop_front();
 		
 		getNDTerm(goal.m_third);
 		last.m_third = (*cond).m_line;
@@ -1327,341 +1378,436 @@ int NaturalDeduction::getString(int index)
 		getNDTerm(goal.m_first);
 		getNDTerm((*cond).m_OrAssume);
 		last.m_first = (*cond).m_line;
-
 		lstpLines.push_back(last);	
 
+		getNDTerm(index);
+		(*cond).m_line = lastLine - 1;
+	
 		
-			
+#if _DEBUG
+		getNDTerm(index);
+		cout<<"Call : "<<index << " = " <<(*cond).m_line<<endl;
+#endif
+
+		return 0;
 
 	}
-	else if (goal.m_assume >= 0)
+	if (goal.m_assume >= 0)
 	{
 		getNDTerm(goal.m_assume);
 		pLine pline(goal.m_assume,lastLine,ifs++,"if   " , database.GetString((*cond).m_index));
-		assumptions.push_back(lastLine);
+		pline.m_isPrefix = true;
+		ndAssumes.push_front(goal.m_assume);
 		(*cond).m_line = lastLine++;
 		lstpLines.push_back(pline);
-		getString(goal.m_first);
+
+
+		getString(goal.m_first,true,true);
 		ifs--;
 		lstpLines.back().m_indent--;
 		lstpLines.back().m_assumption = "nif  ";
-			
+		lstpLines.back().m_isPrefix = true;
 			
 		pLine last(index,lastLine++,ifs,"",database.GetString(goal.m_index),rule2Str(goal.m_rule));
-		assumptions.pop_back();
+		ndAssumes.pop_front();
 			
 		getNDTerm(goal.m_assume);
 		last.m_second = (*cond).m_line;
 			
 		getNDTerm(goal.m_first);
 		last.m_first= (*cond).m_line;
-			
 		lstpLines.push_back(last);	
-	}
-	else
-	{
-		if(goal.m_pendings == 1)
-		{
-			
-			getString(goal.m_first);
-			pLine last(index, lastLine++,ifs,"",database.GetString(goal.m_index),rule2Str(goal.m_rule));
-			getNDTerm(goal.m_first);
-			last.m_first = (*cond).m_line;
-			if (goal.m_isPremise && !assumptions.empty())
-			{
-				vector<pLine>::iterator p = lstpLines.begin();
-				int min = assumptions.front();
-				int max = lastLine ;
-				int line = 1;
-				last.m_line = min;
-				last.m_indent = 0;
-				for (;line < min;++line)
-				{
-					++p;	
-				}
-				p = lstpLines.insert(p,last);
-				getNDTerm(index);
-				(*cond).m_line = last.m_line;
-				for (++line;line < max;++line)
-				{
-					++p;
-					(*p).m_line++;
-					getNDTerm((*p).m_index);
-					(*cond).m_line++;
-					if (((*p).m_first >= min && (*p).m_first <= max) )
-					{
-						(*p).m_first++;
-					}
-					if (((*p).m_second >= min && (*p).m_second <= max) )
-					{
-						(*p).m_second++;
-					}
-				}
-				for (list<int>::iterator ass = assumptions.begin();ass!=assumptions.end();++ass)
-				{
-					(*ass)++;
-				}
-				return 0;
-			}
-			else
-			{
-				lstpLines.push_back(last);
-			}
-			
+		getNDTerm(index);
+		(*cond).m_line = lastLine - 1;
 
-		}
-		else if ( goal.m_pendings ==2)
+#if _DEBUG
+		getNDTerm(index);
+		cout<<"Call : "<<index << " = " <<(*cond).m_line<<endl;
+#endif
+		return 0;
+	}
+
+	if ( goal.m_pendings == 2 || goal.m_second >= 0)
+	{
+		debug(998);
+		getString(goal.m_second);
+		debug(998);
+		getString(goal.m_first);
+		debug(998);
+		if (goal.m_line <= 0)
 		{
-			getString(goal.m_second);
-			getString(goal.m_first);
-			pLine last(index, lastLine++,ifs,"",database.GetString(goal.m_index),rule2Str(goal.m_rule));
+			pLine last(index,lastLine++,ifs,"",database.GetString(goal.m_index),rule2Str(goal.m_rule));
 			getNDTerm(goal.m_second);
 			last.m_second = (*cond).m_line;
 			getNDTerm(goal.m_first);
 			last.m_first = (*cond).m_line;
-			if (goal.m_isPremise && !assumptions.empty())
+			if (!ndAssumes.empty())
 			{
-				vector<pLine>::iterator p = lstpLines.begin();
-				int min = assumptions.front();
-				int max = lastLine ;
-				int line = 1;
-				last.m_line = min;
-				last.m_indent = 0;
-				for (;line < min;++line)
+				int locate = lastLine - 1;
+				int indent = 0;
+				if ( ((goal.m_source & LGC_SRC_ASSUME) != LGC_SRC_ASSUME) && goal.m_index != LGC_ADDR_FALSE )
 				{
-					++p;	
+					list<int>::iterator p =  ndAssumes.begin();
+					for (; p != ndAssumes.end(); ++p)
+					{
+						
+						if (isDerived(index,(*p)))
+						{
+							break;
+						}
+						else
+						{
+							indent++;
+						}
+					}
+					if (p == ndAssumes.begin())
+					{
+						lstpLines.push_back(last);
+						getNDTerm(index);
+						(*cond).m_line = locate;
+					}
+					else
+					{
+						if(p== ndAssumes.end())
+						--p;
+						getNDTerm((*p));
+						locate = (*cond).m_line ;
+						last.m_indent = last.m_indent - indent;
+						last.m_line = locate;
+						while(locate >= 1)
+						{
+							if (lstpLines[locate - 1].m_isFixed)
+								locate--;
+							else
+								break;
+						}
+						if (locate == 0)
+						{
+							locate = 1;
+						}
+						getNDTerm(index);
+						(*cond).m_line = locate;
+						vector<pLine>::iterator ip = lstpLines.begin();
+						for (int i = 1; i < locate; i++)
+						{
+							++ip;
+						}
+						ip = lstpLines.insert(ip,last);
+						++ip;
+						for (;ip != lstpLines.end(); ++ip)
+						{
+							(*ip).m_line++;
+							if ((*ip).m_first >= locate)
+							{
+								(*ip).m_first++;
+							}
+							if ((*ip).m_second >= locate )
+							{
+								(*ip).m_second++;
+							}
+							getNDTerm((*ip).m_index);
+							(*cond).m_line++;
+						}
+					}
+					dprintLines();
 				}
-				p = lstpLines.insert(p,last);
+				else
+				{
+					lstpLines.push_back(last);
+					getNDTerm(index);
+					(*cond).m_line = lastLine - 1;
+				}
+			
+				
+			}
+			else
+			{
+				last.m_isFixed = isFixed;
+				lstpLines.push_back(last);
 				getNDTerm(index);
-				(*cond).m_line = last.m_line;
-				for (++line;line < max;++line)
+				(*cond).m_line = lastLine - 1;
+			}
+
+			if (last.m_indent == ifs)
+			{
+				isFixed = false;
+			}
+
+		}
+		if (isFixed)
+		{
+
+			if (lstpLines.back().m_index == index && (!prefix) )
+			{
+				lstpLines.back().m_isFixed = true;
+			
+			}
+			else
+			{
+				pLine last(index,lastLine++,ifs,"",database.GetString(goal.m_index), rule2Str(LGC_RULE_ID) );
+				getNDTerm(index);
+				last.m_first = (*cond).m_line;
+				last.m_isFixed = true;
+				lstpLines.push_back(last);
+			}
+			
+		}
+
+#if _DEBUG
+		getNDTerm(index);
+		cout<<"Call : "<<index << " = " <<(*cond).m_line<<endl;
+#endif
+		return 0;
+	}
+
+	if(goal.m_pendings == 1 || goal.m_first >= 0)
+	{
+		
+		getString(goal.m_first);
+		if (goal.m_line <= 0)
+		{
+			pLine last(index,lastLine++,ifs,"",database.GetString(goal.m_index),rule2Str(goal.m_rule));
+			getNDTerm(goal.m_first);
+			last.m_first = (*cond).m_line;
+			if (!ndAssumes.empty())
+			{
+				int locate = lastLine - 1;
+				int indent = 0;
+				if ( ((goal.m_source & LGC_SRC_ASSUME) != LGC_SRC_ASSUME) && goal.m_index != LGC_ADDR_FALSE )
 				{
-					++p;
-					(*p).m_line++;
-					getNDTerm((*p).m_index);
-					(*cond).m_line++;
-					if (((*p).m_first >= min && (*p).m_first <= max) )
+					list<int>::iterator p =  ndAssumes.begin();
+					for (; p != ndAssumes.end(); ++p)
 					{
-						(*p).m_first++;
+						
+						if (isDerived(index,(*p)))
+						{
+							break;
+						}
+						else
+						{
+							indent++;
+						}
 					}
-					if (((*p).m_second >= min && (*p).m_second <= max) )
+					if (p == ndAssumes.begin())
 					{
-						(*p).m_second++;
+						lstpLines.push_back(last);
+						getNDTerm(index);
+						(*cond).m_line = locate;
+					}
+					else
+					{
+						if(p== ndAssumes.end())
+							--p;
+						getNDTerm((*p));
+						locate = (*cond).m_line ;
+						last.m_indent = last.m_indent - indent;
+						last.m_line = locate;
+						while(locate >= 1)
+						{
+							if (lstpLines[locate - 1].m_isFixed)
+								locate--;
+							else
+								break;
+						}
+						if (locate == 0)
+						{
+							locate = 1;
+						}
+						getNDTerm(index);
+						(*cond).m_line = locate;
+						vector<pLine>::iterator ip = lstpLines.begin();
+						for (int i = 1; i < locate; i++)
+						{
+							++ip;
+						}
+						ip = lstpLines.insert(ip,last);
+						++ip;
+						for (;ip != lstpLines.end(); ++ip)
+						{
+							(*ip).m_line++;
+							if ((*ip).m_first >= locate)
+							{
+								(*ip).m_first++;
+							}
+							if ((*ip).m_second >= locate )
+							{
+								(*ip).m_second++;
+							}
+							getNDTerm((*ip).m_index);
+							(*cond).m_line++;
+						}
+					}
+					dprintLines();
+				}
+				else
+				{
+					lstpLines.push_back(last);
+					getNDTerm(index);
+					(*cond).m_line = lastLine - 1;
+				}
+			
+				
+			}
+			else
+			{
+				last.m_isFixed = isFixed;
+				lstpLines.push_back(last);
+				getNDTerm(index);
+				(*cond).m_line = lastLine - 1;
+			}
+			
+			if (last.m_indent == ifs)
+			{
+				isFixed = false;
+			}
+
+			
+		}
+		if (isFixed)
+		{
+			if (lstpLines.back().m_index == index && (!prefix) )
+			{
+				lstpLines.back().m_isFixed = true;
+				
+			}
+			else
+			{
+				pLine last(index,lastLine++,ifs,"",database.GetString(goal.m_index), rule2Str(LGC_RULE_ID) );
+				getNDTerm(index);
+				last.m_first = (*cond).m_line;
+				last.m_isFixed = true;
+				lstpLines.push_back(last);
+			}
+		}
+
+#if _DEBUG
+		getNDTerm(index);
+		cout<<"Call : "<<index << " = " <<(*cond).m_line<<endl;
+#endif
+		return 0;
+
+	}
+	
+
+
+	if (goal.m_line <= 0)
+	{
+		pLine last(index,lastLine++,ifs,"",database.GetString(goal.m_index),rule2Str(goal.m_rule));
+		if (!ndAssumes.empty())
+		{
+			int locate = lastLine - 1;
+			int indent = 0;
+			if ( ((goal.m_source & LGC_SRC_ASSUME) != LGC_SRC_ASSUME) && goal.m_index != LGC_ADDR_FALSE )
+			{
+				list<int>::iterator p =  ndAssumes.begin();
+				for (; p != ndAssumes.end(); ++p)
+				{
+					
+					if (isDerived(index,(*p)))
+					{
+						break;
+					}
+					else
+					{
+						indent++;
 					}
 				}
-				for (list<int>::iterator ass = assumptions.begin();ass!=assumptions.end();++ass)
+				if (p == ndAssumes.begin())
 				{
-					(*ass)++;
+					lstpLines.push_back(last);
+					getNDTerm(index);
+					(*cond).m_line = locate;
 				}
-				return 0;
+				else
+				{
+					if(p== ndAssumes.end())
+						--p;
+					getNDTerm((*p));
+					locate = (*cond).m_line ;
+					last.m_indent = last.m_indent - indent;
+					last.m_line = locate;
+					while(locate >= 1)
+					{
+						if (lstpLines[locate - 1].m_isFixed)
+							locate--;
+						else
+							break;
+					}
+					if (locate == 0)
+					{
+						locate = 1;
+					}
+					getNDTerm(index);
+					(*cond).m_line = locate;
+					vector<pLine>::iterator ip = lstpLines.begin();
+					for (int i = 1; i < locate; i++)
+					{
+						++ip;
+					}
+					ip = lstpLines.insert(ip,last);
+					++ip;
+					for (;ip != lstpLines.end(); ++ip)
+					{
+						(*ip).m_line++;
+						if ((*ip).m_first >= locate)
+						{
+							(*ip).m_first++;
+						}
+						if ((*ip).m_second >= locate )
+						{
+							(*ip).m_second++;
+						}
+						getNDTerm((*ip).m_index);
+						(*cond).m_line++;
+					}
+				}
+				dprintLines();
 			}
 			else
 			{
 				lstpLines.push_back(last);
+				getNDTerm(index);
+				(*cond).m_line = lastLine - 1;
 			}
-
+			
 		}
 		else
 		{
-			if(goal.m_rule == LGC_RULE_PREMISE)
-			{
-				pLine last(index,lastLine++,ifs,"",database.GetString(goal.m_index),rule2Str(goal.m_rule));
-				if (!assumptions.empty())
-				{
-					vector<pLine>::iterator p = lstpLines.begin();
-					int min = assumptions.front();
-					int max = lastLine ;
-					int line = 1;
-					last.m_line = min;
-					last.m_indent = 0;
-					for (;line < min;++line)
-					{
-						++p;	
-					}
-					p = lstpLines.insert(p,last);
-					getNDTerm(index);
-					(*cond).m_line = last.m_line;
-					for (++line;line < max;++line)
-					{
-						++p;
-						(*p).m_line++;
-						getNDTerm((*p).m_index);
-						(*cond).m_line++;
-						if (((*p).m_first >= min && (*p).m_first <= max) )
-						{
-							(*p).m_first++;
-						}
-						if (((*p).m_second >= min && (*p).m_second <= max) )
-						{
-							(*p).m_second++;
-						}
-					
-					}
-					for (list<int>::iterator ass = assumptions.begin();ass!=assumptions.end();++ass)
-					{
-						(*ass)++;
-					}
-					return 0;
-				}
-				else
-				{
-					lstpLines.push_back(last);
-				}
-				
-			}
-			else if (goal.m_second == -1 && goal.m_first >= 0)
-			{
-				getString(goal.m_first);
-				pLine last(index,lastLine++,ifs,"",database.GetString(goal.m_index),rule2Str(goal.m_rule));
-				getNDTerm(goal.m_first);
-				last.m_first = (*cond).m_line;
-				if (goal.m_isPremise && !assumptions.empty())
-				{
-					vector<pLine>::iterator p = lstpLines.begin();
-					int min = assumptions.front();
-					int max = lastLine ;
-					int line = 1;
-					last.m_line = min;
-					last.m_indent = 0;
-					for (;line < min;++line)
-					{
-						++p;	
-					}
-					p = lstpLines.insert(p,last);
-					getNDTerm(index);
-					(*cond).m_line = last.m_line;
-					for (++line;line < max;++line)
-					{
-						++p;
-						(*p).m_line++;
-						getNDTerm((*p).m_index);
-						(*cond).m_line++;
-						if (((*p).m_first >= min && (*p).m_first <= max) )
-						{
-							(*p).m_first++;
-						}
-						if (((*p).m_second >= min && (*p).m_second <= max) )
-						{
-							(*p).m_second++;
-						}
-					}
-					for (list<int>::iterator ass = assumptions.begin();ass!=assumptions.end();++ass)
-					{
-						(*ass)++;
-					}
-					return 0;
-				}
-				else
-				{
-					lstpLines.push_back(last);
-				}
-				
-			}
-			else if(goal.m_second >= 0)
-			{
-				getString(goal.m_second);
-				getString(goal.m_first);
-				pLine last(index,lastLine++,ifs,"",database.GetString(goal.m_index),rule2Str(goal.m_rule));
-				getNDTerm(goal.m_second);
-				last.m_second = (*cond).m_line;
-				getNDTerm(goal.m_first);
-				last.m_first = (*cond).m_line;
-				if (goal.m_isPremise && !assumptions.empty())
-				{
-					vector<pLine>::iterator p = lstpLines.begin();
-					int min = assumptions.front();
-					int max = lastLine ;
-					int line = 1;
-					last.m_line = min;
-					last.m_indent = 0;
-					for (;line < min;++line)
-					{
-						++p;	
-					}
-					p = lstpLines.insert(p,last);
-					getNDTerm(index);
-					(*cond).m_line = last.m_line;
-					for (++line;line < max;++line)
-					{
-						++p;
-						(*p).m_line++;
-						getNDTerm((*p).m_index);
-						(*cond).m_line++;
-						if (((*p).m_first >= min && (*p).m_first <= max) )
-						{
-							(*p).m_first++;
-						}
-						if (((*p).m_second >= min && (*p).m_second <= max) )
-						{
-							(*p).m_second++;
-						}
-					}
-					for (list<int>::iterator ass = assumptions.begin();ass!=assumptions.end();++ass)
-					{
-						(*ass)++;
-					}
-					return 0;
-				}
-				else
-				{
-					lstpLines.push_back(last);
-				}
-				
-			}
-			else
-			{
-				pLine last(index,lastLine++,ifs,"",database.GetString(goal.m_index),rule2Str(goal.m_rule));
-				//getNDTerm(goal.m_second);
-				//last.m_second = (*cond).m_line;
-				//getNDTerm(goal.m_first);
-				//last.m_first = (*cond).m_line;
-				if (goal.m_isPremise && !assumptions.empty())
-				{
-					vector<pLine>::iterator p = lstpLines.begin();
-					int min = assumptions.front();
-					int max = lastLine ;
-					int line = 1;
-					last.m_line = min;
-					last.m_indent = 0;
-					for (;line < min;++line)
-					{
-						++p;	
-					}
-					p = lstpLines.insert(p,last);
-					getNDTerm(index);
-					(*cond).m_line = last.m_line;
-					for (++line;line < max;++line)
-					{
-						++p;
-						(*p).m_line++;
-						getNDTerm((*p).m_index);
-						(*cond).m_line++;
-						if (((*p).m_first >= min && (*p).m_first <= max) )
-						{
-							(*p).m_first++;
-						}
-						if (((*p).m_second >= min && (*p).m_second <= max) )
-						{
-							(*p).m_second++;
-						}
-					}
-					for (list<int>::iterator ass = assumptions.begin();ass!=assumptions.end();++ass)
-					{
-						(*ass)++;
-					}
-					return 0;
-				}
-				else
-				{
-					lstpLines.push_back(last);
-				}
-			}
+			last.m_isFixed = isFixed;
+			lstpLines.push_back(last);
+			getNDTerm(index);
+			(*cond).m_line = lastLine - 1;
 		}
 		
+		if (last.m_indent == ifs )
+		{
+			isFixed = false;
+		}
+
+		
 	}
+	if (isFixed)
+	{
+		if (lstpLines.back().m_index == index && (!prefix) )
+		{
+			lstpLines.back().m_isFixed = true;
+			
+		}
+		else
+		{
+			pLine last(index,lastLine++,ifs,"",database.GetString(goal.m_index), rule2Str(LGC_RULE_ID) );
+			getNDTerm(index);
+			last.m_first = (*cond).m_line;
+			last.m_isFixed = true;
+			lstpLines.push_back(last);
+		}
+	}
+
+#if _DEBUG
 	getNDTerm(index);
-	(*cond).m_line = lastLine - 1;
-	return 0;
+	cout<<"Call : "<<index << " = " <<(*cond).m_line<<endl;
+#endif
+	return 0;	
 }
 
 
@@ -1735,9 +1881,13 @@ bool NaturalDeduction::isReached(int &active, int& negative)
 int NaturalDeduction::disable(int assume)
 {
 
+
 	if (assume < 0 || assume >=  conditions.size())
 	{
-		cout<<"error";
+#if _DEBUG
+		cout<<"error = "<< assume<<endl;;
+#endif
+	
 		return 0;
 	}
 	getNDTerm(assume);
@@ -1799,11 +1949,13 @@ int NaturalDeduction::disable(int assume)
 
 int NaturalDeduction::getNDTerm(int index)
 {
+
 #if _DEBUG
 	_ASSERT(index >= 0 && index < conditions.size());
 #endif
 	if ( index < 0 || index >= conditions.size())
 	{
+		cout<<"Error while get NDTerm"<<endl;
 		cond = conditions.end();
 		return 0;
 	}
@@ -1818,11 +1970,40 @@ int NaturalDeduction::getNDTerm(int index)
 
 string NaturalDeduction::Result()
 {	
+	cout<<proveds.back()<<"----------\n";
 	getString(proveds.back());
-	//Arrange it
+	for (int i = 1;i < lstpLines.size() ; i++)
+	{
+		if (lstpLines[i].m_rule == rule2Str(LGC_RULE_ID))
+		{
+			int orginal = lstpLines[i].m_first;
+			int current_ifs = lstpLines[i].m_indent;
+			for (int j = i + 1; j < lstpLines.size(); j++)
+			{
+			
+				if (lstpLines[j].m_first == orginal)
+				{
+					lstpLines[j].m_first = lstpLines[i].m_line;
+				}
+				if (lstpLines[j].m_second == orginal)
+				{
+					lstpLines[j].m_second = lstpLines[i].m_line;
+				}
+				if (lstpLines[j].m_third == orginal)
+				{
+					lstpLines[j].m_third = lstpLines[i].m_line;
+				}	
+				if (lstpLines[j].m_indent < current_ifs)
+				{
+					break;
+				}
+			}
+		}
+	}
+	
 	string s = "";
 	int max = 0;
-	for (int i = 0; i < lstpLines.size(); i++)
+	for (i = 0; i < lstpLines.size(); i++)
  	{
 		s = pLine2Str(lstpLines[i]) +"\n";
 		if (max < s.length())
@@ -1830,7 +2011,11 @@ string NaturalDeduction::Result()
 			max =  s.length();
 		}
  	}
-	s = "";
+
+#if _DEBUG
+	s = "\n\n Here a result:\n\n";
+#endif
+	
 	for (i = 0; i < lstpLines.size(); i++)
 	{
 		s += pLine2Str(lstpLines[i],max) +"\n";
@@ -1933,8 +2118,8 @@ int NaturalDeduction::isDerived(int child, int parent)
 		int last = parents.back();
 		passed.push_back(last);
 		parents.pop_back();
-		int index = child - 1;
-		getNDTerm(child);
+		int index = parent;
+		getNDTerm(index + 1);
 		list<NDTerm>::iterator p = cond;
 		for (; p != conditions.end();++p)
 		{
@@ -1995,7 +2180,6 @@ int NaturalDeduction::OrEliminate()
 						goals.back().m_third = outside;
 						ndTerm.m_source = LGC_SRC_OR_SUB_2;
 						ndTerm.m_derivation = outside;
-						ndTerm.m_assume = outside;
 						ndTerm.m_index = goals.back().m_index;
 						goals.push_back(ndTerm);
 						ndTerm.m_source = LGC_SRC_OR_SUB_1;
@@ -2148,32 +2332,35 @@ int NaturalDeduction::NegContradiction()
 
 int NaturalDeduction::debug(int times)
 {
+//	return 0;
 #if _DEBUG
-	
+	int i = 0;
 	//database.print();
 	cout <<++times<<"_________________________Conditions__________________________________\n";
 	for (list<NDTerm>::iterator c = conditions.begin();c!=conditions.end();++c)
 	{
 		if(((*c).m_source&LGC_SRC_DISABLE)!= LGC_SRC_DISABLE )
-			cout<<"\t"<<database.GetString((*c).m_index);
+			cout<<"\t"<<i++<<"."<<database.GetString((*c).m_index)<<(*c).m_line;
 		else 
-			cout<<"\t*"<<database.GetString((*c).m_index);
+			cout<<"\t"<<i++<<"."<<database.GetString((*c).m_index)<<(*c).m_line;
+		//cout<<"\t"<<"Index = "<<(*c).m_index<<"\tFirst = "<<(*c).m_first<<"\t Second = "<<(*c).m_second<<"\t Third = "<<(*c).m_third<<"\t Pending = "<<(*c).m_pendings<<"\t Assume = "<<(*c).m_assume<< endl; 
 	}
 	
 	cout <<"\n_______________________________Goals__________________________________\n";
 	for (list<NDTerm>::iterator g = goals.begin();g!=goals.end();++g)
 	{
-		cout<<"\t"<<database.GetString((*g).m_index);
+		cout<<",\t"<<database.GetString((*g).m_index);
 	}
 	
 	cout <<"\n________________________________Proved________________________________\n";
 	for (list<int>::iterator p = proveds.begin();p!=proveds.end();++p)
 	{
-		getNDTerm(*p);
-		cout<<"\t"<<database.GetString((*cond).m_index);
+		//getNDTerm(*p);
+		//cout<<",\t"<<database.GetString((*cond).m_index);
+		cout<<",\t"<<(*p);
 	}
 	cout<<"\n______________________________________________________________________\n\n\n";
-	if (times == 7)
+	if (times == 10)
 	{
 		int dummy = 0;
 	}
@@ -2199,8 +2386,8 @@ int NaturalDeduction::insertLEMs()
 			database.functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_NOT));
 			database.functions.push_back(Term(LGC_REF,database.functions.size() - 2));
 			database.functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_OR));
-			database.functions.push_back(Term(LGC_REF,database.functions.size()-4));
-			database.functions.push_back(Term(LGC_REF,database.functions.size()-4));
+			database.functions.push_back(Term(LGC_REF,database.functions.size() - 4));
+			database.functions.push_back(Term(LGC_REF,database.functions.size() - 4));
 			NDTerm lem(database.functions.size()-3,LGC_RULE_LEM);
 			lem.m_path = 1;
 			lem.m_source |= LGC_SRC_LEM;
@@ -2214,7 +2401,7 @@ int NaturalDeduction::insertLEMs()
 
 int NaturalDeduction::getFarest(int& first, int& second, int sub1, int sub2)
 {
-	if (first < 0 || first >=  conditions.size() || second < 0 || second >=  conditions.size())
+	if (first < 0 || first >=  conditions.size() || second < 0 || second >=  conditions.size()|| sub1 < 0 || sub1 >=  conditions.size()|| sub2 < 0 || sub2 >=  conditions.size())
 	{
 		return -1;
 	}
@@ -2234,21 +2421,23 @@ int NaturalDeduction::getFarest(int& first, int& second, int sub1, int sub2)
 	int f_2 = t1.m_second;
 	int s_1 = t2.m_first;
 	int s_2 = t2.m_second;
-
+	bool called = false;
 	if (isDerived(f_1,sub1))
 	{
 		getFarest(f_1,s_1,sub1,sub2);
+		called = true;
 	}
 	if (isDerived(f_2,sub1))
 	{
 		getFarest(f_2,s_2,sub1,sub2);
+		called = true;
 	}
-	if (f_1 >= 0 && s_1 >= 0)
+	if (called && f_1 >= 0 && s_1 >= 0)
 	{
 		first = f_1;
 		second = s_1;
 	}
-	if (f_2 >= 0 && s_2 >= 0)
+	if (called && f_2 >= 0 && s_2 >= 0)
 	{
 		getNDTerm(first);
 		t1 = *cond;

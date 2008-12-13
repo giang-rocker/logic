@@ -35,6 +35,8 @@ struct pLine
 		m_first=  first;
 		m_second = second;
 		m_third = third;
+		m_isFixed = false;
+		m_isPrefix = false;
 	}
 	string ToString(int max = 0)
 	{
@@ -63,6 +65,8 @@ struct pLine
 	int m_second;
 	int m_third;
 	int m_index;
+	bool m_isFixed;
+	bool m_isPrefix;
 };
 inline std::string pLine2Str(const pLine& p)
 {
@@ -77,7 +81,8 @@ inline std::string pLine2Str(const pLine& p)
 inline std::string pLine2Str(const pLine& p, int max)
 {
 	string s = "";	
-	s = ToString(pLine2Str(p)) + "#";
+	//s = ToString(pLine2Str(p)) + "#";
+	s = ToStringX(pLine2Str(p),max) + " ";
 	s += p.m_rule ;
 	if (p.m_third > -1)
 	{
@@ -95,6 +100,7 @@ inline std::string pLine2Str(const pLine& p, int max)
 
 	return s;
 }
+
 
 
 #endif
