@@ -28,6 +28,6 @@ extern "C" __declspec (dllexport) char* inferencer(char* text)
 			result = "Cannot SOLVE...";	
 	}	
 	char* cstr = new char [result.size()+1];
-	strcpy (cstr, result.c_str());
+	strcpy (cstr, result.c_str());	
 	return cstr;
 }
