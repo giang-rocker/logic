@@ -903,7 +903,7 @@ int NaturalDeduction::ProveIt()
 					int s2 = (*cond).m_OrAssume;
 					getFarest(f1,f2,s1,s2);
 					
-					/*
+					
 					if ( f1 != goals.back().m_first)
 					{
 
@@ -972,7 +972,7 @@ int NaturalDeduction::ProveIt()
 						continue;
 					} 
 					else 
-					*/
+					
 					{
 						getNDTerm(goals.back().m_third);
 						(*cond).m_OrEnable = true;
