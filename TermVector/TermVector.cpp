@@ -593,14 +593,14 @@ string TermVector::GetString(int index)const
 			break;
 		default:
 			int args = functions[func].m_info;
-			result += names.GetString(func);
-			result += " ( ";
-			for (int i = 0; i < args ; i++)
+			result += GetString(func);
+			result += "(";
+			for (int i = 1; i < args ; i++)
 			{
 				result += GetString(index + i);
-				result += " , ";
+				result += ",";
 			}
-			result += " ) ";
+			result += GetString(index + args) + ")";
 			break;
 		}
 		break;
