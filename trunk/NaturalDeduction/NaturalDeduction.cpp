@@ -1334,7 +1334,7 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 	{
 		
 		getString(goal.m_third,true);
-		debug(999);
+
 		getNDTerm(goal.m_second);
 		NDTerm second = (*cond);
 		getNDTerm(second.m_OrAssume);
@@ -1343,7 +1343,7 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		(*cond).m_line = lastLine++;
 		ndAssumes.push_front(second.m_OrAssume);
 		lstpLines.push_back(pline2);
-		debug(999);
+
 		getNDTerm(goal.m_second);
 		(*cond).m_assume = -1;
 		getString(goal.m_second,true,true);
@@ -1351,7 +1351,7 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		lstpLines.back().m_indent--;
 		lstpLines.back().m_assumption = "nif  ";
 		lstpLines.back().m_isPrefix = true;
-		debug(999);
+
 
 		getNDTerm(goal.m_first);
 		NDTerm first = (*cond);
@@ -1433,11 +1433,11 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 
 	if ( goal.m_pendings == 2 || goal.m_second >= 0)
 	{
-		debug(998);
+		
 		getString(goal.m_second);
-		debug(998);
+		
 		getString(goal.m_first);
-		debug(998);
+		
 		if (goal.m_line <= 0)
 		{
 			pLine last(index,lastLine++,ifs,"",database.GetString(goal.m_index),rule2Str(goal.m_rule));
@@ -2015,7 +2015,7 @@ string NaturalDeduction::Result()
 			max =  s.length();
 		}
  	}
-
+	s = "";
 #if _DEBUG
 	s = "\n\n Here a result:\n\n";
 #endif

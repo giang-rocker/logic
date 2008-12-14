@@ -9,7 +9,7 @@ using namespace std;
 int main()
 {
 	string text = 
-		"p(A,B), q(A,B) |- q(A,B)";
+		"p(A,B), q(A,B) |- q(A,B) & p(A,B)";
 	//	"A,B , A&B -> F |- F ->A";
 	//	"A&B&C|- A";
 	//	"A1&A2->A3,A3|A1,A2|A3 |- A3 | H |F |  A | B | A";
