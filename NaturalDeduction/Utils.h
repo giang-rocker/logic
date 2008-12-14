@@ -81,8 +81,8 @@ inline std::string pLine2Str(const pLine& p)
 inline std::string pLine2Str(const pLine& p, int max)
 {
 	string s = "";	
-	//s = ToString(pLine2Str(p)) + "#";
-	s = ToStringX(pLine2Str(p),max) + " ";
+	s = ToString(pLine2Str(p)) + "#";
+	//s = ToStringX(pLine2Str(p),max) + " ";
 	s += p.m_rule ;
 	if (p.m_third > -1)
 	{
