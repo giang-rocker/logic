@@ -903,6 +903,7 @@ int NaturalDeduction::ProveIt()
 					int s2 = (*cond).m_OrAssume;
 					getFarest(f1,f2,s1,s2);
 					
+					/*
 					if ( f1 != goals.back().m_first)
 					{
 
@@ -933,17 +934,18 @@ int NaturalDeduction::ProveIt()
 
 						NDTerm subGoal = goals.back();
 						goals.back().m_first = f1;
-						goals.back().m_second = f2;
+						goals.back().m_second = f2;;
 						getNDTerm(f1);
 						goals.back().m_index = (*cond).m_index;
 
 						getNDTerm(goals.back().m_third);
 						(*cond).m_OrEnable = true;
 						goals.back().m_rule = LGC_E_OR;
+						goals.back().m_OrAssume = -1;
 						conditions.push_back(goals.back());
 						goals.pop_back();
 						PrintIndex();
-						for (int i = f1 + 1; i <= subGoal.m_first; i++)
+						for (int i = 0; i <= conditions.size()-2; i++)
 						{
 							getNDTerm(i);
 							if ((*cond).m_third == f1)
@@ -970,6 +972,7 @@ int NaturalDeduction::ProveIt()
 						continue;
 					} 
 					else 
+					*/
 					{
 						getNDTerm(goals.back().m_third);
 						(*cond).m_OrEnable = true;
@@ -1171,7 +1174,8 @@ int NaturalDeduction::ProveIt()
 
 #if _DEBUG
 	
-		//database.print();
+		database.print();
+		PrintIndex();
 		cout <<++times<<"_________________________Conditions__________________________________\n";
 		for (list<NDTerm>::iterator c = conditions.begin();c!=conditions.end();++c)
 		{
@@ -1951,7 +1955,7 @@ int NaturalDeduction::getNDTerm(int index)
 {
 
 #if _DEBUG
-	_ASSERT(index >= 0 && index < conditions.size());
+	//_ASSERT(index >= 0 && index < conditions.size());
 #endif
 	if ( index < 0 || index >= conditions.size())
 	{

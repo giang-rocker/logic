@@ -592,8 +592,8 @@ string TermVector::GetString(int index)const
 			}
 			break;
 		default:
-			int args = functions[index].m_info;
-			result += names.GetString(functions[index].m_ref);
+			int args = functions[func].m_info;
+			result += names.GetString(func);
 			result += " ( ";
 			for (int i = 0; i < args ; i++)
 			{
