@@ -90,30 +90,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Test"=".\Test\Test.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name Analyser
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name NaturalDeduction
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name Parser
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name TermVector
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Global:
 
 Package=<5>
