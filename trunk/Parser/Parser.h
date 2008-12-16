@@ -25,7 +25,7 @@ public:
 	void parseArg_tail();
 	void parseFormulaTail();
 	string s ;
-	TermVector data;
+	xWam data;
 private:
 	Scanner* scanner; 
 	Token lookAheadToken;

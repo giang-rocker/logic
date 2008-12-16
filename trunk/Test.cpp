@@ -8,11 +8,24 @@
 using namespace std;
 int main()
 {
-	string text = 
-	//	"p(A,B), q(A,B) |- q(A,B)";
+	string text = 	"all x (p(x) ->!q(x)) |- !(exists x (p(x) & q(x)))";
+	//	"all x (p(x) ->q(x)) |- (all x !q(x)) ->(all x !p(x))";
+	//	"all x p(x) |- all y p(y)";
+	//	"exists x exists y f(x,y)|- exists y exists x f(x,y)";
+	//	"all x all y f(x,y)|- all y all x f(x,y)";
+	//	"all x f(x,y) & all x g(x,y) |- all x (f(x,y) & g(x,y))";
+	//	"! (all x f(x) ) |- exists x !f(x)";
+	//	"all x (f(x) & F) |- all x (F & f(x))";
+	//	"exists x p(x), all x all y (p(x) -> q(y)) |-  all y q(y)";
+	//	"all x (q(x) -> r(x)), exists x (p(x) & q(x)) |-  exists x (p(x) & r(x))";
+	//	"all x (p(x) ->q(x)), exists x p(x) |- exists x q(x)";
+	//	"all x f(x) |- exists x f(x)";
+	//	"all x (p(x) -> q(x)), all x p(x) |- all x q(x)";
+	//	"p(t), all x (p(x) -> !q(x)) |- !q(t)";
+	//	"p(A,B) -> h(A,B) |- p(A,B)|K -> h(A,B)|K";
 	//	"A,B , A&B -> F |- F ->A";
 	//	"A&B&C|- A";
-		"A1&A2->A3,A3|A1,A2|A3 |- A3 ";
+	//	"A1&A2->A3,A3|A1,A2|A3 |- A3 | H |F |  A | B | A";
 	//	"F|F |- F";
 	//	"A,B |- A & B";
 	//	"A,B,A&B->C |- C";
@@ -73,6 +86,7 @@ int main()
 	if ( p->s != "")
 	{
 		cout<< p->s <<endl;
+		
 	}
 	else
 	{

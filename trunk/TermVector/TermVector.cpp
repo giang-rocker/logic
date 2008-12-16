@@ -9,27 +9,27 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-TermVector::TermVector()
+xWam::xWam()
 {
 
 	quantifiers.push_back(Term(LGC_NULL));
 
-	functions.push_back(Term(LGC_FUN_DEF ,names.GetIndex(LGC_STR_NOT),1));
-	functions.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_AND),2));
-	functions.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_OR),2));
-	functions.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_MAP),2));
-	functions.push_back(Term(LGC_TERM_FALSE));
+	clauses.push_back(Term(LGC_FUN_DEF ,names.GetIndex(LGC_STR_NOT),1));
+	clauses.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_AND),2));
+	clauses.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_OR),2));
+	clauses.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_MAP),2));
+	clauses.push_back(Term(LGC_TERM_FALSE));
 
 
 
 	
 }
-TermVector::~TermVector()
+xWam::~xWam()
 {
 
 }
 
-int TermVector::BeginSentence()
+int xWam::BeginSentence()
 {
 
 
@@ -41,7 +41,7 @@ int TermVector::BeginSentence()
 	return LGC_ERR_SUCC;
 }
 
-int TermVector::EndSentence(bool isCondition)
+int xWam::EndSentence(bool isCondition)
 {
 
 	quanSize = 0;
@@ -62,46 +62,46 @@ int TermVector::EndSentence(bool isCondition)
 		switch ((*p).m_kind)
 		{
 		case LGC_OP_NOT:
-			functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_NOT,0));
+			clauses.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_NOT,0));
 			--p;
-			functions.push_back(*p);
+			clauses.push_back(*p);
 			p = lstTerms.erase(p);
-			*p = Term(LGC_REF,functions.size() - 2,0);
+			*p = Term(LGC_REF,clauses.size() - 2,0);
 			break;
 		case LGC_OP_AND:
-			functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_AND,0));
+			clauses.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_AND,0));
 			--p;
 			--p;
-			functions.push_back(*p);
+			clauses.push_back(*p);
 			p = lstTerms.erase(p);
-			functions.push_back(*p);
+			clauses.push_back(*p);
 			p = lstTerms.erase(p);
-			*p = Term(LGC_REF,functions.size() - 3,-0);
+			*p = Term(LGC_REF,clauses.size() - 3,-0);
 			break;
 		case LGC_OP_OR:
-			functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_OR,0));
+			clauses.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_OR,0));
 			--p;
 			--p;
-			functions.push_back(*p);
+			clauses.push_back(*p);
 			p = lstTerms.erase(p);
-			functions.push_back(*p);
+			clauses.push_back(*p);
 			p = lstTerms.erase(p);
-			*p = Term(LGC_REF,functions.size() - 3,0);
+			*p = Term(LGC_REF,clauses.size() - 3,0);
 			break;
 		case LGC_OP_MAP:
-			functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_MAP,0));
+			clauses.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_MAP,0));
 			--p;
 			--p;
-			functions.push_back(*p);
+			clauses.push_back(*p);
 			p = lstTerms.erase(p);
-			functions.push_back(*p);
+			clauses.push_back(*p);
 			p = lstTerms.erase(p);
-			*p = Term(LGC_REF,functions.size() - 3,0);
+			*p = Term(LGC_REF,clauses.size() - 3,0);
 			break;
 		case LGC_OP_QUAN:
 			p = lstTerms.erase(p);
 			--p;
-			functions[(*p).m_ref].m_info = lstQuans.back();
+			clauses[(*p).m_ref].m_info = lstQuans.back();
 			lstQuans.pop_back();
 			break;
 		}
@@ -110,8 +110,8 @@ int TermVector::EndSentence(bool isCondition)
 	int t = lstTerms.back().m_ref;
 	if (lstTerms.back().m_kind == LGC_TERM_PROP)
 	{
-		t = functions.size();
-		functions.push_back(Term(LGC_TERM_PROP,lstTerms.back().m_ref));
+		t = clauses.size();
+		clauses.push_back(Term(LGC_TERM_PROP,lstTerms.back().m_ref));
 	}
 	if (isCondition)
 	{
@@ -124,7 +124,7 @@ int TermVector::EndSentence(bool isCondition)
 	}
 	return LGC_ERR_SUCC;
 }
-int TermVector::BeginFunction(string name)
+int xWam::BeginFunction(string name)
 {
 
 #ifdef PRINT_METHOD
@@ -141,10 +141,10 @@ int TermVector::BeginFunction(string name)
 
 	quanSize = 0;
 	int index  = names.GetIndex(name);
-	p = functions.begin();
+	p = clauses.begin();
 	int func = 0;
 
-	for (;p != functions.end();++p)
+	for (;p != clauses.end();++p)
 	{
 		if ((*p).m_ref == index && (*p).m_kind == LGC_FUN_DEF)
 		{
@@ -154,10 +154,10 @@ int TermVector::BeginFunction(string name)
 		func++;
 	}
 
-	if(p == functions.end())
+	if(p == clauses.end())
 	{
-		func = functions.size();
-		functions.push_back(Term(LGC_FUN_DEF,index,0));
+		func = clauses.size();
+		clauses.push_back(Term(LGC_FUN_DEF,index,0));
 	}
 
 	Term t(LGC_TERM_FUNC,func,0);
@@ -175,7 +175,7 @@ int TermVector::BeginFunction(string name)
 	return LGC_ERR_SUCC;
 }
 
-int TermVector::EndFunction()
+int xWam::EndFunction()
 {
 
 	quanSize = 0;
@@ -189,11 +189,11 @@ int TermVector::EndFunction()
 	}
 	--args;
 	p = lstTerms.erase(p);
-	functions[(*p).m_ref].m_info = args;
-	int next = functions.size();
+	clauses[(*p).m_ref].m_info = args;
+	int next = clauses.size();
 	while (p!=lstTerms.end())
 	{
-		functions.push_back(*p);
+		clauses.push_back(*p);
 		p = lstTerms.erase(p);
 	} 
 	--p;
@@ -202,7 +202,7 @@ int TermVector::EndFunction()
 	lstOpers.pop_back();
 	return LGC_ERR_SUCC;
 }
-int TermVector::BeginArg()
+int xWam::BeginArg()
 {
 
 	quanSize = 0;
@@ -211,7 +211,7 @@ int TermVector::BeginArg()
 	return LGC_ERR_SUCC;
 }
 
-int TermVector::EndArg()
+int xWam::EndArg()
 {
 
 
@@ -233,46 +233,46 @@ int TermVector::EndArg()
 	switch ((*p).m_kind)
 	{
 	case LGC_OP_NOT:
-		functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_NOT,0));
+		clauses.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_NOT,0));
 		--p;
-		functions.push_back(*p);
+		clauses.push_back(*p);
 		p = lstTerms.erase(p);
-		*p = Term(LGC_REF,functions.size() - 2,0);
+		*p = Term(LGC_REF,clauses.size() - 2,0);
 		break;
 	case LGC_OP_AND:
-		functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_AND,0));
+		clauses.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_AND,0));
 		--p;
 		--p;
-		functions.push_back(*p);
+		clauses.push_back(*p);
 		p = lstTerms.erase(p);
-		functions.push_back(*p);
+		clauses.push_back(*p);
 		p = lstTerms.erase(p);
-		*p = Term(LGC_REF,functions.size() - 3,-0);
+		*p = Term(LGC_REF,clauses.size() - 3,-0);
 		break;
 	case LGC_OP_OR:
-		functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_OR,0));
+		clauses.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_OR,0));
 		--p;
 		--p;
-		functions.push_back(*p);
+		clauses.push_back(*p);
 		p = lstTerms.erase(p);
-		functions.push_back(*p);
+		clauses.push_back(*p);
 		p = lstTerms.erase(p);
-		*p = Term(LGC_REF,functions.size() - 3,0);
+		*p = Term(LGC_REF,clauses.size() - 3,0);
 		break;
 	case LGC_OP_MAP:
-		functions.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_MAP,0));
+		clauses.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_MAP,0));
 		--p;
 		--p;
-		functions.push_back(*p);
+		clauses.push_back(*p);
 		p = lstTerms.erase(p);
-		functions.push_back(*p);
+		clauses.push_back(*p);
 		p = lstTerms.erase(p);
-		*p = Term(LGC_REF,functions.size() - 3,0);
+		*p = Term(LGC_REF,clauses.size() - 3,0);
 		break;
 	case LGC_OP_QUAN:
 		p = lstTerms.erase(p);
 		--p;
-		functions[(*p).m_ref].m_info = lstQuans.back();
+		clauses[(*p).m_ref].m_info = lstQuans.back();
 		lstQuans.pop_back();
 		break;
 	}
@@ -282,13 +282,12 @@ int TermVector::EndArg()
 	return LGC_ERR_SUCC;
 }
 
-int TermVector::NewQuan(string var, int kind)
+int xWam::NewQuan(string var, int kind)
 {
-
 	if (quanSize == 0)
 	{
 		quanSize++;
-		quantifiers.push_back(Term(LGC_QUAN_SIZE,0,0));
+		quantifiers.push_back(Term(LGC_QUAN_SIZE,1,0));
 		lstQuans.push_back(quantifiers.size()-1);
 		lstOpers.push_back(LGC_OP_QUAN);
 	}
@@ -298,14 +297,14 @@ int TermVector::NewQuan(string var, int kind)
 	int next = 0;
 	for (;p!=variables.end();++p)
 	{
-		
 		if ((*p).m_ref == index)
 		{
 			t.m_ref = next;
+			break;
 		}
 		++next;
 	}
-	if (p == variables.end())
+	if (next >= variables.size())
 	{
 		variables.push_back(Term(LGC_TERM_VAR,index));
 		t.m_ref = variables.size() - 1;
@@ -314,7 +313,9 @@ int TermVector::NewQuan(string var, int kind)
 	quantifiers.push_back(Term(kind,next));
 	return LGC_ERR_SUCC;
 }
-int TermVector::NewVar(string name,int kind)
+
+
+int xWam::NewVar(string name,int kind,int flag)
 {
 
 	quanSize = 0;
@@ -324,7 +325,6 @@ int TermVector::NewVar(string name,int kind)
 	int next = 0;
 	for (;p!=variables.end();++p)
 	{
-		
 		if ((*p).m_ref == index)
 		{
 			t.m_ref = next;
@@ -332,17 +332,20 @@ int TermVector::NewVar(string name,int kind)
 		}
 		++next;
 	}
-	if (p == variables.end())
+	if (next >= variables.size())
 	{
-		
-		variables.push_back(Term(kind,index));
+		variables.push_back(Term(kind,index,flag));
 		t.m_ref = variables.size() - 1;
 	}
-	lstTerms.push_back(t);
+	if (flag == 0)
+	{
+		lstTerms.push_back(t);
+	}
 	return LGC_ERR_SUCC;
 }
 
-int TermVector::NewLogicOp(int op)
+
+int xWam::NewLogicOp(int op)
 {
 
 	quanSize = 0;
@@ -361,7 +364,7 @@ int TermVector::NewLogicOp(int op)
 	return LGC_ERR_SUCC;
 }
 
-int TermVector::LeftPar()
+int xWam::LeftPar()
 {
 
 	quanSize = 0;
@@ -370,7 +373,7 @@ int TermVector::LeftPar()
 	return LGC_ERR_SUCC;
 }
 
-int TermVector::RightPar()
+int xWam::RightPar()
 {
 
 	while ((!lstOpers.empty()) && lstOpers.back()!=LGC_OP_LPAR)
@@ -384,17 +387,17 @@ int TermVector::RightPar()
 	
 	return LGC_ERR_SUCC;
 }
-TermVector::operator string()const
+xWam::operator string()const
 {
 	
 	return "";
 }
-int TermVector::print()
+int xWam::print()
 {
 	cout<<"\n\n---------------Main---------------------\n";
-	vector<Term>::const_iterator p = functions.begin();
+	vector<Term>::const_iterator p = clauses.begin();
 	int i = 0;
-	for (;p!=functions.end();++p)
+	for (;p!=clauses.end();++p)
 	{
 		
 		switch ((*p).m_kind)
@@ -420,7 +423,7 @@ int TermVector::print()
 			break;
 
 		case LGC_TERM_FUNC:
-			cout<<"\n"<<i++<<"\tCall :\t"<<names.GetString(functions[(*p).m_ref].m_ref)<<"\tQuan="<<(*p).m_info<<"\n";
+			cout<<"\n"<<i++<<"\tCall :\t"<<names.GetString(clauses[(*p).m_ref].m_ref)<<"\tQuan="<<(*p).m_info<<"\n";
 			break;
 		case LGC_TERM_FALSE:
 			cout<<i++<<"\t _|_ \n";
@@ -451,17 +454,17 @@ int TermVector::print()
 
 
 
-string TermVector::GetString(int index)const
+string xWam::GetString(int index)const
 {
-	if (index < 0 || index >= functions.size())
+	if (index < 0 || index >= clauses.size())
 	{
 		cout << "Error while retrieve string!";
 	}
 	string result = "";
-	switch (functions[index].m_kind)
+	switch (clauses[index].m_kind)
 	{
 	case LGC_REF:
-		result =GetString(functions[index].m_ref);
+		result =GetString(clauses[index].m_ref);
 		break;
 
 	case LGC_TERM_FALSE:
@@ -469,41 +472,42 @@ string TermVector::GetString(int index)const
 		break;
 
 	case LGC_FUN_DEF:
-		result = names.GetString(functions[index].m_ref);
+		result = names.GetString(clauses[index].m_ref);
 		break;
 
 	case LGC_TERM_CONST:
-		result = names.GetString(variables[functions[index].m_ref].m_ref);
+		result = names.GetString(variables[clauses[index].m_ref].m_ref);
 		break;
 
 	case LGC_TERM_PROP:
-		result = names.GetString(variables[functions[index].m_ref].m_ref);
+		result = names.GetString(variables[clauses[index].m_ref].m_ref);
 		break;
 
 	case LGC_TERM_VAR:
-		result = names.GetString(variables[functions[index].m_ref].m_ref);
+		result = names.GetString(variables[clauses[index].m_ref].m_ref);
 		break;
 
 	case LGC_TERM_FUNC:
-		int quan = functions[index].m_info;
+		int quan = clauses[index].m_info;
 		if (quan > 0)
 		{
 			int size = quantifiers[quan].m_info;
-			for (int i = quan; i < size; i++)
+			int offset = quantifiers[quan].m_ref;
+			for (int i = 0; i < size; i++)
 			{
-				if(quantifiers[i+quan].m_kind == LGC_QUAN_ALL)
+				if(quantifiers[i + quan + offset].m_kind == LGC_QUAN_ALL)
 				{
-					result += " all ";
+					result += "all ";
 				}
-				else if(quantifiers[i+quan].m_kind == LGC_QUAN_EXIST)
+				else if(quantifiers[ i + quan + offset ].m_kind == LGC_QUAN_EXIST)
 				{
-					result += " exists ";
+					result += "exists ";
 				}
-				result += names.GetString(quantifiers[i+quan].m_ref)+ " ";
+				result += names.GetString(variables[quantifiers[i + quan + offset].m_ref].m_ref)+ " ";
 			}
 		}
 
-		int func = functions[index].m_ref;
+		int func = clauses[index].m_ref;
 		bool pars =  false;
 		switch (func)
 		{
@@ -519,16 +523,19 @@ string TermVector::GetString(int index)const
 			{
 				result += ")";
 			}
-			//result += " ";
 			break;
 		case LGC_ADDR_AND:
 			pars  = isOperator(index+1);
+			if (quan)
+			{
+				result += "(";
+			}
 			if (pars)
 			{
 				result += "(";
 			}
 			result += GetString(index + 1);
-			if (pars)
+			if (pars) 
 			{
 				result += ")";
 			}
@@ -541,6 +548,10 @@ string TermVector::GetString(int index)const
 			result += GetString(index + 2);
 			pars  = isOperator(index+2);
 			if (pars)
+			{
+				result += ")";
+			}
+			if (quan)
 			{
 				result += ")";
 			}
@@ -592,7 +603,7 @@ string TermVector::GetString(int index)const
 			}
 			break;
 		default:
-			int args = functions[func].m_info;
+			int args = clauses[func].m_info;
 			result += GetString(func);
 			result += "(";
 			for (int i = 1; i < args ; i++)
@@ -608,16 +619,16 @@ string TermVector::GetString(int index)const
 	return result;
 }
 
-bool TermVector::isOperator(int index)const
+bool xWam::isOperator(int index)const
 {
 	int i = index;
-	while (functions[i].m_kind ==LGC_REF)
+	while (clauses[i].m_kind ==LGC_REF)
 	{
-		i = functions[i].m_ref;
+		i = clauses[i].m_ref;
 	}
-	if (functions[i].m_kind == LGC_TERM_FUNC)
+	if (clauses[i].m_kind == LGC_TERM_FUNC)
 	{
-		if ( functions[i].m_ref == LGC_ADDR_AND ||functions[i].m_ref == LGC_ADDR_OR ||functions[i].m_ref == LGC_ADDR_MAP)
+		if ( clauses[i].m_ref == LGC_ADDR_AND ||clauses[i].m_ref == LGC_ADDR_OR ||clauses[i].m_ref == LGC_ADDR_MAP)
 		{
 			return true;
 		}
@@ -625,3 +636,141 @@ bool TermVector::isOperator(int index)const
 	return false;
 }
 
+int xWam:: ClauseVars(int index, list<int>&theta)const
+{
+	
+	if (index < 0 || index >= clauses.size())
+	{
+		return 0;
+	}
+
+#if _DEBUG
+	_ASSERT(index >= 0 && index < clauses.size());
+#endif
+		while (clauses[index].m_kind == LGC_REF)
+		{
+			index = clauses[index].m_ref;
+		}
+   	    if( clauses[index].m_kind  == LGC_TERM_VAR)
+		{
+			if (find(theta.begin(),theta.end(),clauses[index].m_ref) == theta.end())
+			{
+				theta.push_back(clauses[index].m_ref);
+			}
+		}
+		else if( clauses[index].m_kind == LGC_TERM_FUNC)
+		{
+			int func = clauses[index].m_ref;
+			int args = clauses[func].m_info;
+			for (int i = 1; i <= args ; i++)
+			{
+				ClauseVars(index + i,theta);
+			}
+		}
+		return 0;
+}
+
+
+int xWam::SubVars(int index, int flag)
+{
+#if _DEBUG
+	_ASSERT(index >= 0 && index < variables.size());
+#endif
+	index = names.GetIndex(names.GetString(variables[index].m_ref) + ToString(variables[index].m_extra++));
+	variables.push_back(Term(LGC_TERM_VAR,index,flag));
+	return variables.size() - 1;
+}
+
+Term xWam::Get1stQuan(int index)
+{
+	int offset = quantifiers[index].m_ref;
+	return quantifiers[index + offset];
+}
+
+int xWam::GetRemainQuan(int index)
+{
+	if (quantifiers[index].m_info > 1)
+	{
+		int position = quantifiers[index].m_ref + index;
+		position =  position - quantifiers.size() + 1;
+		quantifiers.push_back(Term(LGC_QUAN_SIZE,position,quantifiers[index].m_info - 1));
+		return quantifiers.size() - 1;
+	}
+	return 0;
+}
+
+list<int>xWam::RestValidTerm(int index)const
+{
+	list<int>funVar;
+	ClauseVars(index,funVar);
+	list<int>vars;
+	for (int i = 0; i < variables.size(); i++)
+	{
+		{
+			if (find(funVar.begin(),funVar.end(),i) == funVar.end())
+			{
+				vars.push_back(i);
+			}
+			
+		}
+	}
+	return vars;
+}
+
+int xWam::CopyClause(int index,int oldVar,int newVar)
+{
+	int size =  clauses[clauses[index].m_ref].m_info;
+	Term* arg =new Term[size];
+	for (int i = 1; i <= size; i++)
+	{
+		if (clauses[i + index].m_kind == LGC_TERM_VAR)
+		{
+			if (clauses[i+index].m_ref == oldVar)
+			{
+				arg[ i - 1] = Term(variables[newVar].m_kind,newVar);
+			}
+			else
+			{
+				arg[i - 1] = clauses[i + index];
+			}
+		}
+		else if (clauses[i + index].m_kind == LGC_REF)
+		{
+			int pos = i + index;
+			while (clauses[pos].m_kind == LGC_REF)
+			{
+				pos = clauses[pos].m_ref;
+			}
+			arg[i-1] = Term(LGC_REF,CopyClause(pos,oldVar,newVar));
+		}
+		else
+		{
+			arg[i - 1] =  clauses[i + index];
+		}
+	}
+
+	int result = clauses.size();
+	clauses.push_back(clauses[index]);
+	for (i = 0; i < size; i++)
+	{
+		clauses.push_back(arg[i]);
+	}
+	delete[] arg;
+	return result;
+}
+
+int xWam::DupVar(int index, int flag)
+{
+	int ref = variables[index].m_ref;
+	for (int i = 0; i < variables.size(); i++)
+	{
+		if (variables[i].m_ref == ref && (variables[i].m_info & LGC_VAR_DUPLICATE) == LGC_VAR_DUPLICATE)
+		{
+			return i;
+		}
+	}
+	Term t(LGC_TERM_VAR,ref,variables[index].m_info);
+	t.m_info |= LGC_VAR_DUPLICATE | flag;
+	variables.push_back(t);
+	return variables.size() - 1;
+}

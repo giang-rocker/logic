@@ -14,8 +14,21 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include "../NaturalDeduction/Utils.h"
+#if _DEBUG
+//#undef  _DEBUG
+#include <crtdbg.h>
+#endif
+
 using namespace std;
 
+#define LGC_VAR_UNDEFINE		0x00000000
+#define LGC_VAR_ABS_UNFLAG		0x00000001
+#define LGC_VAR_ABS_FLAGGED		0x00000002
+#define LGC_VAR_REL_UNFLAG		0x00000004
+#define LGC_VAR_REL_FLAGGED		0x00000010
+#define LGC_VAR_ANY_VALUE		0x00000020
+#define LGC_VAR_DUPLICATE		0x00000040
 
 //////////////////////////////////////////////////////////////////////////
 #define LGC_ERR_SUCC	1
@@ -29,7 +42,6 @@ using namespace std;
 
 //////////////////////////////////////////////////////////////////////////
 #define LGC_FUN_DEF		1
-
 #define LGC_TERM_VAR	2
 #define LGC_TERM_CONST	3
 #define LGC_TERM_PROP	4
@@ -87,11 +99,17 @@ struct Term
 	int m_kind;
 	int m_ref;
 	int m_info;
+	int m_extra;
 	Term(int kind = 0, int ref = 0, int info = 0)
 	{
 		m_kind = kind;
 		m_ref = ref;
 		m_info = info;
+		m_extra = 0;
+	}
+	string toString()
+	{
+		return ToString(m_kind) + ":" + ToString(m_ref) + ":"  + ToString(m_info) + ":" + ToString(m_extra) ;
 	}
 };
 
@@ -147,13 +165,14 @@ private:
 };
 
 
-class TermVector  
+class xWam  
 {
+
 public:
 	int RightPar();
 	int LeftPar();
 	int NewLogicOp(int op);
-	int NewVar(string name,int kind);
+	int NewVar(string name,int kind, int flag = 0);
 	int NewQuan(string var, int kind);
 	int EndArg();
 	int BeginArg();
@@ -161,18 +180,24 @@ public:
 	int BeginFunction(string name);
 	int EndSentence(bool isCondition = true);
 	int BeginSentence();
+	int DupVar(int index, int flag);
 	int print();
 	string GetString(int index)const;
-	TermVector();
-	virtual ~TermVector();
+	xWam();
+	virtual ~xWam();
 	operator string()const;
-	
-	vector<Term>functions;
+	vector<Term>clauses;
 	vector<Term>variables;
 	vector<Term>quantifiers;
 	Names names;
 	list<int> goals;
 	list<int> conditions;
+	int SubVars(int index, int flag = 0);
+	Term Get1stQuan(int index);
+	int GetRemainQuan(int index);
+	list<int>RestValidTerm(int index)const;
+	int ClauseVars(int index, list<int>&theta)const;
+	int CopyClause(int index,int oldVar,int newVar);
 
 private:
 	bool isOperator(int index)const;

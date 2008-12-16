@@ -22,6 +22,7 @@ inline std::string ToStringX (const T& t,int width)
 	ss << t;
 	return ss.str();
 }
+
 struct pLine 
 {
 	pLine(int index ,int line, int indent, string assump, string content, string rule = "", int first = -1, int second = -1 , int third = -1)
@@ -81,8 +82,12 @@ inline std::string pLine2Str(const pLine& p)
 inline std::string pLine2Str(const pLine& p, int max)
 {
 	string s = "";	
+
+#if _DEBUG
+	s = ToStringX(pLine2Str(p),max) + " ";
+#else
 	s = ToString(pLine2Str(p)) + "#";
-	//s = ToStringX(pLine2Str(p),max) + " ";
+#endif
 	s += p.m_rule ;
 	if (p.m_third > -1)
 	{
