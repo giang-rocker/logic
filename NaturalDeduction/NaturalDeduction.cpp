@@ -1525,8 +1525,8 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		getNDTerm(goal.m_cutExists);
 		int firstLine = (*cond).m_first;
 		getString(firstLine);
-
-		getString(firstLine); 
+		lstpLines.back().m_isPrefix = true;
+		getNDTerm(firstLine); 
 		firstLine = (*cond).m_line;
 
 		getNDTerm(goal.m_cutExists);
@@ -1534,8 +1534,8 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		pLine pline(goal.m_cutExists,lastLine,ifs++,"if   " , var + " " + knowledgeBase.GetString((*cond).m_index));
 		pline.m_first = firstLine;
 		pline.m_isPrefix = true;
-		pline.m_extra = "\t["	 + knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_OldVarIndex].m_ref) 
-						+ "/"	 +  knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_NewVar].m_ref) + "]";
+		pline.m_extra = "\t["	 + knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_NewVar].m_ref) 
+						+ "/"	 +  knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_OldVarIndex].m_ref) + "]";
 		ndAssumes.push_front(goal.m_cutExists);
 		(*cond).m_line = lastLine++;
 		lstpLines.push_back(pline);
@@ -1856,8 +1856,8 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 			if (goal.m_rule == LGC_I_EXISTS)
 			{
 				getNDTerm(goal.m_first);
-				last.m_extra = "\t[" + knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_NewVar].m_ref)
-								 + "/" + knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_OldVarIndex].m_ref) + "]";
+				last.m_extra = "\t[" + knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_OldVarIndex].m_ref)
+								 + "/" + knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_NewVar].m_ref) + "]";
 
 			}
 			getNDTerm(goal.m_first);
