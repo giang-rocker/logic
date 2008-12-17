@@ -9,9 +9,10 @@ using namespace std;
 int main()
 {
 	string text = 
-	//	"all x ( an (x) & ngu(x) -> heo(x)) , all x (nguoi(x) -> an (x) & lam (x) & ngu(x)) , nguoi (Phuoc) |- heo(Phuoc)";
+	//	"all x all y all z ((le(x, y) & le(y, z)) ->!gt(x, z)),all x all y (le(x, y) -> (gt(y, x) | eq(x, y))), all x exists y le(x, y)|- all x le(x, x)";
+	//	"all x ( an (x) & ngu(x) -> heo(x)) , all x (nguoi(x) -> an (x) & lam (x) & ngu(x)) , nguoi (A) |- heo(A)";
 	//	"A,B, A&B -> all x(f(x)) |- all t f(t) & all y f(y)";
-	//"all x (p(x) ->!q(x)) |- !(exists x (p(x) & q(x)))";
+	//  "all x (p(x) ->!q(x)) |- !(exists x (p(x) & q(x)))";
 	//	"nguoi(Cesar), all x ( nguoi (x) -> chet(x)) |- chet(Cesar)";
 	//	"all x (p(x) ->!q(x)) |- !(exists x (p(x) & q(x)))";
 	//	"all x (p(x) ->q(x)) |- (all x !q(x)) ->(all x !p(x))";

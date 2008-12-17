@@ -16,9 +16,9 @@
 #include <algorithm>
 #include "../NaturalDeduction/Utils.h"
 
-// #if _DEBUG
+#if _DEBUG
  #include <crtdbg.h>
-// #endif
+#endif
 
 using namespace std;
 
