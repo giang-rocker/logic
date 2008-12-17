@@ -9,8 +9,9 @@ using namespace std;
 int main()
 {
 	string text = 
+	//	"all x ( an (x) & ngu(x) -> heo(x)) , all x (nguoi(x) -> an (x) & lam (x) & ngu(x)) , nguoi (Phuoc) |- heo(Phuoc)";
 	//	"A,B, A&B -> all x(f(x)) |- all t f(t) & all y f(y)";
-	"all x (p(x) ->!q(x)) |- !(exists x (p(x) & q(x)))";
+	//"all x (p(x) ->!q(x)) |- !(exists x (p(x) & q(x)))";
 	//	"nguoi(Cesar), all x ( nguoi (x) -> chet(x)) |- chet(Cesar)";
 	//	"all x (p(x) ->!q(x)) |- !(exists x (p(x) & q(x)))";
 	//	"all x (p(x) ->q(x)) |- (all x !q(x)) ->(all x !p(x))";
@@ -20,7 +21,7 @@ int main()
 	//	"all x f(x) & all x g(x) |- all x (f(x) & g(x))";
 	//	"! (all x f(x) ) |- exists x !f(x)";
 	//	"all x (f(x) & F) |- all x (F & f(x))";
-	//	"exists x p(x), all x all y (p(x) -> q(y)) |-  all y q(y)";
+		"exists x p(x), all x all y (p(x) -> q(y)) |-  all y q(y)";
 	//	"all x (q(x) -> r(x)), exists x (p(x) & q(x)) |-  exists x (p(x) & r(x))";
 	//	"all x (p(x) ->q(x)), exists x p(x) |- exists x q(x)";
 	//	"all x f(x) |- exists x f(x)";
