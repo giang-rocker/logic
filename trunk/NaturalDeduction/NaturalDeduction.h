@@ -96,9 +96,8 @@
 
 #define LGC_SRC_EE_GOAL		0x00100000
 #define LGC_SRC_EE_CONC		0x00200000
-
-#define LGC_SRC_EI_GOAL		0x00400000
-#define LGC_SRC_EI_CONC		0x00800000
+#define LGC_SRC_EE_ASSU		0x00400000
+#define LGC_SRC_EI_GOAL		0x00800000
 //////////////////////////////////////
 
 
@@ -172,7 +171,7 @@ struct NDTerm
 	int m_OrAssume;
 	int m_NewVar;
 	int m_OldVarIndex;
-	list<int> m_cutExists;
+	int  m_cutExists;
 	NDTerm(int index = -1, int rule = 0, int first = -1, int second = -1)
 	{
 		m_index = index ;
@@ -192,6 +191,7 @@ struct NDTerm
 		m_line = -1;
 		m_NewVar = -1;
 		m_OldVarIndex = -1;
+		m_cutExists = -1;
 	}
 	list<int>substed;
 	NDWAM substion;
@@ -224,7 +224,7 @@ private:
 	int  OrEliminate();
 	string rule2Str (int rule);
 	
-	inline int setCutExists(int assume, int goal);
+	inline int setCutExists(int goal,int assume);
 	inline int existsEliminate();
 	inline int disableVar (int varRef);
 	inline bool isReached(int &active);
@@ -255,13 +255,13 @@ private:
 	vector<pLine> lstpLines;
 	list<int>ndAssumes;
 	list<int>lstExists;
-	int debug(int n);
 	bool isInsert;
 	
 
 #if _DEBUG
 	void dprintLines();
 	void PrintIndex();
+	int debug(int n);
 #endif
 
 
