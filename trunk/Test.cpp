@@ -23,12 +23,12 @@ int main()
 	//	"! (all x f(x) ) |- exists x !f(x)";
 	//	"all x (f(x) & F) |- all x (F & f(x))";
 	//	"exists x p(x), all x all y (p(x) -> q(y)) |-  all y q(y)";
-	//	"all x (q(x) -> r(x)), exists x (p(x) & q(x)) |-  exists x (p(x) & r(x))";
-	//	"all x (p(x) ->q(x)), exists x p(x) |- exists x q(x)";
+		"all x (q(x) -> r(x)), exists x (p(x) & q(x)) |-  exists x (p(x) & r(x))";
+		"all x (p(x) ->q(x)), exists x p(x) |- exists x q(x)";
 		"all x f(x) |- exists x f(x)";
-	//	"all x (p(x) -> q(x)), all x p(x) |- all x q(x)";
-	//	"p(t), all x (p(x) -> !q(x)) |- !q(t)";
-	//	"all x( p(x) & q(x)) |- all x p(x) & all x q(x) ";
+		"all x (p(x) -> q(x)), all x p(x) |- all x q(x)";
+		"p(t), all x (p(x) -> !q(x)) |- !q(t)";
+		"all x( p(x) & q(x)) |- all x p(x) & all x q(x) ";
 
 
 	//	"p(A,B) -> h(A,B) |- p(A,B)|K -> h(A,B)|K";
