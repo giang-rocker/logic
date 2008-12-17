@@ -757,7 +757,9 @@ int NaturalDeduction::introduction()
 			int subClause = knowledgeBase.CopyClause(subgoal,quant.m_ref,subVar);
 			knowledgeBase.clauses[subClause].m_info = qRemain;
 			NDTerm t(subClause);
-			t.m_source = LGC_SRC_CONCLUSION;
+			t.m_source = LGC_SRC_EI_CONC;
+			t.m_OldVarIndex = quant.m_ref;
+			t.m_NewVar = subVar;
 			added++;
 			goals.push_back(t);
 		}
@@ -895,7 +897,11 @@ int NaturalDeduction::ProveIt()
 	{
 		active = -1;
 		negative = -1;
+
+#if _DEBUG
 		debug(times++);
+#endif
+
 		NDTerm orGoal;
 		bool optimized = false;
 		while(!proveds.empty())
@@ -1096,6 +1102,66 @@ int NaturalDeduction::ProveIt()
 					
 				}
 
+			}
+			if ((goals.back().m_source & LGC_SRC_EI_CONC) == LGC_SRC_EI_CONC)
+			{
+
+				getNDTerm(goals.back().m_first);
+				list<int> first ;
+				knowledgeBase.ClauseVars((*cond).m_index,first);
+				int newVar = goals.back().m_NewVar;
+				int properVar = newVar;
+				list<int>vars;
+				knowledgeBase.ClauseVars(goals.back().m_index,vars);
+				if (find(first.begin(),first.end(),newVar) == first.end())
+				{
+					if (goals.back().m_second >= 0)
+					{
+						getNDTerm(goals.back().m_second);
+						list<int> second ;
+						knowledgeBase.ClauseVars((*cond).m_index,second);
+						if (find(second.begin(),second.end(),newVar) == second.end())
+						{
+							
+							for (list<int>::const_iterator p = second.begin(); p!= second.end(); ++p)
+							{
+								if (find(vars.begin(),vars.end(),*p) == vars.end())
+								{
+									properVar = *p;
+									break;
+								}
+							}
+
+							if (properVar ==  newVar)
+							{
+								for (list<int>::const_iterator p = first.begin(); p!= first.end(); ++p)
+								{
+									if (find(vars.begin(),vars.end(),*p) == vars.end())
+									{
+										properVar = *p;
+										break;
+									}
+								}
+							}
+						}
+					}
+					else
+					{
+						for (list<int>::const_iterator p = first.begin(); p!= first.end(); ++p)
+						{
+							if (find(vars.begin(),vars.end(),*p) == vars.end())
+							{
+								properVar = *p;
+								break;
+							}
+						}
+					}
+				}
+				if (properVar!= newVar)
+				{
+					int clause = knowledgeBase.CopyClause(goals.back().m_index,newVar,properVar);
+					goals.back().m_index = clause;
+				}
 			}
 			if ((goals.back().m_source & LGC_SRC_ALL_GOAL) == LGC_SRC_ALL_GOAL)
 			{
@@ -1468,7 +1534,8 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		pLine pline(goal.m_cutExists,lastLine,ifs++,"if   " , var + " " + knowledgeBase.GetString((*cond).m_index));
 		pline.m_first = firstLine;
 		pline.m_isPrefix = true;
-		//pline.m_extra = "";
+		pline.m_extra = "\t["	 + knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_OldVarIndex].m_ref) 
+						+ "/"	 +  knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_NewVar].m_ref) + "]";
 		ndAssumes.push_front(goal.m_cutExists);
 		(*cond).m_line = lastLine++;
 		lstpLines.push_back(pline);
@@ -1535,7 +1602,7 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 #endif
 		return 0;
 	}
-
+	
 	if (goal.m_third >= 0 )
 	{
 		
@@ -1779,6 +1846,7 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		getString(goal.m_first);
 		if (goal.m_line <= 0)
 		{
+
 			pLine last(index,lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index),rule2Str(goal.m_rule));
 			if (goal.m_rule == LGC_E_ALL)
 			{

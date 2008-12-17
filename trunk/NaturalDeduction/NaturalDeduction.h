@@ -97,7 +97,9 @@
 #define LGC_SRC_EE_GOAL		0x00100000
 #define LGC_SRC_EE_CONC		0x00200000
 #define LGC_SRC_EE_ASSU		0x00400000
+
 #define LGC_SRC_EI_GOAL		0x00800000
+#define LGC_SRC_EI_CONC		0x00010000
 //////////////////////////////////////
 
 
