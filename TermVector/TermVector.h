@@ -15,10 +15,10 @@
 #include <string>
 #include <algorithm>
 #include "../NaturalDeduction/Utils.h"
-#if _DEBUG
-//#undef  _DEBUG
-#include <crtdbg.h>
-#endif
+
+// #if _DEBUG
+ #include <crtdbg.h>
+// #endif
 
 using namespace std;
 

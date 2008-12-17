@@ -9,8 +9,8 @@ using namespace std;
 int main()
 {
 	string text = 
-		"A,B, A&B -> all x(f(x)) |- all t f(t) & all y f(y)";
-
+	//	"A,B, A&B -> all x(f(x)) |- all t f(t) & all y f(y)";
+	"all x (p(x) ->!q(x)) |- !(exists x (p(x) & q(x)))";
 	//	"nguoi(Cesar), all x ( nguoi (x) -> chet(x)) |- chet(Cesar)";
 	//	"all x (p(x) ->!q(x)) |- !(exists x (p(x) & q(x)))";
 	//	"all x (p(x) ->q(x)) |- (all x !q(x)) ->(all x !p(x))";
@@ -97,7 +97,7 @@ int main()
 	}
 	else
 	{
-		p->data.print();
+		//p->data.print();
 		NaturalDeduction nd(p->data);
 		//nd.insertLEMs();
 		if(nd.ProveIt())

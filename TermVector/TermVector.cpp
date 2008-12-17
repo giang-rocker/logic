@@ -656,7 +656,9 @@ int xWam:: ClauseVars(int index, list<int>&theta)const
 			if (find(theta.begin(),theta.end(),clauses[index].m_ref) == theta.end())
 			{
 				theta.push_back(clauses[index].m_ref);
+#if _DEBUG
 				cout<<"Var: "<<clauses[index].m_ref<<endl;
+#endif
 			}
 		}
 		else if( clauses[index].m_kind == LGC_TERM_FUNC)
