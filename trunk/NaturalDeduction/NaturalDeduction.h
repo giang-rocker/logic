@@ -172,8 +172,7 @@ struct NDTerm
 	int m_OrAssume;
 	int m_NewVar;
 	int m_OldVarIndex;
-	int m_existAssume;
-
+	list<int> m_cutExists;
 	NDTerm(int index = -1, int rule = 0, int first = -1, int second = -1)
 	{
 		m_index = index ;
@@ -194,8 +193,6 @@ struct NDTerm
 		m_NewVar = -1;
 		m_OldVarIndex = -1;
 	}
-
-
 	list<int>substed;
 	NDWAM substion;
 	
@@ -226,7 +223,8 @@ private:
 	int  NegIntrodution();
 	int  OrEliminate();
 	string rule2Str (int rule);
-
+	
+	inline int setCutExists(int assume, int goal);
 	inline int existsEliminate();
 	inline int disableVar (int varRef);
 	inline bool isReached(int &active);
@@ -238,7 +236,7 @@ private:
 	inline int  introduction();
 	inline int  eliminate();
 	inline int  getNDTerm(int index);
-
+	
 	int  getString(int index, bool isFixed = false, bool prefix = false);
 	int  insertCondition(NDTerm term,int&index);
 	int  insertGoal(NDTerm term);
@@ -256,6 +254,7 @@ private:
 	int ifs;
 	vector<pLine> lstpLines;
 	list<int>ndAssumes;
+	list<int>lstExists;
 	int debug(int n);
 	bool isInsert;
 	
