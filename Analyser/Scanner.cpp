@@ -88,7 +88,7 @@ Token Scanner::nextToken()
 	                	position.m_iCharStart++;//charFinish has already increased by 1
 					}
 				}
-				else if (c== 'V') 
+				else if (c== '\\') 
 				{
 						c = goAheadOneChar();
 						if(c== '-')
