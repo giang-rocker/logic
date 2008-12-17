@@ -38,6 +38,7 @@ struct pLine
 		m_third = third;
 		m_isFixed = false;
 		m_isPrefix = false;
+		m_extra = "";
 	}
 	string ToString(int max = 0)
 	{
@@ -62,12 +63,14 @@ struct pLine
 	string m_assumption;
 	string m_content;
 	string m_rule;
+	string m_extra;
 	int m_first;
 	int m_second;
 	int m_third;
 	int m_index;
 	bool m_isFixed;
 	bool m_isPrefix;
+
 };
 inline std::string pLine2Str(const pLine& p)
 {
@@ -102,8 +105,8 @@ inline std::string pLine2Str(const pLine& p, int max)
 	{
 		s += " " + ToString(p.m_first);
 	}
-
-	return s;
+	
+	return s + p.m_extra;
 }
 
 

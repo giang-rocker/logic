@@ -16,10 +16,10 @@
 ///////////////////////////////////////
 
 
-#define LGC_OFFSET_VAR		40000		
-#define LGC_OFFSET_PRO		50000
-#define LGC_OFFSET_CONST	55000
-#define LGC_OFFSET_QUANT	60000
+#define LGC_OFFSET_VAR			40000		
+#define LGC_OFFSET_PRO			50000
+#define LGC_OFFSET_CONST		55000
+#define LGC_OFFSET_QUANT		60000
 
 //////////////////////////////////////
 #define LGC_RULE_PREMISE	0x00000001
@@ -52,7 +52,7 @@
 //////////////////////////////////////
 
 
-///////////////////////////////////////
+//////////////////////////////////////
 #define LGC_PRC_E_NOT		0x00000001
 #define LGC_PRC_E_AND		0x00000002
 #define LGC_PRC_E_OR1		0x00000004
@@ -60,7 +60,7 @@
 #define LGC_PRC_E_MAP		0x00000010
 #define LGC_PRC_E_EXI		0x00000020
 #define LGC_PRC_E_ALL		0x00000040
-
+//////////////////////////////////////
 #define LGC_PRC_I_OR1		0x00000080
 #define LGC_PRC_I_OR2		0x00000100
 #define LGC_PRC_I_OR3		0x00000200
@@ -70,7 +70,6 @@
 #define LGC_PRC_I_ALL		0x00002000
 #define LGC_PRC_I_EXI		0x00004000
 //////////////////////////////////////
-
 #define LGC_PRC_C_OR1		0x01000000
 #define LGC_PRC_C_OR2		0x02000000
 #define LGC_PRC_C_NOT		0x04000000
@@ -80,22 +79,29 @@
 //////////////////////////////////////
 #define LGC_SRC_DISABLE		0x00000001	
 #define LGC_SRC_ASSUME		0x00000002
-#define LGC_SRC_CONCLUSION  0x00000004
+#define LGC_SRC_CONCLUSION	0x00000004
 #define LGC_SRC_PREMISE		0x00000008
 #define LGC_SRC_HOPING		0x00000010
 #define LGC_SRC_DUPLICATE	0x00000020
 #define LGC_SRC_LEM			0x00000040
-
+//////////////////////////////////////
 #define LGC_SRC_OR_GOAL		0x10000000
 #define LGC_SRC_OR_SUB_1	0x20000000
 #define LGC_SRC_OR_SUB_2	0x40000000
 #define LGC_SRC_OR_CONC		0x80000000
 #define LGC_SRC_OR_PART1	0x01000000
 #define LGC_SRC_OR_PART2	0x02000000
-
-#define LGC_SRC_ALL_FLAG	0x04000000
-#define LGC_SRC_EXIST_FLAG	0x08000000
 //////////////////////////////////////
+#define LGC_SRC_ALL_GOAL	0x04000000
+
+#define LGC_SRC_EE_GOAL		0x00100000
+#define LGC_SRC_EE_CONC		0x00200000
+
+#define LGC_SRC_EI_GOAL		0x00400000
+#define LGC_SRC_EI_CONC		0x00800000
+//////////////////////////////////////
+
+
 
 class NDWAM 
 {
@@ -164,7 +170,9 @@ struct NDTerm
 	bool m_OrEnable;
 	bool m_isOrStart;
 	int m_OrAssume;
-	int m_VarRef;
+	int m_NewVar;
+	int m_OldVarIndex;
+	int m_existAssume;
 
 	NDTerm(int index = -1, int rule = 0, int first = -1, int second = -1)
 	{
@@ -183,8 +191,11 @@ struct NDTerm
 		m_third = -1;
 		m_isOrStart = false;
 		m_line = -1;
-		m_VarRef = -1;
+		m_NewVar = -1;
+		m_OldVarIndex = -1;
 	}
+
+
 	list<int>substed;
 	NDWAM substion;
 	
@@ -202,7 +213,7 @@ public:
 	int insertLEMs();
 
 private:
-	int disableVar (int varRef);
+
 	NDWAM ndWam(int index);
 	int unify(NDWAM x, NDWAM y, list<NDWAM>& theta);
 	int unify(list<NDWAM> x, list<NDWAM> y, list<NDWAM>& theta);
@@ -216,19 +227,21 @@ private:
 	int  OrEliminate();
 	string rule2Str (int rule);
 
-	bool isReached(int &active);
-	bool isReached(int &active, int& negative);
-	bool isCompatible(int father,int son)const;
-	bool isComplement(int active, int negative) const;
-	int  disable(int assume);
+	inline int existsEliminate();
+	inline int disableVar (int varRef);
+	inline bool isReached(int &active);
+	inline bool isReached(int &active, int& negative);
+	inline bool isCompatible(int father,int son)const;
+	inline bool isComplement(int active, int negative) const;
+	inline int  disable(int assume);
+	inline int  contradiction();
+	inline int  introduction();
+	inline int  eliminate();
+	inline int  getNDTerm(int index);
+
+	int  getString(int index, bool isFixed = false, bool prefix = false);
 	int  insertCondition(NDTerm term,int&index);
 	int  insertGoal(NDTerm term);
-	int  contradiction();
-	int  introduction();
-	int  eliminate();
-	int  getNDTerm(int index);
-	int  getString(int index, bool isFixed = false, bool prefix = false);
-
 
 	int turnIt();
 	list <NDTerm> conditions;

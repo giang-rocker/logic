@@ -53,11 +53,11 @@ bool NaturalDeduction::isCompatible(int father, int son)const
 		{
 			return true;			
 		}
-		if (var.m_info == LGC_VAR_ABS_UNFLAG)
-		{
-			Term fVar =  knowledgeBase.variables[knowledgeBase.clauses[father].m_ref];
-			return fVar.m_info == LGC_VAR_ABS_UNFLAG;
-		}	
+// 		if (var.m_info == LGC_VAR_ABS_UNFLAG)
+// 		{
+// 			Term fVar =  knowledgeBase.variables[knowledgeBase.clauses[father].m_ref];
+// 			return fVar.m_info == LGC_VAR_ABS_UNFLAG;
+// 		}	
 	}
 	if (knowledgeBase.clauses[son].m_kind == knowledgeBase.clauses[father].m_kind)
 	{
@@ -410,10 +410,6 @@ int NaturalDeduction::eliminate()
 		
 			Term quant = knowledgeBase.Get1stQuan(knowledgeBase.clauses[main].m_info);
 			int qRemain = knowledgeBase.GetRemainQuan(knowledgeBase.clauses[main].m_info);
-			if (qRemain >= 0)
-			{
-				cout << knowledgeBase.quantifiers[qRemain].toString()<<endl;
-			}
 			if (quant.m_kind == LGC_QUAN_ALL)
 			{
 				list<int>vars = knowledgeBase.RestValidTerm(main);
@@ -431,23 +427,30 @@ int NaturalDeduction::eliminate()
 						knowledgeBase.clauses[clause].m_info = qRemain;
 						NDTerm t(clause, LGC_E_ALL,outside);
 						t.m_path = (*p).m_path + 1;
+						t.m_NewVar = newVar;
+						t.m_OldVarIndex = quant.m_ref;
 						conditions.push_back(t);
 						added++;
 					}
 				}
 			}
+			/*
 			else
 			{
 				int newVar = knowledgeBase.SubVars(quant.m_ref, LGC_VAR_REL_UNFLAG);
 				(*p).m_source |= LGC_SRC_DISABLE;
+				(*p).m_NewVar = newVar;
 				int clause = knowledgeBase.CopyClause(main,quant.m_ref,newVar);
 				knowledgeBase.clauses[clause].m_info = qRemain;
+				knowledgeBase.clauses.push_back(Term(LGC_TERM_VAR,newVar));
+				conditions.push_back(NDTerm(knowledgeBase.clauses.size() - 1));
 				NDTerm t(clause,LGC_E_EXISTS,outside);
+				t.m_NewVar = conditions.size() - 1;
 				t.m_path = (*p).m_path+1;
 				conditions.push_back(t);
 				added++;
 			}
-			
+			*/
 		}
 
 	}
@@ -729,9 +732,15 @@ int NaturalDeduction::introduction()
 			goals.back().m_pendings = 1;
 			goals.back().m_rule = LGC_I_ALL;
 			goals.back().m_proceed |= LGC_PRC_I_ALL;
-			goals.back().m_source |= LGC_SRC_ALL_FLAG;
+			goals.back().m_source |= LGC_SRC_ALL_GOAL;
 			int subVar =  knowledgeBase.SubVars(quant.m_ref,LGC_VAR_ABS_UNFLAG);
-			goals.back().m_VarRef = subVar;
+			knowledgeBase.clauses.push_back(Term(LGC_TERM_VAR,subVar));
+			NDTerm var (knowledgeBase.clauses.size()-1);
+			var.m_source |= LGC_SRC_DISABLE;
+			var.m_path = 1;
+			conditions.push_back(var);
+			goals.back().m_NewVar = conditions.size() -1;
+			goals.back().m_OldVarIndex = quant.m_ref;
 			int subClause = knowledgeBase.CopyClause(subgoal,quant.m_ref,subVar);
 			knowledgeBase.clauses[subClause].m_info = qRemain;
 			NDTerm t(subClause);
@@ -743,11 +752,12 @@ int NaturalDeduction::introduction()
 			goals.back().m_pendings = 1;
 			goals.back().m_rule = LGC_I_EXISTS;
 			goals.back().m_proceed |= LGC_PRC_I_EXI;
-			goals.back().m_source |= LGC_SRC_EXIST_FLAG;
+			goals.back().m_source |= LGC_SRC_EI_GOAL;
 			int subVar =  knowledgeBase.SubVars(quant.m_ref,LGC_VAR_ANY_VALUE);
 			int subClause = knowledgeBase.CopyClause(subgoal,quant.m_ref,subVar);
 			knowledgeBase.clauses[subClause].m_info = qRemain;
 			NDTerm t(subClause);
+			t.m_source = LGC_SRC_CONCLUSION;
 			added++;
 			goals.push_back(t);
 		}
@@ -1079,10 +1089,13 @@ int NaturalDeduction::ProveIt()
 				}
 
 			}
-
-			if ((goals.back().m_source & LGC_SRC_ALL_FLAG) == LGC_SRC_ALL_FLAG)
+			if (goals.back().m_source & LGC_SRC_EE_CONC)
 			{
-				disableVar(goals.back().m_VarRef);
+				
+			}
+			if ((goals.back().m_source & LGC_SRC_ALL_GOAL) == LGC_SRC_ALL_GOAL)
+			{
+				disableVar(knowledgeBase.clauses[goals.back().m_NewVar].m_ref);
 			}
 
 			conditions.push_back(goals.back());	
@@ -1232,6 +1245,11 @@ int NaturalDeduction::ProveIt()
 				continue;
 			}
 
+			if (existsEliminate())
+			{
+				continue;
+			}
+
 			if (OrEliminate())
 			{
 				continue;
@@ -1241,10 +1259,12 @@ int NaturalDeduction::ProveIt()
 			{
 				continue;
 			}
+
 			if (NegIntrodution())
 			{
 				continue;
 			}
+
 			if (contradiction())
 			{
 				continue;
@@ -1429,10 +1449,44 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 			return 0;
 		}
 	}
-	if (goal.m_VarRef >= 0)
+
+	if ((goal.m_source & LGC_SRC_ALL_GOAL) == LGC_SRC_ALL_GOAL)
 	{
-		//string 
+
+		getNDTerm(goal.m_NewVar);
+		int newVar = (*cond).m_index;
+		pLine varLine(goal.m_NewVar,lastLine,ifs++,"if   ",knowledgeBase.GetString((*cond).m_index));
+		varLine.m_isPrefix = true;
+		(*cond).m_line = lastLine++;
+		ndAssumes.push_front(goal.m_NewVar);
+		lstpLines.push_back(varLine);
+		
+		getString(goal.m_first,true,true);
+		ifs--;
+		lstpLines.back().m_indent--;
+		lstpLines.back().m_assumption = "nif  ";
+		lstpLines.back().m_isPrefix = true;
+		
+		pLine last(index,lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index),rule2Str(goal.m_rule));
+		last.m_extra = "\t["	 + knowledgeBase.names.GetString(knowledgeBase.variables[goal.m_OldVarIndex].m_ref) 
+						+ "/"	 + knowledgeBase.GetString(newVar) + "]";
+		ndAssumes.pop_front();
+		
+		getNDTerm(goal.m_NewVar);
+		last.m_second = (*cond).m_line;
+		getNDTerm(goal.m_first);
+		last.m_first= (*cond).m_line;
+		lstpLines.push_back(last);	
+		getNDTerm(index);
+		(*cond).m_line = lastLine - 1;
+
+#if _DEBUG
+		getNDTerm(index);
+		cout<<"Call : "<<index << " = " <<(*cond).m_line<<endl;
+#endif
+		return 0;
 	}
+
 	if (goal.m_third >= 0 )
 	{
 		
@@ -1575,7 +1629,7 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 					}
 					else
 					{
-						if(p== ndAssumes.end())
+						//if(p== ndAssumes.end())
 						--p;
 						getNDTerm((*p));
 						locate = (*cond).m_line ;
@@ -1674,6 +1728,11 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		if (goal.m_line <= 0)
 		{
 			pLine last(index,lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index),rule2Str(goal.m_rule));
+			if (goal.m_rule == LGC_E_ALL)
+			{
+				last.m_extra = "\t[" + knowledgeBase.names.GetString(knowledgeBase.variables[goal.m_NewVar].m_ref)
+					 + "/" + knowledgeBase.names.GetString(knowledgeBase.variables[goal.m_OldVarIndex].m_ref) + "]";
+			}
 			getNDTerm(goal.m_first);
 			last.m_first = (*cond).m_line;
 			if (!ndAssumes.empty())
@@ -1703,7 +1762,7 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 					}
 					else
 					{
-						if(p== ndAssumes.end())
+						//if(p== ndAssumes.end())
 							--p;
 						getNDTerm((*p));
 						locate = (*cond).m_line ;
@@ -1827,8 +1886,9 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 				}
 				else
 				{
-					if(p== ndAssumes.end())
+					//if(p== ndAssumes.end())
 						--p;
+					cout<<*p<<endl;
 					getNDTerm((*p));
 					locate = (*cond).m_line ;
 					last.m_indent = last.m_indent - indent;
@@ -2161,7 +2221,7 @@ string NaturalDeduction::rule2Str(int rule)
 		result = "!!";
 		break;
 	case LGC_E_ALL:
-		result = "Ve";
+		result = "V-e";
 		break;
 	case LGC_E_EXISTS:
 		result = "-]e";
@@ -2200,12 +2260,17 @@ string NaturalDeduction::rule2Str(int rule)
 		break;
 
 	}
-	//return  ToStringX(result + " ",4);
+#if _DEBUG
+	return  ToStringX(result + " ",4);
+#else
 	return  ToString(result + "\t");
+#endif
+
 }
 
 int NaturalDeduction::isDerived(int child, int parent)
 {
+
 	if (child < 0  || child >= conditions.size())
 	{
 		return 0;
@@ -2215,7 +2280,23 @@ int NaturalDeduction::isDerived(int child, int parent)
 	{
 		return 0;
 	}
+	getNDTerm(parent);
 
+	if (knowledgeBase.clauses[(*cond).m_index].m_kind == LGC_TERM_VAR)
+	{
+		int var = knowledgeBase.clauses[(*cond).m_index].m_ref;
+		getNDTerm(child);
+		if (knowledgeBase.clauses[(*cond).m_index].m_kind == LGC_TERM_FUNC)
+		{
+			list<int>funVars;
+			knowledgeBase.ClauseVars((*cond).m_index,funVars);
+			if (!funVars.empty() && find(funVars.begin(),funVars.end(),var)!=funVars.end())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 	if(child == parent)return 1;
 	list<int>parents;
 	list<int>passed;
@@ -2563,7 +2644,6 @@ int NaturalDeduction::getFarest(int& first, int& second, int sub1, int sub2)
 #if _DEBUG
 void NaturalDeduction::dprintLines()
 {
-	return;
 	cout<<"Line of: ";
 	for (vector<pLine>::const_iterator p = lstpLines.begin();p!=lstpLines.end();++p)
 	{
@@ -2800,6 +2880,58 @@ int NaturalDeduction::disableVar(int varRef)
 			{
 				(*p).m_source |= LGC_SRC_DISABLE;
 			}
+		}
+	}
+	return 0;
+}
+
+int NaturalDeduction::existsEliminate()
+{
+	list<NDTerm>::iterator p ;
+	int outside = -1;
+	for (p = conditions.begin();p!=conditions.end();++p)
+	{
+		outside++;
+		if ((*p).m_source & LGC_SRC_DISABLE == LGC_SRC_DISABLE)
+		{
+			continue;
+		}
+		NDTerm ndTerm;
+		int main = (*p).m_index;
+		while (knowledgeBase.clauses[main].m_kind == LGC_REF)
+		{
+			main = knowledgeBase.clauses[main].m_ref;
+		}
+	
+		if (knowledgeBase.clauses[main].m_info > 0)
+		{
+			Term quant = knowledgeBase.Get1stQuan(knowledgeBase.clauses[main].m_info);
+			int qRemain = knowledgeBase.GetRemainQuan(knowledgeBase.clauses[main].m_info);
+			if (quant.m_kind == LGC_QUAN_EXIST)
+			{
+				int newVar = knowledgeBase.SubVars(quant.m_ref, LGC_VAR_REL_UNFLAG);
+				(*p).m_source |= LGC_SRC_DISABLE;
+				(*p).m_NewVar = newVar;
+				int clause = knowledgeBase.CopyClause(main,quant.m_ref,newVar);
+				knowledgeBase.clauses[clause].m_info = qRemain;
+
+				NDTerm t(clause,LGC_E_EXISTS,outside);
+				t.m_NewVar = newVar;
+				t.m_path = (*p).m_path+1;
+				t.m_OldVarIndex = quant.m_ref;
+				conditions.push_back(t);
+
+				NDTerm subgoal = goals.back();
+				goals.back().m_third = conditions.size() - 1;
+				goals.back().m_pendings = 1;
+				goals.back().m_rule = LGC_I_EXISTS;
+				goals.back().m_source |= LGC_SRC_EE_GOAL;
+				subgoal.m_existAssume = conditions.size() - 1;
+				subgoal.m_source = LGC_SRC_EE_CONC;
+				goals.push_back(subgoal);
+				return 1;
+			}
+				
 		}
 	}
 	return 0;
