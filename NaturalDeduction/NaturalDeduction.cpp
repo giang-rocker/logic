@@ -1853,6 +1853,13 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 				last.m_extra = "\t[" + knowledgeBase.names.GetString(knowledgeBase.variables[goal.m_NewVar].m_ref)
 					 + "/" + knowledgeBase.names.GetString(knowledgeBase.variables[goal.m_OldVarIndex].m_ref) + "]";
 			}
+			if (goal.m_rule == LGC_I_EXISTS)
+			{
+				getNDTerm(goal.m_first);
+				last.m_extra = "\t[" + knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_NewVar].m_ref)
+								 + "/" + knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_OldVarIndex].m_ref) + "]";
+
+			}
 			getNDTerm(goal.m_first);
 			last.m_first = (*cond).m_line;
 			if (!ndAssumes.empty())
