@@ -1457,13 +1457,18 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 	if ((goal.m_source & LGC_SRC_EE_GOAL) == LGC_SRC_EE_GOAL)
 	{
 		getNDTerm(goal.m_cutExists);
-		getString((*cond).m_first);
+		int firstLine = (*cond).m_first;
+		getString(firstLine);
+
+		getString(firstLine); 
+		firstLine = (*cond).m_line;
 
 		getNDTerm(goal.m_cutExists);
 		string var = knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_NewVar].m_ref);
 		pLine pline(goal.m_cutExists,lastLine,ifs++,"if   " , var + " " + knowledgeBase.GetString((*cond).m_index));
-
+		pline.m_first = firstLine;
 		pline.m_isPrefix = true;
+		//pline.m_extra = "";
 		ndAssumes.push_front(goal.m_cutExists);
 		(*cond).m_line = lastLine++;
 		lstpLines.push_back(pline);
@@ -1492,6 +1497,7 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		getNDTerm(index);
 		cout<<"Call : "<<index << " = " <<(*cond).m_line<<endl;
 #endif
+		return 0;
 	}
 	if ((goal.m_source & LGC_SRC_ALL_GOAL) == LGC_SRC_ALL_GOAL)
 	{
@@ -2188,11 +2194,13 @@ int NaturalDeduction::getNDTerm(int index)
 
 string NaturalDeduction::Result()
 {
+
 #if _DEBUG
 	cout<<"\n--------Before------\n";
 	debug(999);
 	PrintIndex();
 #endif
+
 	while (!lstExists.empty())
 	{
 		int lastGoal = proveds.back();
@@ -2205,6 +2213,7 @@ string NaturalDeduction::Result()
 	debug(999);
 	PrintIndex();
 #endif
+
 	string s = "";
 	int max = 0;
 	getString(proveds.back());
