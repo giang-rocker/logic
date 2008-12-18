@@ -417,7 +417,7 @@ int NaturalDeduction::eliminate()
 				{
 					if (find((*p).substed.begin(),(*p).substed.end(),*lst)==(*p).substed.end())
 					{
-						(*p).substed.push_back(*lst);
+						
 						int newVar = *lst;
 						if ((knowledgeBase.variables[(*lst)].m_info & LGC_VAR_ANY_VALUE) ==LGC_VAR_ANY_VALUE)
 						{
@@ -431,6 +431,12 @@ int NaturalDeduction::eliminate()
 						t.m_OldVarIndex = quant.m_ref;
 						conditions.push_back(t);
 						added++;
+						(*p).substed.push_back(newVar);
+						if (newVar != *lst)
+						{
+							(*p).substed.push_back(*lst);
+						}
+						
 					}
 				}
 			}
@@ -900,6 +906,10 @@ int NaturalDeduction::ProveIt()
 
 #if _DEBUG
 		debug(times++);
+		if (times == 6)
+		{
+			times = times;
+		}
 #endif
 
 		NDTerm orGoal;
@@ -1018,7 +1028,7 @@ int NaturalDeduction::ProveIt()
 					int s2 = (*cond).m_OrAssume;
 					getFarest(f1,f2,s1,s2);
 					
-					
+					/*
 					if ( f1 != goals.back().m_first)
 					{
 
@@ -1028,6 +1038,7 @@ int NaturalDeduction::ProveIt()
 						getNDTerm(f1);
 						(*cond).m_OrAssume = nd1.m_OrAssume;
 						(*cond).m_source |= (LGC_SRC_CONCLUSION | LGC_SRC_OR_CONC);
+						(*cond).m_derivation = nd1.m_derivation;
 
 						getNDTerm(goals.back().m_first);
 						(*cond).m_source &=  (0xFFFFFFFF ^ LGC_SRC_OR_CONC);
@@ -1040,8 +1051,9 @@ int NaturalDeduction::ProveIt()
 						getNDTerm(f2);
 						(*cond).m_OrAssume = nd2.m_OrAssume;
 						(*cond).m_source |= (LGC_SRC_CONCLUSION | LGC_SRC_OR_CONC);
+						(*cond).m_derivation = nd2.m_derivation;
 
-
+		
 						getNDTerm(goals.back().m_second);
 						(*cond).m_source &=  (0xFFFFFFFF ^ LGC_SRC_OR_CONC);
 						(*cond).m_OrAssume = -1;
@@ -1091,7 +1103,7 @@ int NaturalDeduction::ProveIt()
 						continue;
 					} 
 					else 
-					
+					*/
 					{
 						getNDTerm(goals.back().m_third);
 						(*cond).m_OrEnable = true;
@@ -1161,8 +1173,10 @@ int NaturalDeduction::ProveIt()
 				{
 					int clause = knowledgeBase.CopyClause(goals.back().m_index,newVar,properVar);
 					goals.back().m_index = clause;
+					goals.back().m_NewVar = properVar;
 				}
 			}
+
 			if ((goals.back().m_source & LGC_SRC_ALL_GOAL) == LGC_SRC_ALL_GOAL)
 			{
 				disableVar(knowledgeBase.clauses[goals.back().m_NewVar].m_ref);
@@ -1242,6 +1256,40 @@ int NaturalDeduction::ProveIt()
 			} 
 			else if (isReached(active))
 			{
+				if ((goals.back().m_source & LGC_SRC_EI_CONC) ==LGC_SRC_EI_CONC)
+				{
+					getNDTerm(active);
+					NDTerm newGoal = *cond;
+					newGoal.m_source |= LGC_SRC_EI_CONC;
+					newGoal.m_OldVarIndex = goals.back().m_OldVarIndex;
+
+					int newVar = goals.back().m_NewVar;
+					int properVar = newVar;
+					list<int>vars;
+					knowledgeBase.ClauseVars(goals.back().m_index,vars);
+					
+					getNDTerm(active);
+					list<int> proper ;
+					knowledgeBase.ClauseVars((*cond).m_index,proper);	
+					for (list<int>::const_iterator p = proper.begin(); p!= proper.end(); ++p)
+					{
+						if (find(vars.begin(),vars.end(),*p) == vars.end())
+						{
+							properVar = *p;
+							break;
+						}
+					}	
+					if (properVar!= newVar)
+					{
+						int clause = knowledgeBase.CopyClause(goals.back().m_index,newVar,properVar);
+						newGoal.m_index = clause;
+					}
+					newGoal.m_NewVar = properVar;
+					active = conditions.size();
+					conditions.push_back(newGoal);
+					goals.pop_back();
+					goals.push_back(newGoal);
+				}
 				proveds.push_back(active);
 				if ((goals.back().m_source & LGC_SRC_OR_CONC) == LGC_SRC_OR_CONC)
 				{	
@@ -2249,15 +2297,16 @@ int NaturalDeduction::disable(int assume)
 int NaturalDeduction::getNDTerm(int index)
 {
 
-#if _DEBUG
-	_ASSERT(index >= 0 && index < conditions.size());
-#endif
+
 	if ( index < 0 || index >= conditions.size())
 	{
 		cout<<"Error while get NDTerm"<<endl;
 		cond = conditions.end();
 		return 0;
 	}
+#if _DEBUG
+	_ASSERT(index >= 0 && index < conditions.size());
+#endif
 	cond = conditions.begin();
 	for (int i = 0; i < index;i++)
 	{
@@ -2681,7 +2730,7 @@ int NaturalDeduction::NegContradiction()
 					t.m_index = arg1;
 					t.m_proceed |= LGC_PRC_C_NOT;
 					t.m_source	= LGC_SRC_HOPING;
-					t.m_assume = outside;
+					//t.m_assume = outside;
 					t.m_derivation = outside;
 					return insertGoal(t);
 					
@@ -2728,7 +2777,7 @@ int NaturalDeduction::debug(int times)
 	{
 		int dummy = 0;
 	}
-
+	PrintIndex();
 	return 0;
 }
 #endif
@@ -2834,7 +2883,29 @@ void NaturalDeduction::PrintIndex()
 	int i = 0;
 	for (list<NDTerm>::iterator c = conditions.begin();c!=conditions.end();++c)
 	{
-		cout<<(i++)<<",\t"<<"Index = "<<(*c).m_index<<"\tFirst = "<<(*c).m_first<<"\t Second = "<<(*c).m_second<<"\t Third = "<<(*c).m_third<<"\t Pending = "<<(*c).m_pendings<<"\t OrAssume = "<<(*c).m_OrAssume<< endl; 
+		cout.width(3);
+		cout<<(i++);
+		cout<<", "<<"i = ";
+		cout.width(3);
+		cout<<(*c).m_index;
+		cout<<" 1st = ";
+		cout.width(3);
+		cout<<(*c).m_first;
+		cout<<" 2nd = ";
+		cout.width(3);
+		cout<<(*c).m_second;
+		cout<<" 3rd = ";
+		cout.width(3);
+		cout<<(*c).m_third;
+		cout<<" Pend = ";
+		cout.width(3);
+		cout<<(*c).m_pendings;
+		cout<<" rAss = ";
+		cout.width(3);
+		cout<<(*c).m_OrAssume;
+		cout<<" Ass = ";
+		cout.width(3);
+		cout<<(*c).m_assume<< endl; 
 	}
 	
 }
@@ -3096,6 +3167,14 @@ int NaturalDeduction::existsEliminate()
 				t.m_OldVarIndex = quant.m_ref;
 				conditions.push_back(t);
 				lstExists.push_front(conditions.size() -1);
+				//Do not allow his father using its
+				NDTerm term = *p;
+				while (term.m_rule == LGC_E_ALL)
+				{
+					getNDTerm(term.m_first);
+					term = *cond;
+					(*cond).substed.push_back(newVar);
+				}
 				return 1;
 			}
 				
@@ -3133,7 +3212,7 @@ int NaturalDeduction::setCutExists( int goal,int assume)
 				}
 				if ((*p).m_second == goal)
 				{
-					(*p).m_second = conditions.size() -1;
+					(*p).m_second = conditions.size();
 				}
 			}
 			conditions.push_back(goalExists);
@@ -3183,7 +3262,7 @@ int NaturalDeduction::setCutExists( int goal,int assume)
 					}
 					if ((*p).m_second == goal)
 					{
-						(*p).m_second = conditions.size() -1;
+						(*p).m_second = conditions.size();
 					}
 				}
 				conditions.push_back(goalExists);

@@ -8,8 +8,16 @@
 using namespace std;
 int main()
 {
+	string dummy = "";
 	string text = 
-	//	"all x all y all z ((le(x, y) & le(y, z)) ->!gt(x, z)),all x all y (le(x, y) -> (gt(y, x) | eq(x, y))), all x exists y le(x, y)|- all x le(x, x)";
+				"all x  all y all z ((le(x, y) &le(y, z)) -> (!gt(x, z))),\n" +	dummy	+
+				"all x all y (le(x, y) -> (gt(y, x) | eq(x, y))),\n"		+	dummy	+
+				"all x all y ((gt(y, x) | eq(x, y)) ->le(x, y)),\n"			+	dummy	+
+				"all x exists y le(x, y) |- all x le(x,x)";
+
+	//	" all y all x f(x,y) |- f(A,B)";
+	//	"! -] x (b(x) & g(x)), all x ( d(x) -> b(x)) |- ! -]x (d(x) & g(x))";
+	//	"all x all y all z ((le(x, y) & le(y, z)) ->!gt(x, z)),all x all y (le(x, y) -> (gt(y, x) | eq(x, y))),all x all y ( (gt(y, x) | eq(x, y))->le(x, y)), all x exists y le(x, y), all x all y ( eq(x,y) -> eq(y,x))|- all x le(x, x)";
 	//	"all x ( an (x) & ngu(x) -> heo(x)) , all x (nguoi(x) -> an (x) & lam (x) & ngu(x)) , nguoi (A) |- heo(A)";
 	//	"A,B, A&B -> all x(f(x)) |- all t f(t) & all y f(y)";
 	//  "all x (p(x) ->!q(x)) |- !(exists x (p(x) & q(x)))";
@@ -23,12 +31,12 @@ int main()
 	//	"! (all x f(x) ) |- exists x !f(x)";
 	//	"all x (f(x) & F) |- all x (F & f(x))";
 	//	"exists x p(x), all x all y (p(x) -> q(y)) |-  all y q(y)";
-		"all x (q(x) -> r(x)), exists x (p(x) & q(x)) |-  exists x (p(x) & r(x))";
-		"all x (p(x) ->q(x)), exists x p(x) |- exists x q(x)";
-		"all x f(x) |- exists x f(x)";
-		"all x (p(x) -> q(x)), all x p(x) |- all x q(x)";
-		"p(t), all x (p(x) -> !q(x)) |- !q(t)";
-		"all x( p(x) & q(x)) |- all x p(x) & all x q(x) ";
+	//	"all x (q(x) -> r(x)), exists x (p(x) & q(x)) |-  exists x (p(x) & r(x))";
+// 		"all x (p(x) ->q(x)), exists x p(x) |- exists x q(x)";
+// 		"all x f(x) |- exists x f(x)";
+// 		"all x (p(x) -> q(x)), all x p(x) |- all x q(x)";
+// 		"p(t), all x (p(x) -> !q(x)) |- !q(t)";
+// 		"all x( p(x) & q(x)) |- all x p(x) & all x q(x) ";
 
 
 	//	"p(A,B) -> h(A,B) |- p(A,B)|K -> h(A,B)|K";
@@ -87,7 +95,7 @@ int main()
 	//	"!P | ! Q | R |-( P & Q) -> R  ";
 	//	"A,B , A&B -> F  |- G | F ";
 	//	"F -> G |- F|H -> G|H";
-	//	"P | !P , Q  | !Q |- (P&Q)|(P&!Q)|(!P&Q)|(!P&!Q)";
+		"P | !P , Q  | !Q |- (P&Q)|(P&!Q)|(!P&Q)|(!P&!Q)";
 
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
