@@ -173,7 +173,7 @@ struct NDTerm
 	int m_OrAssume;
 	int m_NewVar;
 	int m_OldVarIndex;
-	int  m_cutExists;
+	int m_cutExists;
 	NDTerm(int index = -1, int rule = 0, int first = -1, int second = -1)
 	{
 		m_index = index ;

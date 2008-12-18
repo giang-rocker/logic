@@ -461,10 +461,37 @@ string xWam::GetString(int index)const
 		cout << "Error while retrieve string!";
 	}
 	string result = "";
+	int quan = clauses[index].m_info;
+	if (quan > 0)
+	{
+		int size = quantifiers[quan].m_info;
+		int offset = quantifiers[quan].m_ref;
+		for (int i = 0; i < size; i++)
+		{
+			if(quantifiers[i + quan + offset].m_kind == LGC_QUAN_ALL)
+			{
+#if _DEBUG
+				result += "all ";
+#else
+				result += "\\-";
+#endif
+				
+			}
+			else if(quantifiers[ i + quan + offset ].m_kind == LGC_QUAN_EXIST)
+			{
+#if _DEBUG
+				result += "exists ";
+#else
+				result += "-]";
+#endif
+			}
+			result += names.GetString(variables[quantifiers[i + quan + offset].m_ref].m_ref)+ " ";
+		}
+	}
 	switch (clauses[index].m_kind)
 	{
 	case LGC_REF:
-		result =GetString(clauses[index].m_ref);
+		result = GetString(clauses[index].m_ref);
 		break;
 
 	case LGC_TERM_FALSE:
@@ -480,7 +507,7 @@ string xWam::GetString(int index)const
 		break;
 
 	case LGC_TERM_PROP:
-		result = names.GetString(variables[clauses[index].m_ref].m_ref);
+		result += names.GetString(variables[clauses[index].m_ref].m_ref);
 		break;
 
 	case LGC_TERM_VAR:
@@ -488,25 +515,6 @@ string xWam::GetString(int index)const
 		break;
 
 	case LGC_TERM_FUNC:
-		int quan = clauses[index].m_info;
-		if (quan > 0)
-		{
-			int size = quantifiers[quan].m_info;
-			int offset = quantifiers[quan].m_ref;
-			for (int i = 0; i < size; i++)
-			{
-				if(quantifiers[i + quan + offset].m_kind == LGC_QUAN_ALL)
-				{
-					result += "all ";
-				}
-				else if(quantifiers[ i + quan + offset ].m_kind == LGC_QUAN_EXIST)
-				{
-					result += "exists ";
-				}
-				result += names.GetString(variables[quantifiers[i + quan + offset].m_ref].m_ref)+ " ";
-			}
-		}
-
 		int func = clauses[index].m_ref;
 		bool pars =  false;
 		switch (func)
