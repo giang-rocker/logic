@@ -194,6 +194,8 @@ struct NDTerm
 		m_NewVar = -1;
 		m_OldVarIndex = -1;
 		m_cutExists = -1;
+		m_OrAssume = -1;
+	
 	}
 	list<int>substed;
 	NDWAM substion;

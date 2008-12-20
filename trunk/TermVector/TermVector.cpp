@@ -456,6 +456,9 @@ int xWam::print()
 
 string xWam::GetString(int index)const
 {
+#if _DEBUG
+	_ASSERT(index >=0 && index < clauses.size());
+#endif
 	if (index < 0 || index >= clauses.size())
 	{
 		cout << "Error while retrieve string!";
@@ -646,15 +649,15 @@ bool xWam::isOperator(int index)const
 
 int xWam:: ClauseVars(int index, list<int>&theta)const
 {
-	
+#if _DEBUG
+	_ASSERT(index >= 0 && index < clauses.size());
+#endif	
 	if (index < 0 || index >= clauses.size())
 	{
 		return 0;
 	}
 
-#if _DEBUG
-	_ASSERT(index >= 0 && index < clauses.size());
-#endif
+
 		while (clauses[index].m_kind == LGC_REF)
 		{
 			index = clauses[index].m_ref;
@@ -712,6 +715,7 @@ int xWam::GetRemainQuan(int index)
 
 list<int>xWam::RestValidTerm(int index)const
 {
+
 	list<int>funVar;
 	ClauseVars(index,funVar);
 	list<int>vars;
@@ -772,6 +776,9 @@ int xWam::CopyClause(int index,int oldVar,int newVar)
 
 int xWam::DupVar(int index, int flag)
 {
+#if _DEBUG
+	_ASSERT(index >=0 && index < variables.size());
+#endif
 	int ref = variables[index].m_ref;
 	for (int i = 0; i < variables.size(); i++)
 	{
