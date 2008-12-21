@@ -2449,7 +2449,7 @@ string NaturalDeduction::rule2Str(int rule)
 		result = "!!";
 		break;
 	case LGC_E_ALL:
-		result = "V-e";
+		result = "\\-e";
 		break;
 	case LGC_E_EXISTS:
 		result = "-]e";
@@ -2473,7 +2473,7 @@ string NaturalDeduction::rule2Str(int rule)
 		result = "!i";
 		break;
 	case LGC_I_ALL:
-		result = "Vi";
+		result = "\\-i";
 		break;
 	case LGC_I_EXISTS:
 		result = "-]i";

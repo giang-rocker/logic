@@ -15,7 +15,6 @@ namespace Logic
         {             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Directory.SetCurrentDirectory("../../..");
             Application.Run(new SolveLGC());           
             
         }
