@@ -19,13 +19,24 @@ extern "C" __declspec (dllexport) char* inferencer(char* text)
 	}
 	else
 	{
-		
+		xWam l = p->data;
 		NaturalDeduction nd(p->data);
-		//p->data.print();
 		if(nd.ProveIt())
 			result = nd.Result();
 		else
-			result = "Cannot SOLVE...";	
+		{
+			NaturalDeduction lem(l);
+			lem.insertLEMs();
+			if (lem.ProveIt())
+			{
+				result = lem.Result();
+			}
+			else
+			{
+				result = "Cannot SOLVE...";
+			}
+		}
+				
 	}	
 	char* cstr = new char [result.size()+1];
 	strcpy (cstr, result.c_str());	
