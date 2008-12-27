@@ -1030,7 +1030,7 @@ int NaturalDeduction::ProveIt()
 					disable(s2);
 					getFarest(f1,f2,s1,s2);
 					
-					if ( f1 != goals.back().m_first)
+					/*if ( f1 != goals.back().m_first)
 					{
 
 						getNDTerm(goals.back().m_first);
@@ -1118,7 +1118,7 @@ int NaturalDeduction::ProveIt()
 #endif
 						//continue;
 					} 
-					else 
+					else */
 					
 					{
 						getNDTerm(goals.back().m_third);
@@ -1565,6 +1565,7 @@ int NaturalDeduction::turnIt()
 
 int NaturalDeduction::getString(int index, bool isFixed, bool prefix) 
 {
+
 #if _DEBUG
 	if (index == 0)
 	{
@@ -1580,7 +1581,7 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 	{
 		if(goal.m_line > 0)
 		{
-			return 0;
+			return index;
 		}
 	}
 
@@ -1588,8 +1589,10 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 	{
 		getNDTerm(goal.m_cutExists);
 		int firstLine = (*cond).m_first;
-		getString(firstLine);
-		lstpLines.back().m_isPrefix = true;
+		int newIndex = getString(firstLine);
+		getNDTerm(goal.m_cutExists);
+		(*cond).m_first = newIndex;
+		lstpLines.back().m_isFixed = true;
 		getNDTerm(firstLine); 
 		firstLine = (*cond).m_line;
 
@@ -1597,26 +1600,30 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		string var = knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_NewVar].m_ref);
 		pLine pline(goal.m_cutExists,lastLine,ifs++,"if   " , var + " " + knowledgeBase.GetString((*cond).m_index));
 		pline.m_first = firstLine;
-		pline.m_isPrefix = true;
-		pline.m_extra = "\t["	 + knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_NewVar].m_ref) 
+		pline.m_isFixed = true;
+		pline.m_extra = "\t["	 +  knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_NewVar].m_ref) 
 						+ "/"	 +  knowledgeBase.names.GetString(knowledgeBase.variables[(*cond).m_OldVarIndex].m_ref) + "]";
 		ndAssumes.push_front(goal.m_cutExists);
 		(*cond).m_line = lastLine++;
 		lstpLines.push_back(pline);
 		
 		
-		getString(goal.m_first,true,true);
+		newIndex = getString(goal.m_first,true,true);
+		getNDTerm(index);
+		(*cond).m_first = newIndex;
 		ifs--;
 		lstpLines.back().m_indent--;
 		lstpLines.back().m_assumption = "nif  ";
-		lstpLines.back().m_isPrefix = true;
+		lstpLines.back().m_isFixed = true;
 		
 		pLine last(index,lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index),rule2Str(goal.m_rule));
 		ndAssumes.pop_front();
 		
 		getNDTerm(goal.m_cutExists);
 		last.m_second = (*cond).m_line;
-		
+
+		getNDTerm(index);
+		goal = *cond;
 		getNDTerm(goal.m_first);
 		last.m_first= (*cond).m_line;
 		lstpLines.push_back(last);	
@@ -1628,7 +1635,8 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		getNDTerm(index);
 		cout<<"Call : "<<index << " = " <<(*cond).m_line<<endl;
 #endif
-		return 0;
+
+		return index;
 	}
 	if ((goal.m_source & LGC_SRC_ALL_GOAL) == LGC_SRC_ALL_GOAL)
 	{
@@ -1636,22 +1644,26 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		getNDTerm(goal.m_NewVar);
 		int newVar = (*cond).m_index;
 		pLine varLine(goal.m_NewVar,lastLine,ifs++,"if   ",knowledgeBase.GetString((*cond).m_index));
-		varLine.m_isPrefix = true;
+		varLine.m_isFixed = true;
 		(*cond).m_line = lastLine++;
 		ndAssumes.push_front(goal.m_NewVar);
 		lstpLines.push_back(varLine);
 		
-		getString(goal.m_first,true,true);
+		int first = getString(goal.m_first,true,true);
 		ifs--;
 		lstpLines.back().m_indent--;
 		lstpLines.back().m_assumption = "nif  ";
-		lstpLines.back().m_isPrefix = true;
-		
+		lstpLines.back().m_isFixed = true;
+
 		pLine last(index,lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index),rule2Str(goal.m_rule));
 		last.m_extra = "\t["	 + knowledgeBase.names.GetString(knowledgeBase.variables[goal.m_OldVarIndex].m_ref) 
 						+ "/"	 + knowledgeBase.GetString(newVar) + "]";
 		ndAssumes.pop_front();
 		
+		getNDTerm(index);
+		(*cond).m_first = first;
+		goal = *cond;
+
 		getNDTerm(goal.m_NewVar);
 		last.m_second = (*cond).m_line;
 		getNDTerm(goal.m_first);
@@ -1664,19 +1676,20 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		getNDTerm(index);
 		cout<<"Call : "<<index << " = " <<(*cond).m_line<<endl;
 #endif
-		return 0;
+		return index;
 	}
 	
 	if (goal.m_third >= 0 )
 	{
 		
-		getString(goal.m_third,true);
+		int NewIndex = getString(goal.m_third,true);
+		getNDTerm(index);
+		(*cond).m_third = NewIndex;
 
 		getNDTerm(goal.m_second);
 		NDTerm second = (*cond);
 		getNDTerm(second.m_OrAssume);
 		pLine pline2(second.m_OrAssume,lastLine,ifs++,"if   " , knowledgeBase.GetString((*cond).m_index));
-		pline2.m_isPrefix = true;
 		pline2.m_isFixed = true;
 		(*cond).m_line = lastLine++;
 		ndAssumes.push_front(second.m_OrAssume);
@@ -1684,29 +1697,33 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 
 		getNDTerm(goal.m_second);
 		(*cond).m_assume = -1;
-		getString(goal.m_second,true,true);
+		NewIndex = getString(goal.m_second,true,true);
+		getNDTerm(index);
+		(*cond).m_second = NewIndex;
 		ifs--;
 		lstpLines.back().m_indent--;
 		lstpLines.back().m_assumption = "nif  ";
-		lstpLines.back().m_isPrefix = true;
+		lstpLines.back().m_isFixed = true;
 
 
 		getNDTerm(goal.m_first);
 		NDTerm first = (*cond);
 		getNDTerm(first.m_OrAssume);
 		pLine pline1(first.m_OrAssume,lastLine,ifs++,"if   " , knowledgeBase.GetString((*cond).m_index));
-		pline1.m_isPrefix = true;
 		pline1.m_isFixed = true;
 		(*cond).m_line = lastLine++;
 		ndAssumes.push_front(first.m_OrAssume);
 		lstpLines.push_back(pline1);
 		getNDTerm(goal.m_first);
 		(*cond).m_assume = -1;
-		getString(goal.m_first,true,true);
+		NewIndex = getString(goal.m_first,true,true);
+		getNDTerm(index);
+		(*cond).m_first = NewIndex;
+		goal = *cond;
 		ifs--;
 		lstpLines.back().m_indent--;
 		lstpLines.back().m_assumption = "nif  ";
-		lstpLines.back().m_isPrefix = true;
+		lstpLines.back().m_isFixed = true;
 
 		pLine last(index,lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index),rule2Str(goal.m_rule));
 		ndAssumes.pop_front();
@@ -1732,25 +1749,29 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		cout<<"Call : "<<index << " = " <<(*cond).m_line<<endl;
 #endif
 
-		return 0;
+		return index;
 
 	}
 	if (goal.m_assume >= 0)
 	{
 		getNDTerm(goal.m_assume);
 		pLine pline(goal.m_assume,lastLine,ifs++,"if   " , knowledgeBase.GetString((*cond).m_index));
-		pline.m_isPrefix = true;
+		pline.m_isFixed = true;
 		ndAssumes.push_front(goal.m_assume);
 		(*cond).m_line = lastLine++;
 		lstpLines.push_back(pline);
 
 
-		getString(goal.m_first,true,true);
+		int first = getString(goal.m_first,true,true);
 		ifs--;
 		lstpLines.back().m_indent--;
 		lstpLines.back().m_assumption = "nif  ";
-		lstpLines.back().m_isPrefix = true;
-			
+		lstpLines.back().m_isFixed = true;
+
+		getNDTerm(index);
+		(*cond).m_first = first;
+		goal = *cond;
+
 		pLine last(index,lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index),rule2Str(goal.m_rule));
 		ndAssumes.pop_front();
 			
@@ -1767,16 +1788,18 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		getNDTerm(index);
 		cout<<"Call : "<<index << " = " <<(*cond).m_line<<endl;
 #endif
-		return 0;
+		return index;
 	}
 
 	if ( goal.m_pendings == 2 || goal.m_second >= 0)
 	{
 		
-		getString(goal.m_second);
-		
-		getString(goal.m_first);
-		
+		int second = getString(goal.m_second);
+		int first = getString(goal.m_first);
+		getNDTerm(index);
+		(*cond).m_second = second;
+		(*cond).m_first = first;
+		goal = *cond;
 		if (goal.m_line <= 0)
 		{
 			pLine last(index,lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index),rule2Str(goal.m_rule));
@@ -1817,7 +1840,7 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 						getNDTerm((*p));
 						locate = (*cond).m_line ;
 						last.m_indent = last.m_indent - indent;
-						last.m_line = locate;
+						
 						while(locate >= 1)
 						{
 							if (lstpLines[locate - 1].m_isFixed)
@@ -1831,6 +1854,7 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 						}
 						getNDTerm(index);
 						(*cond).m_line = locate;
+						last.m_line = locate;
 						vector<pLine>::iterator ip = lstpLines.begin();
 						for (int i = 1; i < locate; i++)
 						{
@@ -1891,11 +1915,16 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 			}
 			else
 			{
-				pLine last(index,lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index), rule2Str(LGC_RULE_ID) );
+				getNDTerm(index);
+				NDTerm duplicate((*cond).m_index,LGC_RULE_ID,index);
+				duplicate.m_line = lastLine;
+				pLine last(conditions.size(),lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index), rule2Str(LGC_RULE_ID) );
 				getNDTerm(index);
 				last.m_first = (*cond).m_line;
+				conditions.push_back(duplicate);
 				last.m_isFixed = true;
 				lstpLines.push_back(last);
+				return conditions.size() - 1;
 			}
 			
 		}
@@ -1904,13 +1933,16 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		getNDTerm(index);
 		cout<<"Call : "<<index << " = " <<(*cond).m_line<<endl;
 #endif
-		return 0;
+		return index;
 	}
 
 	if(goal.m_pendings == 1 || goal.m_first >= 0)
 	{
 		
-		getString(goal.m_first);
+		int NewIndex = getString(goal.m_first);
+		getNDTerm(index);
+		(*cond).m_first =  NewIndex;
+		goal = *cond;
 		if (goal.m_line <= 0)
 		{
 
@@ -1962,7 +1994,7 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 						getNDTerm((*p));
 						locate = (*cond).m_line ;
 						last.m_indent = last.m_indent - indent;
-						last.m_line = locate;
+						
 						while(locate >= 1)
 						{
 							if (lstpLines[locate - 1].m_isFixed)
@@ -1974,8 +2006,10 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 						{
 							locate = 1;
 						}
+
 						getNDTerm(index);
 						(*cond).m_line = locate;
+						last.m_line = locate;
 						vector<pLine>::iterator ip = lstpLines.begin();
 						for (int i = 1; i < locate; i++)
 						{
@@ -2037,11 +2071,16 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 			}
 			else
 			{
-				pLine last(index,lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index), rule2Str(LGC_RULE_ID) );
+				getNDTerm(index);
+				NDTerm duplicate((*cond).m_index,LGC_RULE_ID,index);
+				duplicate.m_line = lastLine;
+				pLine last(conditions.size(),lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index), rule2Str(LGC_RULE_ID) );
 				getNDTerm(index);
 				last.m_first = (*cond).m_line;
+				conditions.push_back(duplicate);
 				last.m_isFixed = true;
 				lstpLines.push_back(last);
+				return conditions.size() - 1;
 			}
 		}
 
@@ -2049,14 +2088,15 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		getNDTerm(index);
 		cout<<"Call : "<<index << " = " <<(*cond).m_line<<endl;
 #endif
-		return 0;
+		return index;
 
 	}
 	
-
-
 	if (goal.m_line <= 0)
 	{
+#if _DEBUG
+		dprintLines();
+#endif
 		pLine last(index,lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index),rule2Str(goal.m_rule));
 		last.m_isFixed = isFixed;
 		if (!ndAssumes.empty())
@@ -2091,7 +2131,7 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 					getNDTerm((*p));
 					locate = (*cond).m_line ;
 					last.m_indent = last.m_indent - indent;
-					last.m_line = locate;
+					
 					while(locate >= 1)
 					{
 						if (lstpLines[locate - 1].m_isFixed)
@@ -2105,12 +2145,16 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 					}
 					getNDTerm(index);
 					(*cond).m_line = locate;
+					last.m_line = locate;
 					vector<pLine>::iterator ip = lstpLines.begin();
 					for (int i = 1; i < locate; i++)
 					{
 						++ip;
 					}
 					ip = lstpLines.insert(ip,last);
+#if _DEBUG
+					dprintLines();
+#endif
 					++ip;
 					for (;ip != lstpLines.end(); ++ip)
 					{
@@ -2164,11 +2208,16 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 		}
 		else
 		{
-			pLine last(index,lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index), rule2Str(LGC_RULE_ID) );
+			getNDTerm(index);
+			NDTerm duplicate((*cond).m_index,LGC_RULE_ID,index);
+			duplicate.m_line = lastLine;
+			pLine last(conditions.size(),lastLine++,ifs,"",knowledgeBase.GetString(goal.m_index), rule2Str(LGC_RULE_ID) );
 			getNDTerm(index);
 			last.m_first = (*cond).m_line;
+			conditions.push_back(duplicate);
 			last.m_isFixed = true;
 			lstpLines.push_back(last);
+			return conditions.size() - 1;
 		}
 	}
 
@@ -2176,7 +2225,8 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 	getNDTerm(index);
 	cout<<"Call : "<<index << " = " <<(*cond).m_line<<endl;
 #endif
-	return 0;	
+
+	return index;	
 }
 
 
@@ -2377,7 +2427,10 @@ string NaturalDeduction::Result()
 			int current_ifs = lstpLines[i].m_indent;
 			for (int j = i + 1; j < lstpLines.size(); j++)
 			{
-			
+				if (lstpLines[j].m_indent <= current_ifs)
+				{
+					break;
+				}
 				if (lstpLines[j].m_first == orginal)
 				{
 					lstpLines[j].m_first = lstpLines[i].m_line;
@@ -2390,10 +2443,7 @@ string NaturalDeduction::Result()
 				{
 					lstpLines[j].m_third = lstpLines[i].m_line;
 				}	
-				if (lstpLines[j].m_indent < current_ifs)
-				{
-					break;
-				}
+				
 			}
 		}
 	}
