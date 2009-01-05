@@ -1205,14 +1205,36 @@ int NaturalDeduction::ProveIt()
 			}
 			if ((goals.back().m_source & LGC_SRC_EI_CONC) == LGC_SRC_EI_CONC)
 			{
+#if _DEBUG
+				knowledgeBase.print();
+#endif
 				NDTerm tmp = goals.back();
 				goals.pop_back();
-				Term substVar = knowledgeBase.variables[goals.back().m_NewVar];
-				if (substVar.m_substRef != goals.back().m_NewVar)
-				{
-					knowledgeBase.ReplaceClause(goals.back().m_index,goals.back().m_NewVar,substVar.m_substRef);
-				}
+				int newVar = goals.back().m_NewVar;
 				goals.push_back(tmp);
+				Term substVar = knowledgeBase.variables[newVar];
+				
+				
+// 				while(knowledgeBase.clauses[substVar.m_substRef].m_kind == LGC_REF)
+// 				{
+// 					substVar.m_substRef = knowledgeBase.clauses[substVar.m_substRef].m_ref;
+// 				}
+// 				if (knowledgeBase.clauses[substVar.m_substRef].m_kind == LGC_TERM_FUNC)
+// 				{
+// 					knowledgeBase.ReplaceClause(goals.back().m_index,goals.back().m_NewVar,substVar.m_substRef);
+// 				}
+// 				else if(knowledgeBase.clauses[substVar.m_substRef].m_ref != goals.back().m_NewVar)
+// 				{
+// 					knowledgeBase.ReplaceClause(goals.back().m_index,goals.back().m_NewVar,substVar.m_substRef);
+// 				}
+#if _DEBUG
+				cout<<"\n Orginal"<<knowledgeBase.GetString(goals.back().m_index);
+#endif
+				knowledgeBase.ReplaceClause(goals.back().m_index,newVar,substVar.m_substRef);
+#if _DEBUG
+				cout<<"\nChange"<<knowledgeBase.GetString(goals.back().m_index);
+#endif
+				
 			}
 
 			if ((goals.back().m_source & LGC_SRC_EI_GOAL) == LGC_SRC_EI_GOAL)

@@ -780,7 +780,7 @@ int xWam::ReplaceClause(int index,int oldVar,int newVar)
 		{
 			if (clauses[i+index].m_ref == oldVar)
 			{
-				clauses[i+index].m_ref = newVar;
+				clauses[i+index] = clauses[newVar];
 			}
 		}
 		else if (clauses[i + index].m_kind == LGC_REF)
