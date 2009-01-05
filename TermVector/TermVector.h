@@ -100,12 +100,15 @@ struct Term
 	int m_ref;
 	int m_info;
 	int m_extra;
+	int m_substRef;
+	list<int>substed;
 	Term(int kind = 0, int ref = 0, int info = 0)
 	{
 		m_kind = kind;
 		m_ref = ref;
 		m_info = info;
 		m_extra = 0;
+		m_substRef = -1;
 	}
 	string toString()
 	{
@@ -198,15 +201,13 @@ public:
 	list<int>RestValidTerm(int index)const;
 	int ClauseVars(int index, list<int>&theta)const;
 	int CopyClause(int index,int oldVar,int newVar);
-
+	int MatchClause(int index,int oldClauseIndex,int newVarIndex);
+	int ReplaceClause(int index,int oldVar,int newVar);
 private:
 	bool isOperator(int index)const;
 	list<Term>lstTerms;
 	list<int>lstOpers;
 	list<int>lstQuans;
-	
-
-
 	int quanSize;
 	vector<Term>::const_iterator p;
 
