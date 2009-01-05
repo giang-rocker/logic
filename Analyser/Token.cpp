@@ -53,8 +53,12 @@ Token::operator =(const Token& t)
 
 string Token::tostring()
 {		
+#if _DEBUG
+	return convertToken()+"\tLexeme: "+m_lexeme+"\t"+(string)m_position.toString();
+#else
 	return "Unexpected "+convertToken()+"\tLexeme: "+m_lexeme+"\t"+(string)m_position.toString();
-}
+#endif
+}	
 
 Token::operator TokenKind() const
 {

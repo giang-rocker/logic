@@ -76,7 +76,7 @@ inline std::string pLine2Str(const pLine& p)
 {
 	string s = "";
 	//s += ToStringX(ToString(p.m_line)+".",4) ;
-	s += ToStringX(ToString(p.m_line)+".",4) ;
+	s += ToStringX(" " +ToString(p.m_line)+".\t",0) ;
 	s += ToStringX("",p.m_indent * 5) ;
 	s += p.m_assumption + p.m_content;
 	return s;

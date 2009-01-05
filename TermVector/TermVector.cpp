@@ -463,7 +463,7 @@ string xWam::GetString(int index)const
 	}
 	string result = "";
 	int quan = clauses[index].m_info;
-	if (quan > 0)
+	if (clauses[index].m_kind != LGC_FUN_DEF && quan > 0 )
 	{
 		int size = quantifiers[quan].m_info;
 		int offset = quantifiers[quan].m_ref;
@@ -599,7 +599,7 @@ string xWam::GetString(int index)const
 		case LGC_ADDR_MAP:
 			if (quan)
 			{
-				result += ")";
+				result += "(";
 			}
 			pars  = isOperator(index+1);
 			if (pars)
@@ -627,6 +627,7 @@ string xWam::GetString(int index)const
 				result += ")";
 			}
 			break;
+
 		default:
 			int args = clauses[func].m_info;
 			result += GetString(func);
