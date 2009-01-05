@@ -1642,8 +1642,8 @@ int NaturalDeduction::ProveIt()
 			{
 				continue;
 			}
-			
-			if ((goals.back().m_proceed & LGC_PRC_CONTR)!= 0)
+
+			if ((goals.back().m_proceed & LGC_PRC_CONTR) !=  0)
 			{
 				goals.pop_back();
 				continue;
@@ -1658,7 +1658,27 @@ int NaturalDeduction::ProveIt()
 			{
 				continue;
 			}
-			
+			list<NDTerm>::const_iterator p = goals.end();
+			int size = 0;
+			bool restore = false;
+			for (;p!=goals.begin();--p)
+			{
+				
+				if (((*p).m_source & LGC_SRC_HOPING) == LGC_SRC_HOPING )
+				{
+					for (int i = 0;i <size;i++)
+					{
+						goals.pop_back();
+					}
+					restore = true;
+					break;;
+				}
+				size++;
+			}
+			if (restore)
+			{
+				continue;
+			}
 			return 0;
 		}
 		
@@ -3215,6 +3235,18 @@ int NaturalDeduction::insertLEMs()
 			{
 				props.push_back(t.m_ref);
 			}
+			else
+			{
+				int index = t.m_ref;
+				while (knowledgeBase.clauses[index].m_kind == LGC_REF)
+				{
+					index = knowledgeBase.clauses[index].m_ref;
+				}
+				if (find(props.begin(),props.end(),index) == props.end())
+				{
+					props.push_back(index);
+				}
+			}
 		}
 	}
 	while (!props.empty())
@@ -3222,9 +3254,23 @@ int NaturalDeduction::insertLEMs()
 		int last = props.front();
 		int first  = knowledgeBase.clauses.size();
 		knowledgeBase.clauses.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_NOT));
-		knowledgeBase.clauses.push_back(Term(LGC_TERM_PROP,last));
+		if(knowledgeBase.clauses[last].m_kind == LGC_TERM_PROP)
+		{
+			knowledgeBase.clauses.push_back(Term(LGC_TERM_PROP,last));
+		}
+		else
+		{
+			knowledgeBase.clauses.push_back(Term(LGC_REF,last));
+		}
 		knowledgeBase.clauses.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_OR));
-		knowledgeBase.clauses.push_back(Term(LGC_TERM_PROP,last));
+		if(knowledgeBase.clauses[last].m_kind == LGC_TERM_PROP)
+		{
+			knowledgeBase.clauses.push_back(Term(LGC_TERM_PROP,last));
+		}
+		else
+		{
+			knowledgeBase.clauses.push_back(Term(LGC_REF,last));
+		}
 		knowledgeBase.clauses.push_back(Term(LGC_REF,knowledgeBase.clauses.size() - 4));
 		conditions.push_back(NDTerm(knowledgeBase.clauses.size() - 3,LGC_RULE_LEM));
 		added++;
