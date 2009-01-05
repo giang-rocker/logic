@@ -464,6 +464,35 @@ int NaturalDeduction::eliminate()
 					}
 				}
 			}
+			else if (quant.m_kind == LGC_QUAN_EXIST)
+			{
+				if (((*p).m_proceed & LGC_PRC_E_EXI) != LGC_PRC_E_EXI)
+				{
+					int newVar = knowledgeBase.SubVars(quant.m_ref, LGC_VAR_REL_UNFLAG);
+					(*p).m_proceed |= LGC_PRC_E_EXI;
+					int clause = knowledgeBase.CopyClause(main,quant.m_ref,newVar);
+					knowledgeBase.clauses[clause].m_info = qRemain;
+					NDTerm t(clause,LGC_E_EXISTS,outside);
+					t.m_NewVar = newVar;
+#if _DEBUG
+					cout<<"-----Exists Eliminate:"<<knowledgeBase.names.GetString(knowledgeBase.variables[newVar].m_ref)<<endl;
+#endif
+					t.m_path = (*p).m_path+1;
+					t.m_source = LGC_SRC_EE_ASSU;
+					t.m_OldVarIndex = quant.m_ref;
+					conditions.push_back(t);
+					lstExists.push_front(conditions.size() -1);
+					//Do not allow his father using its
+					NDTerm term = *p;
+					while (term.m_rule == LGC_E_ALL)
+					{
+						getNDTerm(term.m_first);
+						term = *cond;
+						(*cond).substed.push_back(newVar);
+					}
+					added+=1;
+				}
+			}
 			/*
 			else
 			{
@@ -652,9 +681,42 @@ int NaturalDeduction::introduction()
 					goals.push_back(NDTerm(arg2));
 					
 				}
-
+				
 				else if((status & LGC_PRC_I_OR3) !=LGC_PRC_I_OR3)
 				{
+					
+// 					//Save state
+// 					branches.push_back(goals.size());
+// 					branches.push_back(conditions.size());
+// 					branches.push_back(proveds.size());
+// 					int m_size = 0;
+// 					int m_or  = -1;
+// 					for (list<NDTerm>::iterator lst = conditions.begin();lst!=conditions.end();++lst)
+// 					{
+// 						m_or++;
+// 						if ((*lst).m_source & LGC_SRC_DISABLE == LGC_SRC_DISABLE)
+// 						{
+// 							continue;
+// 						}
+// 						int main = (*lst).m_index;
+// 						while (knowledgeBase.clauses[main].m_kind == LGC_REF)
+// 						{
+// 							main = knowledgeBase.clauses[main].m_ref;
+// 						}
+// 						
+// 						if (knowledgeBase.clauses[main].m_info == 0)
+// 						{	
+// 							if (knowledgeBase.clauses[main].m_kind == LGC_TERM_FUNC && knowledgeBase.clauses[main].m_ref == LGC_ADDR_OR)
+// 							{
+// 								branches.push_back((*lst).m_OrEnable);
+// 								branches.push_back(m_or);
+// 								m_size++;
+// 							}
+// 						}
+// 					} 
+// 					branches.push_back(m_size);
+// 					///////////
+
 					knowledgeBase.clauses.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_NOT));
 					knowledgeBase.clauses.push_back(Term(LGC_REF,subgoal));
 					arg1 = knowledgeBase.clauses.size() - 2;
@@ -670,6 +732,42 @@ int NaturalDeduction::introduction()
 					conclusion.m_source = LGC_SRC_CONCLUSION;
 					goals.push_back(NDTerm(conclusion));	
 				}
+// 				else if ((status & LGC_PRC_I_OR4) != LGC_PRC_I_OR4)
+// 				{
+// 					int index = goals.back().m_index;
+// 					int first = index +1;
+// 					goals.back().m_proceed |= LGC_PRC_I_OR4;
+// 					goals.back().m_pendings =1;
+// 					while (knowledgeBase.clauses[first].m_kind == LGC_REF)
+// 					{
+// 						first = knowledgeBase.clauses[first].m_ref;
+// 					}
+// 					int second = index + 2;
+// 					while (knowledgeBase.clauses[second].m_kind == LGC_REF)
+// 					{
+// 						second = knowledgeBase.clauses[second].m_ref;
+// 					}
+// 					Term term1 = knowledgeBase.clauses[first];
+// 					Term term2 = knowledgeBase.clauses[second];
+// 					if (term1.m_info>0 )
+// 					{
+// 						Term quant1 = knowledgeBase.Get1stQuan(knowledgeBase.clauses[first].m_info);
+// 						int qRemain1 = knowledgeBase.GetRemainQuan(knowledgeBase.clauses[first].m_info);
+// 						if (quant1.m_kind == LGC_QUAN_ALL )
+// 						{
+// 							list<int>vars;
+// 							knowledgeBase.ClauseVars(second,vars);
+// 							if (!vars.empty() && find(vars.begin(),vars.end(),quant1.m_ref)!= vars.end())
+// 							{	
+// 								int subVar = knowledgeBase.SubVars(quant1.m_ref);
+// 								int newClause = knowledgeBase.CopyClause(second,quant1.m_ref,subVar,true);
+// 								
+// 							}
+// 							//Merge quant
+// 
+// 						}
+// 					}
+// 				}
 				else
 				{
 					return 0;
@@ -1227,10 +1325,13 @@ int NaturalDeduction::ProveIt()
 // 				{
 // 					knowledgeBase.ReplaceClause(goals.back().m_index,goals.back().m_NewVar,substVar.m_substRef);
 // 				}
+
 #if _DEBUG
 				cout<<"\n Orginal"<<knowledgeBase.GetString(goals.back().m_index);
 #endif
+
 				knowledgeBase.ReplaceClause(goals.back().m_index,newVar,substVar.m_substRef);
+
 #if _DEBUG
 				cout<<"\nChange"<<knowledgeBase.GetString(goals.back().m_index);
 #endif
@@ -1517,10 +1618,10 @@ int NaturalDeduction::ProveIt()
 				continue;
 			}
 
-			if (existsEliminate())
-			{
-				continue;
-			}
+// 			if (existsEliminate())
+// 			{
+// 				continue;
+// 			}
 
 			if (OrEliminate())
 			{
