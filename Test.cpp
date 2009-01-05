@@ -29,9 +29,10 @@ int main()
 //	"all x p(x) |- all y p(y)";
 //	"all x (p(x) & p(x)) |- exists x (p(x) & p(x)) ";
 //	"exists x f(x) |- exists y f(y)";
-//	"exists x f(x) & exists x g(x) |- exists x (f(x)&g(x))";
+	" exists x (f(x)&g(x)) |- exists x f(x) & exists x g(x) ";
+	"exists x f(x) & exists x g(x) |- exists x (f(x)&g(x))";
 //	"f(g(x0),b)|- exists y exists x f(x,y)";
-	"exists x exists y f(x,y)|- exists y exists x f(x,y)";
+//	"exists x exists y f(x,y)|- exists y exists x f(x,y)";
 //	"all x all y f(x,y)|- all y all x f(x,y)";
 //	"all x f(x) & all x g(x) |- all x (f(x) & g(x))";
 //	"! (all x f(x) ) |- exists x !f(x)";
