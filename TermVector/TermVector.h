@@ -200,7 +200,7 @@ public:
 	int GetRemainQuan(int index);
 	list<int>RestValidTerm(int index)const;
 	int ClauseVars(int index, list<int>&theta)const;
-	int CopyClause(int index,int oldVar,int newVar);
+	int CopyClause(int index,int oldVar,int newVar, bool changeQuan = false);
 	int MatchClause(int index,int oldClauseIndex,int newVarIndex);
 	int ReplaceClause(int index,int oldVar,int newVar);
 private:

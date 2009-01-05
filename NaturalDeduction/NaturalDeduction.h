@@ -37,7 +37,7 @@
 //////////////////////////////////////
 #define LGC_I_AND			0x00000800
 #define LGC_I_OR_1			0x00001000
-#define LGC_I_OR_2			0x00002000
+#define LGC_I_OR_2			0x00002000 
 #define LGC_I_MAP			0x00004000
 #define LGC_I_NOT			0x00008000
 #define LGC_I_ALL			0x00010000
@@ -66,11 +66,13 @@
 #define LGC_PRC_I_OR1		0x00000080
 #define LGC_PRC_I_OR2		0x00000100
 #define LGC_PRC_I_OR3		0x00000200
-#define LGC_PRC_I_NOT		0x00000400
-#define LGC_PRC_I_MAP		0x00000800
-#define LGC_PRC_I_AND		0x00001000
-#define LGC_PRC_I_ALL		0x00002000
-#define LGC_PRC_I_EXI		0x00004000
+#define LGC_PRC_I_OR4		0x00000400
+
+#define LGC_PRC_I_NOT		0x00000800
+#define LGC_PRC_I_MAP		0x00001000
+#define LGC_PRC_I_AND		0x00002000
+#define LGC_PRC_I_ALL		0x00004000
+#define LGC_PRC_I_EXI		0x00008000
 //////////////////////////////////////
 #define LGC_PRC_C_OR1		0x01000000
 #define LGC_PRC_C_OR2		0x02000000

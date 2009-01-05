@@ -566,6 +566,10 @@ string xWam::GetString(int index)const
 			}
 			break;
 		case LGC_ADDR_OR:
+			if (quan)
+			{
+				result += "(";
+			}
 			pars  = isOperator(index+1);
 			if (pars)
 			{
@@ -587,8 +591,16 @@ string xWam::GetString(int index)const
 			{
 				result += ")";
 			}
+			if (quan)
+			{
+				result += ")";
+			}
 			break;
 		case LGC_ADDR_MAP:
+			if (quan)
+			{
+				result += ")";
+			}
 			pars  = isOperator(index+1);
 			if (pars)
 			{
@@ -607,6 +619,10 @@ string xWam::GetString(int index)const
 			}
 			result += GetString(index + 2);
 			if (pars)
+			{
+				result += ")";
+			}
+			if (quan)
 			{
 				result += ")";
 			}
@@ -637,6 +653,10 @@ bool xWam::isOperator(int index)const
 	}
 	if (clauses[i].m_kind == LGC_TERM_FUNC)
 	{
+		if (clauses[i].m_info >0 )
+		{
+			return false;
+		}
 		if ( clauses[i].m_ref == LGC_ADDR_AND ||clauses[i].m_ref == LGC_ADDR_OR ||clauses[i].m_ref == LGC_ADDR_MAP)
 		{
 			return true;
@@ -730,7 +750,7 @@ list<int>xWam::RestValidTerm(int index)const
 	return vars;
 }
 
-int xWam::CopyClause(int index,int oldVar,int newVar)
+int xWam::CopyClause(int index,int oldVar,int newVar, bool changeQuan)
 {
 	int size =  clauses[clauses[index].m_ref].m_info;
 	Term* arg =new Term[size];
@@ -764,6 +784,24 @@ int xWam::CopyClause(int index,int oldVar,int newVar)
 
 	int result = clauses.size();
 	clauses.push_back(clauses[index]);
+	if (changeQuan)
+	{
+		int quan = clauses[index].m_info;
+		int size  = quantifiers[quan].m_info;
+		int position = quantifiers[quan].m_ref + quan;
+		clauses[clauses.size() -1].m_info = quantifiers.size();
+		quantifiers.push_back(Term(LGC_QUAN_SIZE,1,quantifiers[quan].m_info));
+		for (int i = 0; i < size ; i++)
+		{
+			Term term = quantifiers[position + i];
+			if(oldVar == term.m_ref)
+			{
+				term.m_ref = newVar;
+			}
+			quantifiers.push_back(term);
+		}
+		
+	}
 	for (i = 0; i < size; i++)
 	{
 		clauses.push_back(arg[i]);
