@@ -98,7 +98,15 @@ inline std::string pLine2Str(const pLine& p, int max)
 	}
 	else if (p.m_second > -1)
 	{
-		s += " " + ToString(p.m_second) + "," + ToString(p.m_first);
+		if (p.m_second < p.m_first)
+		{
+			s += " " + ToString(p.m_second) + "," + ToString(p.m_first);	
+		}
+		else
+		{
+			s += " " + ToString(p.m_first) + "," + ToString(p.m_second);	
+		}
+		
 	}
 
 	else if (p.m_first > -1)

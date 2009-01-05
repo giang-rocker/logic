@@ -42,6 +42,8 @@
 #define LGC_I_NOT			0x00008000
 #define LGC_I_ALL			0x00010000
 #define LGC_I_EXISTS		0x00020000
+#define LGC_I_INTRO			0x0003F000
+
 //////////////////////////////////////
 #define LGC_DEMOR_OR		0x00040000
 #define LGC_DEMOR_AND		0x00080000
@@ -233,8 +235,8 @@ private:
 	inline int disableVar (int varRef);
 	inline bool isReached(int &active);
 	inline bool isReached(int &active, int& negative);
-	inline bool isCompatible(int father,int son)const;
-	inline bool isComplement(int active, int negative) const;
+	inline bool isCompatible(int father,int son);
+	inline bool isComplement(int active, int negative);
 	inline int  disable(int assume);
 	inline int  contradiction();
 	inline int  introduction();
@@ -260,12 +262,12 @@ private:
 	list<int>ndAssumes;
 	list<int>lstExists;
 	bool isInsert;
+	bool isRenaming;
 	
-
 #if _DEBUG
 	void dprintLines();
-	void PrintIndex();
 	int debug(int n);
+	void printAssumption();
 #endif
 
 

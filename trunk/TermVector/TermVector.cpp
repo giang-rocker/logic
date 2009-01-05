@@ -31,8 +31,6 @@ xWam::~xWam()
 
 int xWam::BeginSentence()
 {
-
-
 	lstTerms.clear();
 	lstOpers.clear();
 	quanSize = 0;
@@ -773,6 +771,77 @@ int xWam::CopyClause(int index,int oldVar,int newVar)
 	delete[] arg;
 	return result;
 }
+int xWam::ReplaceClause(int index,int oldVar,int newVar)
+{
+	int size =  clauses[clauses[index].m_ref].m_info;
+	for (int i = 1; i <= size; i++)
+	{
+		if (clauses[i + index].m_kind == LGC_TERM_VAR)
+		{
+			if (clauses[i+index].m_ref == oldVar)
+			{
+				clauses[i+index].m_ref = newVar;
+			}
+		}
+		else if (clauses[i + index].m_kind == LGC_REF)
+		{
+			int pos = i + index;
+			while (clauses[pos].m_kind == LGC_REF)
+			{
+				pos = clauses[pos].m_ref;
+			}
+			ReplaceClause(pos,oldVar,newVar);
+		}
+	}
+	return index;
+
+}
+
+int xWam::MatchClause(int index,int oldClauseIndex,int newVarIndex)
+{
+	int size =  clauses[clauses[index].m_ref].m_info;
+	Term* arg =new Term[size];
+
+	for (int i = 1; i <= size; i++)
+	{
+		if (clauses[i + index].m_kind == LGC_REF)
+		{
+			int pos = i + index;
+			while (clauses[pos].m_kind == LGC_REF)
+			{
+				pos = clauses[pos].m_ref;
+			}
+			if (pos == oldClauseIndex)
+			{
+				arg[i - 1] = Term(LGC_TERM_VAR, newVarIndex);
+			}
+			else
+			{
+				arg[i-1] = Term(LGC_REF,MatchClause(pos,oldClauseIndex,newVarIndex));
+			}
+
+		}
+		else if (clauses[i + index].m_ref == clauses[oldClauseIndex].m_ref)
+		{
+			
+			arg[ i - 1] = Term(LGC_TERM_VAR,newVarIndex);
+			
+		}
+		else
+		{
+			arg[i - 1] = clauses[i + index];
+		}
+	}
+	
+	int result = clauses.size();
+	clauses.push_back(clauses[index]);
+	for (i = 0; i < size; i++)
+	{
+		clauses.push_back(arg[i]);
+	}
+	delete[] arg;
+	return result;
+}
 
 int xWam::DupVar(int index, int flag)
 {
@@ -792,3 +861,4 @@ int xWam::DupVar(int index, int flag)
 	variables.push_back(t);
 	return variables.size() - 1;
 }
+
