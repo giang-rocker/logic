@@ -21,8 +21,6 @@ xWam::xWam()
 	clauses.push_back(Term(LGC_TERM_FALSE));
 
 
-
-	
 }
 xWam::~xWam()
 {
