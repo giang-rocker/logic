@@ -10,7 +10,7 @@ int main()
 {
 	string dummy = "";
 	string text = 
-
+		"f(f(x) & h(x)), g(x) |- g(x)";
 //		"\\- x (p(x) | q(x) ) |- -] x p(x) | \\- x q(x)";
 // 				"all x  all y all z ((le(x, y) &le(y, z)) -> (!gt(x, z))),\n" +	dummy	+
 // 				"all x all y (le(x, y) -> (gt(y, x) | eq(x, y))),\n"		+	dummy	+
