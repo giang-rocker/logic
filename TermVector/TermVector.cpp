@@ -706,12 +706,19 @@ int xWam:: ClauseVars(int index, list<int>&theta)const
 
 int xWam::SubVars(int index, int flag)
 {
+
 #if _DEBUG
 	_ASSERT(index >= 0 && index < variables.size());
 #endif
-	index = names.GetIndex(names.GetString(variables[index].m_ref) + ToString(variables[index].m_extra++));
+	string name = names.GetString(variables[index].m_ref) + ToString(variables[index].m_extra++);
+	while (names.Exists(name))
+	{
+		name = names.GetString(variables[index].m_ref) + ToString(variables[index].m_extra++);
+	}
+	index = names.GetIndex(name);
 	variables.push_back(Term(LGC_TERM_VAR,index,flag));
 	return variables.size() - 1;
+
 }
 
 Term xWam::Get1stQuan(int index)

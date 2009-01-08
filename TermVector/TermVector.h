@@ -143,6 +143,21 @@ public:
 		return names[index].str;
 		return "";
 	}
+
+	bool Exists(string name)
+	{
+		p = names.begin();
+		while (p!=names.end())
+		{
+			if ((*p).str == name)
+			{
+				return true;
+			}
+			++p;
+		}
+		return false;
+	}
+
 	int print()
 	{
 		vector<name_>::const_iterator p = names.begin();

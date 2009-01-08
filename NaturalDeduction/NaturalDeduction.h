@@ -155,10 +155,12 @@ public:
 	}
 	Term m_term;
 	int	 m_index;
+
 };
 
 struct NDTerm
 {
+
 	int m_index;	
 	int m_first;		
 	int m_second;
@@ -178,6 +180,8 @@ struct NDTerm
 	int m_NewVar;
 	int m_OldVarIndex;
 	int m_cutExists;
+	int m_nexts;
+
 	NDTerm(int index = -1, int rule = 0, int first = -1, int second = -1)
 	{
 		m_index = index ;
@@ -199,6 +203,7 @@ struct NDTerm
 		m_OldVarIndex = -1;
 		m_cutExists = -1;
 		m_OrAssume = -1;
+		m_nexts = 0;
 	
 	}
 	list<int>substed;
@@ -206,6 +211,26 @@ struct NDTerm
 	
 };
 
+struct NDBackup 
+{
+	NDBackup(	list <NDTerm> conditions,
+			list <NDTerm> goals,
+			list <int> proveds, 
+			list<int>exists, xWam knowledgeBase)
+	{
+		m_conditions = conditions;
+		m_goals = goals;
+		m_proveds = proveds;
+		m_Exists = exists;
+		m_knowledgeBase = knowledgeBase;
+	}
+	list <NDTerm>m_conditions;
+	list <NDTerm>m_goals;
+	list <int>m_proveds; 
+	list<int>m_Exists;
+	xWam m_knowledgeBase;
+
+};
 
 
 class NaturalDeduction  
@@ -224,14 +249,14 @@ private:
 	int unify(list<NDWAM> x, list<NDWAM> y, list<NDWAM>& theta);
 	int unifyVar(NDWAM var, NDWAM y, list<NDWAM>& theta);
 	bool occurCheck(list<NDWAM>theta,NDWAM var, NDWAM node )const;
-
+	
 
 	int  getFarest(int& first, int& second, int sub1, int sub2);
 	int  NegContradiction();
 	int  NegIntrodution();
 	int  OrEliminate();
 	string rule2Str (int rule);
-	
+	inline void backup();
 	inline int setCutExists(int goal,int assume);
 	inline int existsEliminate();
 	inline int disableVar (int varRef);
@@ -253,7 +278,7 @@ private:
 	list <NDTerm> conditions;
 	list <NDTerm> goals;
 	list <int> proveds; 
-	list <int> branches;
+	//list <int> branches;
 	xWam knowledgeBase;
 	list<NDTerm>::iterator cond;
 	
@@ -265,7 +290,9 @@ private:
 	list<int>lstExists;
 	bool isInsert;
 	bool isRenaming;
-	
+
+	list<NDBackup>lst_backup;
+
 #if _DEBUG
 	void dprintLines();
 	int debug(int n);
