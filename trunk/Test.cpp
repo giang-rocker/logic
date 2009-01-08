@@ -16,7 +16,8 @@ int main()
 // 				"all x all y (le(x, y) -> (gt(y, x) | eq(x, y))),\n"		+	dummy	+
 // 				"all x all y ((gt(y, x) | eq(x, y)) ->le(x, y)),\n"			+	dummy	+
 // 				"all x exists y le(x, y) |- all x le(x,x)";
-
+//	"all x f(x) |- all y f(y)";
+//	"f(A) , g(B) , exists x( h(x) & f(x) & g(x)) |- exists y (f(y) & g(y))";
 //	" all y all x f(x,y) |- f(A,B)";
 //	"! -] x (b(x) & g(x)), all x ( d(x) -> b(x)) |- ! -]x (d(x) & g(x))";
 //	"all x all y all z ((le(x, y) & le(y, z)) ->!gt(x, z)),all x all y (le(x, y) -> (gt(y, x) | eq(x, y))),all x all y ( (gt(y, x) | eq(x, y))->le(x, y)), all x exists y le(x, y), all x all y ( eq(x,y) -> eq(y,x))|- all x le(x, x)";
@@ -28,7 +29,7 @@ int main()
 //	"all x (p(x) ->q(x)) |- (all x !q(x)) ->(all x !p(x))";
 //	"all x p(x) |- all y p(y)";
 //	"all x (p(x) & p(x)) |- exists x (p(x) & p(x)) ";
-	"all x (p(x)|q(x)) |- all x p(x) | exists x q(x)";
+//	"all x (p(x)|q(x)) |- all x p(x) | exists x q(x)";
 //	"exists x f(x) |- exists y f(y)";
 //	"exists x (f(x)&g(x)) |- exists x f(x) & exists x g(x) ";
 //	"exists x f(x) & exists x g(x) |- exists x (f(x)&g(x))";
@@ -100,13 +101,14 @@ int main()
 //	"!(P | (!P & Q)) |- !P & !Q";
 //	"!P & !Q|-!(P | (!P & Q))  ";
 //	"( P & Q) -> R |-  (!P | ! Q) | R";
-	"  (!P | ! Q) | R |- ( P & Q) -> R ";
+//	"  (!P | ! Q) | R |- ( P & Q) -> R ";
 //	" P & Q |- P->Q ";
 //	"A,B , A&B -> F  |- G | F ";
 //	"F -> G |- F|H -> G|H";
 //	" |- (P&Q)|(P&!Q)|(!P&Q)|(!P&!Q)";
 //	"P&Q->R |- P->(Q->R)";
 
+	"A |- B|A";
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
 	p->parse();

@@ -194,6 +194,7 @@ int NaturalDeduction::eliminate()
 							ndTerm.m_isPremise = (*p).m_isPremise;
 							added += insertCondition(ndTerm,index);
 						}
+
 						/*else if(database.functions[arg1].m_ref == LGC_ADDR_OR && ((*p).m_proceed & LGC_PRC_DEMOR)!=LGC_PRC_DEMOR)
 						{
 							(*p).m_proceed |=LGC_PRC_DEMOR;
@@ -232,6 +233,7 @@ int NaturalDeduction::eliminate()
 							added += insertCondition(ndTerm,index);
 						}
 						*/
+
 					}
 
 					break;
@@ -436,6 +438,23 @@ int NaturalDeduction::eliminate()
 			int qRemain = knowledgeBase.GetRemainQuan(knowledgeBase.clauses[main].m_info);
 			if (quant.m_kind == LGC_QUAN_ALL)
 			{
+
+// 				if (((*p).m_proceed & LGC_PRC_E_ALL) != LGC_PRC_E_ALL)
+// 				{
+// 					(*p).m_proceed |= LGC_PRC_E_ALL;
+// 					int subVar = knowledgeBase.SubVars(quant.m_ref);
+// 					int clause = knowledgeBase.CopyClause(main,quant.m_ref,subVar);
+// 					knowledgeBase.clauses[clause].m_info = qRemain;
+// 					NDTerm t(clause, LGC_E_ALL,outside);
+// 					t.m_path = (*p).m_path + 1;
+// 					t.m_NewVar = subVar;
+// 					t.m_OldVarIndex = quant.m_ref;
+// 					conditions.push_back(t);
+// 					added++;
+// 					(*p).substed.push_back(subVar);
+// 				}
+
+
 				list<int>vars = knowledgeBase.RestValidTerm(main);
 				for (list<int>::iterator lst = vars.begin(); lst != vars.end(); ++lst)
 				{
@@ -601,40 +620,34 @@ int NaturalDeduction::introduction()
 					{
 						arg1 = knowledgeBase.clauses[arg1].m_ref;
 					}
+					goals.back().m_proceed |= LGC_PRC_I_OR1;
+					backup();
 					goals.back().m_pendings = 1;
 					goals.back().m_rule = LGC_I_OR_1;
-					goals.back().m_proceed |= LGC_PRC_I_OR1;
-					branches.push_back(goals.size());
-					branches.push_back(conditions.size());
-					branches.push_back(proveds.size());
-					
-					int m_size = 0;
-					int m_or  = -1;
-					for (list<NDTerm>::iterator lst = conditions.begin();lst!=conditions.end();++lst)
-					{
-						m_or++;
-						if ((*lst).m_source & LGC_SRC_DISABLE == LGC_SRC_DISABLE)
-						{
-							continue;
-						}
-						int main = (*lst).m_index;
-						while (knowledgeBase.clauses[main].m_kind == LGC_REF)
-						{
-							main = knowledgeBase.clauses[main].m_ref;
-						}
-						
-						if (knowledgeBase.clauses[main].m_info == 0)
-						{	
-							if (knowledgeBase.clauses[main].m_kind == LGC_TERM_FUNC && knowledgeBase.clauses[main].m_ref == LGC_ADDR_OR)
-							{
-								branches.push_back((*lst).m_OrEnable);
-								branches.push_back(m_or);
-								m_size++;
-							}
-						}
-					} 
-					branches.push_back(m_size);
 
+// 					int m_size = 0;
+// 					int m_or  = -1;
+// 					for (list<NDTerm>::iterator lst = conditions.begin();lst!=conditions.end();++lst)
+// 					{
+// 						m_or++;
+// 						if ((*lst).m_source & LGC_SRC_DISABLE == LGC_SRC_DISABLE)
+// 						{
+// 							continue;
+// 						}
+// 						int main = (*lst).m_index;
+// 						while (knowledgeBase.clauses[main].m_kind == LGC_REF)
+// 						{
+// 							main = knowledgeBase.clauses[main].m_ref;
+// 						}
+// 						
+// 						if (knowledgeBase.clauses[main].m_info == 0)
+// 						{	
+// 							if (knowledgeBase.clauses[main].m_kind == LGC_TERM_FUNC && knowledgeBase.clauses[main].m_ref == LGC_ADDR_OR)
+// 							{
+// 								m_size++;
+// 							}
+// 						}
+// 					} 
 					goals.push_back(NDTerm(arg1));
 				} 
 
@@ -645,38 +658,37 @@ int NaturalDeduction::introduction()
 					{
 						arg2 = knowledgeBase.clauses[arg2].m_ref;
 					}
+				
+					goals.back().m_proceed |= LGC_PRC_I_OR2;
+					backup();
+
 					goals.back().m_pendings = 1;
 					goals.back().m_rule = LGC_I_OR_2;
-					goals.back().m_proceed |= LGC_PRC_I_OR2;
-					branches.push_back(goals.size());
-					branches.push_back(conditions.size());
-					branches.push_back(proveds.size());
-					int m_size = 0;
-					int m_or  = -1;
-					for (list<NDTerm>::iterator lst = conditions.begin();lst!=conditions.end();++lst)
-					{
-						m_or++;
-						if ((*lst).m_source & LGC_SRC_DISABLE == LGC_SRC_DISABLE)
-						{
-							continue;
-						}
-						int main = (*lst).m_index;
-						while (knowledgeBase.clauses[main].m_kind == LGC_REF)
-						{
-							main = knowledgeBase.clauses[main].m_ref;
-						}
-						
-						if (knowledgeBase.clauses[main].m_info == 0)
-						{	
-							if (knowledgeBase.clauses[main].m_kind == LGC_TERM_FUNC && knowledgeBase.clauses[main].m_ref == LGC_ADDR_OR)
-							{
-								branches.push_back((*lst).m_OrEnable);
-								branches.push_back(m_or);
-								m_size++;
-							}
-						}
-					} 
-					branches.push_back(m_size);
+// 					int m_size = 0;
+// 					int m_or  = -1;
+// 					for (list<NDTerm>::iterator lst = conditions.begin();lst!=conditions.end();++lst)
+// 					{
+// 						m_or++;
+// 						if ((*lst).m_source & LGC_SRC_DISABLE == LGC_SRC_DISABLE)
+// 						{
+// 							continue;
+// 						}
+// 						int main = (*lst).m_index;
+// 						while (knowledgeBase.clauses[main].m_kind == LGC_REF)
+// 						{
+// 							main = knowledgeBase.clauses[main].m_ref;
+// 						}
+// 						
+// 						if (knowledgeBase.clauses[main].m_info == 0)
+// 						{	
+// 							if (knowledgeBase.clauses[main].m_kind == LGC_TERM_FUNC && knowledgeBase.clauses[main].m_ref == LGC_ADDR_OR)
+// 							{
+// 
+// 								m_size++;
+// 							}
+// 						}
+// 					} 
+
 
 					goals.push_back(NDTerm(arg2));
 					
@@ -685,6 +697,7 @@ int NaturalDeduction::introduction()
 				else if((status & LGC_PRC_I_OR3) !=LGC_PRC_I_OR3)
 				{
 					
+
 // 					//Save state
 // 					branches.push_back(goals.size());
 // 					branches.push_back(conditions.size());
@@ -715,7 +728,9 @@ int NaturalDeduction::introduction()
 // 						}
 // 					} 
 // 					branches.push_back(m_size);
-// 					///////////
+//
+					goals.back().m_proceed |= LGC_PRC_I_OR3;
+					//backup();
 
 					knowledgeBase.clauses.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_NOT));
 					knowledgeBase.clauses.push_back(Term(LGC_REF,subgoal));
@@ -726,17 +741,20 @@ int NaturalDeduction::introduction()
 					goals.back().m_pendings = 1;
 					goals.back().m_rule = LGC_I_NOT;
 					goals.back().m_assume = assume;
-					goals.back().m_proceed |= LGC_PRC_I_OR3;
+					
 					goals.back().m_derivation = assume;
 					NDTerm conclusion(LGC_ADDR_FALSE);
 					conclusion.m_source = LGC_SRC_CONCLUSION;
 					goals.push_back(NDTerm(conclusion));	
 				}
+
 // 				else if ((status & LGC_PRC_I_OR4) != LGC_PRC_I_OR4)
 // 				{
-// 					int index = goals.back().m_index;
-// 					int first = index +1;
+// 
 // 					goals.back().m_proceed |= LGC_PRC_I_OR4;
+// 					int index = goals.back().m_index;
+// 					int first = index + 1;
+// 					
 // 					goals.back().m_pendings =1;
 // 					while (knowledgeBase.clauses[first].m_kind == LGC_REF)
 // 					{
@@ -768,6 +786,7 @@ int NaturalDeduction::introduction()
 // 						}
 // 					}
 // 				}
+
 				else
 				{
 					return 0;
@@ -1326,6 +1345,7 @@ int NaturalDeduction::ProveIt()
 // 					knowledgeBase.ReplaceClause(goals.back().m_index,goals.back().m_NewVar,substVar.m_substRef);
 // 				}
 
+
 #if _DEBUG
 				cout<<"\n Orginal"<<knowledgeBase.GetString(goals.back().m_index);
 #endif
@@ -1779,43 +1799,14 @@ int NaturalDeduction::insertGoal(NDTerm term)
 
 int NaturalDeduction::turnIt()
 {
-	if (!branches.empty())
+	if (!lst_backup.empty())
 	{
-		int size = branches.back();
-		branches.pop_back();
-		for (int i = 0; i <size; i++)
-		{
-			getNDTerm(branches.back());
-			branches.pop_back();
-			(*cond).m_OrEnable = branches.back() == 1 ? true : false;
-			branches.pop_back();
-		}
-		size = branches.back();
-		branches.pop_back();
-		while (proveds.size() > size)
-		{
-			proveds.pop_back();
-		}
-		
-		size = branches.back();
-		branches.pop_back();
-		while (conditions.size() > size)
-		{
-			conditions.pop_back();
-		}
-		
-		size = branches.back();
-		branches.pop_back();
-		while (goals.size() >  size)
-		{
-			goals.pop_back();
-		}
-		goals.back().m_pendings = 0;
-		for (list<NDTerm>::iterator p = conditions.begin(); p!= conditions.end();++p)
-		{
-			(*p).m_proceed = 0x00000000;
-		}
-
+		NDBackup restore = lst_backup.back();
+		lst_backup.pop_back();
+		goals = restore.m_goals;
+		conditions = restore.m_conditions;
+		proveds = restore.m_proveds;
+		knowledgeBase = restore.m_knowledgeBase;
 		return 1;
 	}
 	return 0;
@@ -2547,10 +2538,12 @@ bool NaturalDeduction::isReached(int &active)
 {
 	isRenaming = false;
 	int subgoal = goals.back().m_index;
+	int next = goals.back().m_nexts;
 	int outside = -1;
 	active = -1;
 	int length = 0x7FFFFFFF;
 	bool result = false;
+	int matching = 0;
 	for (list<NDTerm>::const_iterator p = conditions.begin(); p!= conditions.end();++p)
 	{
 		++outside;
@@ -2560,13 +2553,16 @@ bool NaturalDeduction::isReached(int &active)
 		}
 		if (isCompatible((*p).m_index,subgoal))
 		{
-			if (length > (*p).m_path)
+			matching++;
+			if(matching > next)
 			{
-				active = outside;
-				length = (*p).m_path;
-				result = true;
-			}
-			
+				if (length > (*p).m_path)
+				{
+					active = outside;
+					length = (*p).m_path;
+					result = true;
+				}
+			}	
 		}
 	}
 	
@@ -3776,6 +3772,11 @@ int NaturalDeduction::setCutExists( int goal,int assume)
 		}
 	}
 	return 0;
+}
+
+void NaturalDeduction::backup()
+{
+	lst_backup.push_back(NDBackup(conditions,goals,proveds,lstExists,knowledgeBase));
 }
 
 #if _DEBUG
