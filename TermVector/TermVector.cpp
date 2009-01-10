@@ -815,6 +815,8 @@ int xWam::CopyClause(int index,int oldVar,int newVar, bool changeQuan)
 	delete[] arg;
 	return result;
 }
+
+
 int xWam::ReplaceClause(int index,int oldVar,int newVar)
 {
 	int size =  clauses[clauses[index].m_ref].m_info;
@@ -906,3 +908,60 @@ int xWam::DupVar(int index, int flag)
 	return variables.size() - 1;
 }
 
+int xWam::HerbrandLevel(int index) const
+{
+	
+	while (clauses[index].m_kind == LGC_REF)
+	{
+		index = clauses[index].m_ref;
+	}
+	int level = 0;
+	if (clauses[index].m_kind == LGC_TERM_FUNC)
+	{
+		int quant  = clauses[index].m_info;
+		if (quant >= 0)
+		{
+			return 100000;
+		}
+		int arg = clauses[clauses[index].m_ref].m_info;
+		for (int i = 1; i <= arg; i++)
+		{
+			int subLevel = HerbrandLevel(index + arg);
+			if (level < subLevel)
+			{
+				level  = subLevel;
+			}
+		}
+		level++;
+	}
+	return level;
+}
+
+list<int> xWam::Herbrand(int index, int level)
+{
+	list<int>funVar;
+	ClauseVars(index,funVar);
+	list<int>terms;
+	for (int i = 0; i < clauses.size(); i++)
+	{
+		if (clauses[index].m_kind == LGC_REF)
+		{
+			continue;
+		}
+		int hb = HerbrandLevel(index);
+		if (hb > 0 && hb <= level)
+		{
+			list<int>itsVar;
+			ClauseVars(index,itsVar);
+			list<int>::const_iterator p = funVar.begin();
+			for (;p!= funVar.end();++p)
+			{
+				if (find(itsVar.begin(),itsVar.end(),*p) == itsVar.end())
+				{
+					terms.push_back(index);
+				}
+			}
+		}
+	}
+	return terms;
+}
