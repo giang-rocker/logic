@@ -9,8 +9,15 @@ using namespace std;
 int main()
 {
 	string dummy = "";
-	string text = 
-		"f(f(x) & h(x)), g(x) |- g(x)";
+	string text = dummy+
+		"all x (kid(x) -> like(x,Santa)),"+	
+		"all x all y (like(x, Santa) &  reindeer (y) -> like (x, y)),"+
+		"reindeer(Rudolph) & rednose(Rudolph),"+
+		"all x (rednose(x) -> weird (x) | clown(x))," +
+		"all x (reindeer(x) -> ! clown(x)),"+
+		"all x( weird (x) -> !like (Nam,x))" +
+		"|-  !kid(Nam) ";
+
 //		"\\- x (p(x) | q(x) ) |- -] x p(x) | \\- x q(x)";
 // 				"all x  all y all z ((le(x, y) &le(y, z)) -> (!gt(x, z))),\n" +	dummy	+
 // 				"all x all y (le(x, y) -> (gt(y, x) | eq(x, y))),\n"		+	dummy	+
@@ -46,7 +53,7 @@ int main()
 // 	"all x (p(x) -> q(x)), all x p(x) |- all x q(x)";
 // 	"p(t), all x (p(x) -> !q(x)) |- !q(t)";
 // 	"all x( p(x) & q(x)) |- all x p(x) & all x q(x) ";
-
+	" f(a), -] x (f(x)& g(x) & h(x)) |- -]x (g(x) & f(x))";
 //	"p(A,B) -> h(A,B) |- p(A,B)|K -> h(A,B)|K";
 //	"A,B , A&B -> F |- F ->A";
 //	"A&B&C|- A";

@@ -101,6 +101,7 @@ struct Term
 	int m_info;
 	int m_extra;
 	int m_substRef;
+	int m_father;
 	list<int>substed;
 	Term(int kind = 0, int ref = 0, int info = 0)
 	{
@@ -109,6 +110,7 @@ struct Term
 		m_info = info;
 		m_extra = 0;
 		m_substRef = -1;
+		m_father = -1;
 	}
 	string toString()
 	{
@@ -214,10 +216,13 @@ public:
 	Term Get1stQuan(int index);
 	int GetRemainQuan(int index);
 	list<int>RestValidTerm(int index)const;
+	list<int>Herbrand(int index, int level);
 	int ClauseVars(int index, list<int>&theta)const;
 	int CopyClause(int index,int oldVar,int newVar, bool changeQuan = false);
 	int MatchClause(int index,int oldClauseIndex,int newVarIndex);
 	int ReplaceClause(int index,int oldVar,int newVar);
+	int HerbrandLevel(int index)const;
+
 private:
 	bool isOperator(int index)const;
 	list<Term>lstTerms;

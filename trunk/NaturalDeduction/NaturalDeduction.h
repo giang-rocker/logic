@@ -105,7 +105,8 @@
 #define LGC_SRC_EI_GOAL		0x00800000
 #define LGC_SRC_EI_CONC		0x00010000
 //////////////////////////////////////
-
+#define MAX_ZSPACE			10;
+#define MAX_HERBRAND		10;
 
 
 class NDWAM 
@@ -207,13 +208,15 @@ struct NDTerm
 	
 	}
 	list<int>substed;
+	list<int>m_herbands;
 	NDWAM substion;
 	
 };
 
 struct NDBackup 
 {
-	NDBackup(	list <NDTerm> conditions,
+	NDBackup(
+			list <NDTerm> conditions,
 			list <NDTerm> goals,
 			list <int> proveds, 
 			list<int>exists, xWam knowledgeBase)
@@ -289,8 +292,9 @@ private:
 	list<int>ndAssumes;
 	list<int>lstExists;
 	bool isInsert;
-	bool isRenaming;
-
+	bool isRenamed;
+	int	 m_Herbrand;
+	int  m_ZSpace;
 	list<NDBackup>lst_backup;
 
 #if _DEBUG
