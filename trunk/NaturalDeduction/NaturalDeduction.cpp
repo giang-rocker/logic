@@ -1029,7 +1029,7 @@ int NaturalDeduction::contradiction()
 		int arg1 = source + 1;
 
 		NDTerm t;
-		if (knowledgeBase.clauses[source].m_info == 0 && knowledgeBase.clauses[source].m_kind == LGC_TERM_FUNC)
+		if (knowledgeBase.clauses[source].m_info <= 0 && knowledgeBase.clauses[source].m_kind == LGC_TERM_FUNC)
 		{
 			switch (knowledgeBase.clauses[source].m_ref)
 			{
@@ -3268,7 +3268,7 @@ int NaturalDeduction::NegIntrodution()
 	int status = goals.back().m_proceed;
 	NDTerm t;
 	int added = 0;
-	if(knowledgeBase.clauses[subgoal].m_info == 0)
+	if(knowledgeBase.clauses[subgoal].m_info <= 0)
 	{
 		if (knowledgeBase.clauses[subgoal].m_kind == LGC_TERM_FUNC)
 		{
@@ -3297,7 +3297,7 @@ int NaturalDeduction::NegIntrodution()
 				}
 				break;
 			default:
-				if ((status & LGC_PRC_CONTR) != 0x000000000)
+				if ((status & LGC_PRC_CONTR) == 0x000000000)
 				{
 					knowledgeBase.clauses.push_back(Term(LGC_TERM_FUNC,LGC_ADDR_NOT));
 					knowledgeBase.clauses.push_back(Term(LGC_REF,subgoal));
