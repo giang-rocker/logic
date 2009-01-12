@@ -973,6 +973,7 @@ int NaturalDeduction::introduction()
 				conditions.push_back(var);
 				goals.back().m_NewTerm = subVar;
 				goals.back().m_OldTerm = xTerm(LGC_TERM_VAR,quant.m_ref);
+				goals.back().m_unfVar = conditions.size() - 1;
 				int subClause = knowledgeBase.CopyClause(subgoal,goals.back().m_OldTerm,goals.back().m_NewTerm);
 				knowledgeBase.clauses[subClause].m_info = qRemain;
 				NDTerm t(subClause);
@@ -1145,7 +1146,7 @@ int NaturalDeduction::ProveIt()
 
 #if _DEBUG
 		debug(times++);
-		if (times == 25)
+		if (times == 3)
 		{
 			times = times;
 		}
@@ -2021,12 +2022,12 @@ int NaturalDeduction::getString(int index, bool isFixed, bool prefix)
 	if ((goal.m_source & LGC_SRC_ALL_GOAL) == LGC_SRC_ALL_GOAL)
 	{
 
-		getNDTerm(goal.m_NewTerm.m_index);
+		getNDTerm(goal.m_unfVar);
 		int newVar = (*cond).m_index;
-		pLine varLine(goal.m_NewTerm.m_index,lastLine,ifs++,"if   ",knowledgeBase.GetString((*cond).m_index));
+		pLine varLine(goal.m_unfVar,lastLine,ifs++,"if   ",knowledgeBase.GetString(newVar));
 		varLine.m_isFixed = true;
 		(*cond).m_line = lastLine++;
-		ndAssumes.push_front(goal.m_NewTerm.m_index);
+		ndAssumes.push_front(goal.m_unfVar);
 		lstpLines.push_back(varLine);
 		
 		int first = getString(goal.m_first,true,true);
@@ -4064,8 +4065,9 @@ int NaturalDeduction::heuristicOr(int subgoal)
 	bool result = false;
 	int matching = 0;
 	//backup();
-	NDBackup bk = lst_backup.back();
-	lst_backup.pop_back();
+	//NDBackup bk = lst_backup.back();
+	//lst_backup.pop_back();
+	xWam bk = knowledgeBase;
 	for (list<NDTerm>::const_iterator p = conditions.begin(); p!= conditions.end();++p)
 	{
 		++outside;
@@ -4087,23 +4089,23 @@ int NaturalDeduction::heuristicOr(int subgoal)
 				}
 				else
 				{
-					knowledgeBase = bk.m_knowledgeBase;
+					knowledgeBase = bk;
 				}
 			}
 			else
 			{
-				knowledgeBase = bk.m_knowledgeBase;
+				knowledgeBase = bk;
 			}
 		}
 		else
 		{
-			knowledgeBase = bk.m_knowledgeBase;
+			knowledgeBase = bk;
 		}
 		
 	}
 	if (result && isRenamed)
 	{
-		knowledgeBase = bk.m_knowledgeBase;
+		knowledgeBase = bk;
 	}
 	return length;
 }

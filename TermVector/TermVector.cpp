@@ -1079,11 +1079,11 @@ int xWam::HerbrandLevel(int index) const
 	return level;
 }
 
-list<int> xWam::Herbrand(int index, int level)
+list<xTerm> xWam::Herbrand(int index, int level)
 {
 	list<int>funVar;
 	ClauseVars(index,funVar);
-	list<int>terms;
+	list<xTerm>terms;
 	for (int i = 0; i < clauses.size(); i++)
 	{
 		if (clauses[index].m_kind == LGC_REF)
@@ -1100,7 +1100,7 @@ list<int> xWam::Herbrand(int index, int level)
 			{
 				if (find(itsVar.begin(),itsVar.end(),*p) == itsVar.end())
 				{
-					terms.push_back(index);
+					terms.push_back(xTerm(LGC_TERM_FUNC,index));
 				}
 			}
 		}

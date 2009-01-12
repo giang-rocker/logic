@@ -177,6 +177,7 @@ struct NDTerm
 	int m_OrAssume;
 	int m_cutExists;
 	int m_nexts;
+	int m_unfVar;
 
 	bool m_isPremise;
 	bool m_OrEnable;
@@ -207,7 +208,7 @@ struct NDTerm
 		m_cutExists = -1;
 		m_OrAssume = -1;
 		m_nexts = 0;
-	
+		m_unfVar = -1;
 	}
 	list<xTerm>substed;
 	list<xTerm>m_herbands;
@@ -277,6 +278,7 @@ private:
 	inline int  eliminate();
 	inline int  getNDTerm(int index);
 	inline int  heuristicOr(int index);
+	inline int  distance(int father, int son)const;
 	int  getString(int index, bool isFixed = false, bool prefix = false);
 	int  insertCondition(NDTerm term,int&index);
 	int  insertGoal(NDTerm term);

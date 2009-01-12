@@ -237,7 +237,7 @@ public:
 	int GetFirstQuan(int index);
 	int GetRemainQuan(int index);
 	list<int>RestValidTerm(int index)const;
-	list<int>Herbrand(int index, int level);
+	list<xTerm>Herbrand(int index, int level);
 	int ClauseVars(int index, list<int>&theta)const;
 	int CopyClause(int index,xTerm oldIndex,xTerm newIndex, bool changeQuan = false);
 	//int MatchClause(int index,xTerm oldIndex,xTerm newVarIndex);
