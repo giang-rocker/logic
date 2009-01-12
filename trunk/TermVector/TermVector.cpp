@@ -42,7 +42,7 @@ int xWam::EndSentence(bool isCondition)
 
 	quanSize = 0;
 
-	while ((!lstOpers.empty()) &&lstOpers.back()!=LGC_OP_MARK )
+	while ((!lstOpers.empty()) && lstOpers.back()!=LGC_OP_MARK )
 	{
 		lstTerms.push_back(Term(lstOpers.back()));
 		lstOpers.pop_back();
