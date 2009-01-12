@@ -79,7 +79,7 @@
 #define LGC_PRC_C_NOT		0x04000000
 #define LGC_PRC_C_MAP		0x08000000
 #define LGC_PRC_CONTR		0x0F000000
-
+#define LGC_PRC_UNIFY		0x00100000
 //////////////////////////////////////
 #define LGC_SRC_DISABLE		0x00000001	
 #define LGC_SRC_ASSUME		0x00000002
@@ -174,14 +174,16 @@ struct NDTerm
 	int m_source;
 	int m_line;
 	int m_derivation;
+	int m_OrAssume;
+	int m_cutExists;
+	int m_nexts;
+
 	bool m_isPremise;
 	bool m_OrEnable;
 	bool m_isOrStart;
-	int m_OrAssume;
-	int m_NewVar;
-	int m_OldVarIndex;
-	int m_cutExists;
-	int m_nexts;
+
+	xTerm m_NewTerm;
+	xTerm m_OldTerm;
 
 	NDTerm(int index = -1, int rule = 0, int first = -1, int second = -1)
 	{
@@ -200,15 +202,15 @@ struct NDTerm
 		m_third = -1;
 		m_isOrStart = false;
 		m_line = -1;
-		m_NewVar = -1;
-		m_OldVarIndex = -1;
+		//m_NewTerm = -1;
+		//m_OldTerm = -1;
 		m_cutExists = -1;
 		m_OrAssume = -1;
 		m_nexts = 0;
 	
 	}
-	list<int>substed;
-	list<int>m_herbands;
+	list<xTerm>substed;
+	list<xTerm>m_herbands;
 	NDWAM substion;
 	
 };
@@ -219,18 +221,20 @@ struct NDBackup
 			list <NDTerm> conditions,
 			list <NDTerm> goals,
 			list <int> proveds, 
-			list<int>exists, xWam knowledgeBase)
+			list<int>exists, xWam knowledgeBase,int action)
 	{
 		m_conditions = conditions;
 		m_goals = goals;
 		m_proveds = proveds;
 		m_Exists = exists;
 		m_knowledgeBase = knowledgeBase;
+		m_action = action;
 	}
 	list <NDTerm>m_conditions;
 	list <NDTerm>m_goals;
 	list <int>m_proveds; 
 	list<int>m_Exists;
+	int m_action;
 	xWam m_knowledgeBase;
 
 };
@@ -259,7 +263,7 @@ private:
 	int  NegIntrodution();
 	int  OrEliminate();
 	string rule2Str (int rule);
-	inline void backup();
+	inline void backup(int action);
 	inline int setCutExists(int goal,int assume);
 	inline int existsEliminate();
 	inline int disableVar (int varRef);
@@ -272,7 +276,7 @@ private:
 	inline int  introduction();
 	inline int  eliminate();
 	inline int  getNDTerm(int index);
-	
+	inline int  heuristicOr(int index);
 	int  getString(int index, bool isFixed = false, bool prefix = false);
 	int  insertCondition(NDTerm term,int&index);
 	int  insertGoal(NDTerm term);

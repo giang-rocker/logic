@@ -1,3 +1,4 @@
+
 #ifndef NDUtils
 #define NDUtils
 
@@ -58,6 +59,10 @@ struct pLine
 		}
 		return s;
 	}
+	int Assumption() const
+	{
+		return m_assumption == "" ? 0 : 1 ;
+	}
 	int m_line;
 	int m_indent;
 	string m_assumption;
@@ -75,8 +80,11 @@ struct pLine
 inline std::string pLine2Str(const pLine& p)
 {
 	string s = "";
-	//s += ToStringX(ToString(p.m_line)+".",4) ;
+#if _DEBUG
+	s += ToStringX(ToString(p.m_line)+".",4) ;
+#else
 	s += ToStringX(" " +ToString(p.m_line)+".\t",0) ;
+#endif
 	s += ToStringX("",p.m_indent * 5) ;
 	s += p.m_assumption + p.m_content;
 	return s;

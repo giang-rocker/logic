@@ -13,13 +13,11 @@ xWam::xWam()
 {
 
 	quantifiers.push_back(Term(LGC_NULL));
-
 	clauses.push_back(Term(LGC_FUN_DEF ,names.GetIndex(LGC_STR_NOT),1));
 	clauses.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_AND),2));
 	clauses.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_OR),2));
 	clauses.push_back(Term(LGC_FUN_DEF,names.GetIndex(LGC_STR_MAP),2));
 	clauses.push_back(Term(LGC_TERM_FALSE));
-
 
 }
 xWam::~xWam()
@@ -42,7 +40,7 @@ int xWam::EndSentence(bool isCondition)
 
 	quanSize = 0;
 
-	while ((!lstOpers.empty()) && lstOpers.back()!=LGC_OP_MARK )
+	while ((!lstOpers.empty()) &&lstOpers.back()!=LGC_OP_MARK )
 	{
 		lstTerms.push_back(Term(lstOpers.back()));
 		lstOpers.pop_back();
@@ -117,9 +115,12 @@ int xWam::EndSentence(bool isCondition)
 	else
 	{
 		goals.push_back(t);
+		rebuild();
 	}
 	return LGC_ERR_SUCC;
 }
+
+
 int xWam::BeginFunction(string name)
 {
 
@@ -434,7 +435,7 @@ int xWam::print()
 	i = 0;
 	for (;p!=variables.end();++p)
 	{
-		cout<<i++<<".\t"<<(*p).m_kind<<"\t"<<(*p).m_ref<<"\t"<<(*p).m_info<<"\n";
+		cout<<i++<<".\t"<<(*p).m_kind<<"\t"<<(*p).m_ref<<"\t"<<(*p).m_info<<"\t"<<(*p).m_substRef.m_kind << ":"<<(*p).m_substRef.m_index<<"\n";
 	}
 	cout<<"----------------------Quantifier---------------------\n";
 	p = quantifiers.begin();
@@ -464,10 +465,10 @@ string xWam::GetString(int index)const
 	if (clauses[index].m_kind != LGC_FUN_DEF && quan > 0 )
 	{
 		int size = quantifiers[quan].m_info;
-		int offset = quantifiers[quan].m_ref;
+		int start = quantifiers[quan].m_ref;
 		for (int i = 0; i < size; i++)
 		{
-			if(quantifiers[i + quan + offset].m_kind == LGC_QUAN_ALL)
+			if(quantifiers[i + start].m_kind == LGC_QUAN_ALL)
 			{
 #if _DEBUG
 				result += "all ";
@@ -476,7 +477,7 @@ string xWam::GetString(int index)const
 #endif
 				
 			}
-			else if(quantifiers[ i + quan + offset ].m_kind == LGC_QUAN_EXIST)
+			else if(quantifiers[ i + start ].m_kind == LGC_QUAN_EXIST)
 			{
 #if _DEBUG
 				result += "exists ";
@@ -484,7 +485,7 @@ string xWam::GetString(int index)const
 				result += "-]";
 #endif
 			}
-			result += names.GetString(variables[quantifiers[i + quan + offset].m_ref].m_ref)+ " ";
+			result += names.GetString(variables[quantifiers[i + start].m_ref].m_ref)+ " ";
 		}
 	}
 	switch (clauses[index].m_kind)
@@ -510,7 +511,15 @@ string xWam::GetString(int index)const
 		break;
 
 	case LGC_TERM_VAR:
-		result = names.GetString(variables[clauses[index].m_ref].m_ref);
+// 		if (!variables[clauses[index].m_ref].m_substRef.isNull())
+// 		{
+// 			result = GetString(variables[clauses[index].m_ref].m_substRef);
+// 		}
+// 		else
+		{
+			result = names.GetString(variables[clauses[index].m_ref].m_ref);
+		}
+		
 		break;
 
 	case LGC_TERM_FUNC:
@@ -675,34 +684,51 @@ int xWam:: ClauseVars(int index, list<int>&theta)const
 	}
 
 
-		while (clauses[index].m_kind == LGC_REF)
+	while (clauses[index].m_kind == LGC_REF)
+	{
+		index = clauses[index].m_ref;
+	}
+   	if( clauses[index].m_kind  == LGC_TERM_VAR)
+	{
+		if (find(theta.begin(),theta.end(),clauses[index].m_ref) == theta.end())
 		{
-			index = clauses[index].m_ref;
-		}
-   	    if( clauses[index].m_kind  == LGC_TERM_VAR)
-		{
-			if (find(theta.begin(),theta.end(),clauses[index].m_ref) == theta.end())
-			{
-				theta.push_back(clauses[index].m_ref);
+			theta.push_back(clauses[index].m_ref);
 #if _DEBUG
-				cout<<"Var: "<<clauses[index].m_ref<<endl;
+			cout<<"Var: "<<clauses[index].m_ref<<endl;
 #endif
-			}
 		}
-		else if( clauses[index].m_kind == LGC_TERM_FUNC)
+	}
+	else if( clauses[index].m_kind == LGC_TERM_FUNC)
+	{
+		int func = clauses[index].m_ref;
+		int args = clauses[func].m_info;
+		int quant = clauses[index].m_info;
+		for (int i = 1; i <= args ; i++)
 		{
-			int func = clauses[index].m_ref;
-			int args = clauses[func].m_info;
-			for (int i = 1; i <= args ; i++)
+			ClauseVars(index + i,theta);
+		}
+		if (quant >=0 )
+		{
+			int quanSize = quantifiers[quant].m_info;
+			int start = quantifiers[quant].m_ref;
+			for (int i = 0; i < quanSize; i++)
 			{
-				ClauseVars(index + i,theta);
+				if (find(theta.begin(),theta.end(),quantifiers[i + start].m_ref) == theta.end())
+				{
+					theta.push_back(quantifiers[i + start].m_ref);
+#if _DEBUG
+					cout<<"Var: "<<quantifiers[i + start].m_ref<<endl;
+#endif
+		}
 			}
 		}
+	}
+
 		return 0;
 }
 
 
-int xWam::SubVars(int index, int flag)
+xTerm xWam::SubVars(int index, int flag)
 {
 
 #if _DEBUG
@@ -715,26 +741,36 @@ int xWam::SubVars(int index, int flag)
 	}
 	index = names.GetIndex(name);
 	variables.push_back(Term(LGC_TERM_VAR,index,flag));
-	return variables.size() - 1;
+	return xTerm(LGC_TERM_VAR,variables.size() - 1);
 
 }
 
 Term xWam::Get1stQuan(int index)
 {
 	int offset = quantifiers[index].m_ref;
-	return quantifiers[index + offset];
+	return quantifiers[offset];
 }
 
 int xWam::GetRemainQuan(int index)
 {
 	if (quantifiers[index].m_info > 1)
 	{
-		int position = quantifiers[index].m_ref + index;
-		position =  position - quantifiers.size() + 1;
-		quantifiers.push_back(Term(LGC_QUAN_SIZE,position,quantifiers[index].m_info - 1));
+		int start = quantifiers[index].m_ref + 1;
+		quantifiers.push_back(Term(LGC_QUAN_SIZE,start,quantifiers[index].m_info - 1));
 		return quantifiers.size() - 1;
 	}
-	return 0;
+	return -1;
+}
+
+int xWam::GetFirstQuan(int index)
+{
+	if (quantifiers[index].m_info > 0)
+	{
+		int start = quantifiers[index].m_ref ;
+		quantifiers.push_back(Term(LGC_QUAN_SIZE,start,1));
+		return quantifiers.size() - 1;
+	}
+	return -1;
 }
 
 list<int>xWam::RestValidTerm(int index)const
@@ -756,138 +792,244 @@ list<int>xWam::RestValidTerm(int index)const
 	return vars;
 }
 
-int xWam::CopyClause(int index,int oldVar,int newVar, bool changeQuan)
+//Apply for -]e -]i \-/e \-/ i
+int xWam::CopyClause(int index,xTerm oldIndex,xTerm newIndex, bool changeQuan)
 {
 	int size =  clauses[clauses[index].m_ref].m_info;
 	Term* arg =new Term[size];
-	for (int i = 1; i <= size; i++)
+	
+	
+	if (oldIndex.m_kind == LGC_TERM_VAR)
 	{
-		if (clauses[i + index].m_kind == LGC_TERM_VAR)
+		// Var -> Var
+		if (newIndex.m_kind == LGC_TERM_VAR)
 		{
-			if (clauses[i+index].m_ref == oldVar)
+			for (int i = 1; i <= size; i++)
 			{
-				arg[ i - 1] = Term(variables[newVar].m_kind,newVar);
+				if (isVar(i+index))
+				{
+					if (clauses[i+index].m_ref == oldIndex.m_index)
+					{
+						arg[ i - 1] = Term(variables[newIndex.m_index].m_kind, newIndex.m_index);
+					}
+					else
+					{
+						arg[i - 1] = clauses[i + index];
+					}
+				}
+				else if (clauses[i + index].m_kind == LGC_REF)
+				{
+					int pos = i + index;
+					while (clauses[pos].m_kind == LGC_REF)
+					{
+						pos = clauses[pos].m_ref;
+					}
+					arg[i-1] = Term(LGC_REF,CopyClause(pos,oldIndex,newIndex));
+				}
+				else
+				{
+					arg[i - 1] =  clauses[i + index];
+				}
 			}
-			else
+		}
+		// Var -> Clause
+		else
+		{
+			int newClause = newIndex.m_index;
+			while (clauses[newClause].m_kind == LGC_REF)
+			{
+				newClause = clauses[newClause].m_ref;
+			}
+
+			for (int i = 1; i <= size; i++)
+			{
+				if (isVar(i+index))
+				{
+					if (clauses[i + index].m_ref == oldIndex.m_index)
+					{
+						arg[i - 1] = Term(LGC_REF,newClause);
+					}
+					else
+					{
+						arg[i - 1] = clauses[i + index];
+					}
+					
+				}
+				else if (clauses[i + index].m_kind == LGC_REF)
+				{
+					int pos = i + index;
+					while (clauses[pos].m_kind == LGC_REF)
+					{
+						pos = clauses[pos].m_ref;
+					}
+					arg[i-1] = Term(LGC_REF,CopyClause(pos,oldIndex,newIndex));
+				}
+				else
+				{
+					arg[i - 1] =  clauses[i + index];
+				}
+			}
+		}
+	}
+	// Clause -> Var
+	else if (newIndex.m_kind == LGC_TERM_VAR)
+	{
+		int oldClause = oldIndex.m_index;
+		while (clauses[oldClause].m_kind == LGC_REF)
+		{
+			oldClause = clauses[oldClause].m_ref;
+		}
+		
+		for (int i = 1; i <= size; i++)
+		{
+			if (isVar(i+index))
 			{
 				arg[i - 1] = clauses[i + index];
 			}
-		}
-		else if (clauses[i + index].m_kind == LGC_REF)
-		{
-			int pos = i + index;
-			while (clauses[pos].m_kind == LGC_REF)
+			else if (clauses[i + index].m_kind == LGC_REF)
 			{
-				pos = clauses[pos].m_ref;
-			}
-			arg[i-1] = Term(LGC_REF,CopyClause(pos,oldVar,newVar));
-		}
-		else
-		{
-			arg[i - 1] =  clauses[i + index];
-		}
-	}
-
-	int result = clauses.size();
-	clauses.push_back(clauses[index]);
-	if (changeQuan)
-	{
-		int quan = clauses[index].m_info;
-		int size  = quantifiers[quan].m_info;
-		int position = quantifiers[quan].m_ref + quan;
-		clauses[clauses.size() -1].m_info = quantifiers.size();
-		quantifiers.push_back(Term(LGC_QUAN_SIZE,1,quantifiers[quan].m_info));
-		for (int i = 0; i < size ; i++)
-		{
-			Term term = quantifiers[position + i];
-			if(oldVar == term.m_ref)
-			{
-				term.m_ref = newVar;
-			}
-			quantifiers.push_back(term);
-		}
-		
-	}
-	for (i = 0; i < size; i++)
-	{
-		clauses.push_back(arg[i]);
-	}
-	delete[] arg;
-	return result;
-}
-
-
-int xWam::ReplaceClause(int index,int oldVar,int newVar)
-{
-	int size =  clauses[clauses[index].m_ref].m_info;
-	for (int i = 1; i <= size; i++)
-	{
-		if (clauses[i + index].m_kind == LGC_TERM_VAR)
-		{
-			if (clauses[i+index].m_ref == oldVar)
-			{
-				clauses[i+index] = clauses[newVar];
-			}
-		}
-		else if (clauses[i + index].m_kind == LGC_REF)
-		{
-			int pos = i + index;
-			while (clauses[pos].m_kind == LGC_REF)
-			{
-				pos = clauses[pos].m_ref;
-			}
-			ReplaceClause(pos,oldVar,newVar);
-		}
-	}
-	return index;
-
-}
-
-int xWam::MatchClause(int index,int oldClauseIndex,int newVarIndex)
-{
-	int size =  clauses[clauses[index].m_ref].m_info;
-	Term* arg =new Term[size];
-
-	for (int i = 1; i <= size; i++)
-	{
-		if (clauses[i + index].m_kind == LGC_REF)
-		{
-			int pos = i + index;
-			while (clauses[pos].m_kind == LGC_REF)
-			{
-				pos = clauses[pos].m_ref;
-			}
-			if (pos == oldClauseIndex)
-			{
-				arg[i - 1] = Term(LGC_TERM_VAR, newVarIndex);
+				int pos = i + index;
+				while (clauses[pos].m_kind == LGC_REF)
+				{
+					pos = clauses[pos].m_ref;
+				}
+				if (oldClause == pos)
+				{
+					arg[i - 1] = Term(variables[newIndex.m_index].m_kind,newIndex.m_index);
+				}
+				else
+				{
+					arg[i-1] = Term(LGC_REF,CopyClause(pos,oldIndex,newIndex,changeQuan));
+				}
+				
 			}
 			else
 			{
-				arg[i-1] = Term(LGC_REF,MatchClause(pos,oldClauseIndex,newVarIndex));
+				arg[i - 1] =  clauses[i + index];
 			}
-
-		}
-		else if (clauses[i + index].m_ref == clauses[oldClauseIndex].m_ref)
-		{
-			
-			arg[ i - 1] = Term(LGC_TERM_VAR,newVarIndex);
-			
-		}
-		else
-		{
-			arg[i - 1] = clauses[i + index];
 		}
 	}
-	
+
 	int result = clauses.size();
 	clauses.push_back(clauses[index]);
-	for (i = 0; i < size; i++)
+
+	if (clauses[index].m_info >0 && changeQuan)
+	{
+		int quan = clauses[index].m_info;
+		int size  = quantifiers[quan].m_info;
+		int start = quantifiers[quan].m_ref;
+		clauses[clauses.size() -1].m_info = quantifiers.size();
+		int position  = quantifiers.size();
+		quantifiers.push_back(Term(LGC_QUAN_SIZE,quantifiers.size(),quantifiers[quan].m_info));
+		
+		for (int i = 0; i < size ; i++)
+		{
+			Term term = quantifiers[start + i];
+			if(oldIndex.m_kind == LGC_TERM_VAR )
+			{
+				if (variables[oldIndex.m_index].m_kind == LGC_TERM_VAR )
+				{
+					if (newIndex.m_kind == LGC_TERM_VAR && variables[newIndex.m_index].m_kind == LGC_TERM_VAR)
+					{
+						if (term.m_ref == oldIndex.m_index)
+						{
+							term.m_ref = newIndex.m_index;
+						}
+						quantifiers.push_back(term);
+					}
+					else
+					{
+						quantifiers[position].m_info--;
+					}
+				}
+			}
+		}
+		if (quantifiers[position].m_info <= 0 )
+		{
+			clauses[clauses.size() -1].m_info = -1;
+		}
+	}
+	for (int i = 0; i < size; i++)
 	{
 		clauses.push_back(arg[i]);
 	}
 	delete[] arg;
 	return result;
 }
+
+
+// int xWam::ReplaceClause(int index,int oldVar,int newVar)
+// {
+// 	int size =  clauses[clauses[index].m_ref].m_info;
+// 	for (int i = 1; i <= size; i++)
+// 	{
+// 		if (clauses[i + index].m_kind == LGC_TERM_VAR)
+// 		{
+// 			if (clauses[i+index].m_ref == oldVar)
+// 			{
+// 				clauses[i+index] = clauses[newVar];
+// 			}
+// 		}
+// 		else if (clauses[i + index].m_kind == LGC_REF)
+// 		{
+// 			int pos = i + index;
+// 			while (clauses[pos].m_kind == LGC_REF)
+// 			{
+// 				pos = clauses[pos].m_ref;
+// 			}
+// 			ReplaceClause(pos,oldVar,newVar);
+// 		}
+// 	}
+// 	return index;
+// 
+// }
+
+
+// int xWam::MatchClause(int index,int oldClauseIndex,int newVarIndex)
+// {
+// 	int size =  clauses[clauses[index].m_ref].m_info;
+// 	Term* arg =new Term[size];
+// 
+// 	for (int i = 1; i <= size; i++)
+// 	{
+// 		if (clauses[i + index].m_kind == LGC_REF)
+// 		{
+// 			int pos = i + index;
+// 			while (clauses[pos].m_kind == LGC_REF)
+// 			{
+// 				pos = clauses[pos].m_ref;
+// 			}
+// 			if (pos == oldClauseIndex)
+// 			{
+// 				arg[i - 1] = Term(LGC_TERM_VAR, newVarIndex);
+// 			}
+// 			else
+// 			{
+// 				arg[i-1] = Term(LGC_REF,MatchClause(pos,oldClauseIndex,newVarIndex));
+// 			}
+// 
+// 		}
+// 		else if (clauses[i + index].m_ref == clauses[oldClauseIndex].m_ref)
+// 		{
+// 			
+// 			arg[ i - 1] = Term(LGC_TERM_VAR,newVarIndex);
+// 			
+// 		}
+// 		else
+// 		{
+// 			arg[i - 1] = clauses[i + index];
+// 		}
+// 	}
+// 	
+// 	int result = clauses.size();
+// 	clauses.push_back(clauses[index]);
+// 	for (i = 0; i < size; i++)
+// 	{
+// 		clauses.push_back(arg[i]);
+// 	}
+// 	delete[] arg;
+// 	return result;
+// }
 
 int xWam::DupVar(int index, int flag)
 {
@@ -964,4 +1106,36 @@ list<int> xWam::Herbrand(int index, int level)
 		}
 	}
 	return terms;
+}
+
+int xWam::rebuild()
+{
+	for (int i = 0; i < quantifiers.size(); i++)
+	{
+		if (quantifiers[i].m_kind == LGC_QUAN_SIZE)
+		{
+			quantifiers[i].m_ref = quantifiers[i].m_ref + i;
+		}
+	}
+	return 0;
+}
+
+bool xWam:: isVar(int index)const
+{
+	return	clauses[index].m_kind == LGC_TERM_VAR||
+			clauses[index].m_kind == LGC_TERM_PROP||
+			clauses[index].m_kind == LGC_TERM_CONST;
+}
+
+string xWam::GetString(xTerm term)const
+{
+	if (term.isNull())
+	{
+		return "";
+	}
+	if (term.m_kind == LGC_TERM_VAR)
+	{
+		return names.GetString(variables[term.m_index].m_ref);
+	}
+	return GetString(term.m_index);
 }

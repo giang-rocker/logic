@@ -93,6 +93,24 @@ using namespace std;
 #define LGC_ADDR_FALSE	4
 //////////////////////////////////////////////////////////////////////////
 
+struct xTerm
+{
+	int m_kind;
+	int m_index;
+	xTerm(int kind, int index)
+	{
+		m_kind = kind;
+		m_index = index;
+	}
+	xTerm()
+	{
+		m_kind = -1;
+	}
+	bool isNull()const
+	{
+		return this->m_kind == -1;
+	}
+};
 
 struct Term  
 {
@@ -100,7 +118,7 @@ struct Term
 	int m_ref;
 	int m_info;
 	int m_extra;
-	int m_substRef;
+	xTerm m_substRef;
 	int m_father;
 	list<int>substed;
 	Term(int kind = 0, int ref = 0, int info = 0)
@@ -109,13 +127,13 @@ struct Term
 		m_ref = ref;
 		m_info = info;
 		m_extra = 0;
-		m_substRef = -1;
 		m_father = -1;
 	}
 	string toString()
 	{
 		return ToString(m_kind) + ":" + ToString(m_ref) + ":"  + ToString(m_info) + ":" + ToString(m_extra) ;
 	}
+	
 };
 
 struct Names  
@@ -185,6 +203,7 @@ private:
 };
 
 
+
 class xWam  
 {
 
@@ -203,6 +222,7 @@ public:
 	int DupVar(int index, int flag);
 	int print();
 	string GetString(int index)const;
+	string GetString(xTerm term)const;
 	xWam();
 	virtual ~xWam();
 	operator string()const;
@@ -212,19 +232,22 @@ public:
 	Names names;
 	list<int> goals;
 	list<int> conditions;
-	int SubVars(int index, int flag = 0);
+	xTerm SubVars(int index, int flag = 0);
 	Term Get1stQuan(int index);
+	int GetFirstQuan(int index);
 	int GetRemainQuan(int index);
 	list<int>RestValidTerm(int index)const;
 	list<int>Herbrand(int index, int level);
 	int ClauseVars(int index, list<int>&theta)const;
-	int CopyClause(int index,int oldVar,int newVar, bool changeQuan = false);
-	int MatchClause(int index,int oldClauseIndex,int newVarIndex);
-	int ReplaceClause(int index,int oldVar,int newVar);
+	int CopyClause(int index,xTerm oldIndex,xTerm newIndex, bool changeQuan = false);
+	//int MatchClause(int index,xTerm oldIndex,xTerm newVarIndex);
+	//int ReplaceClause(int index,xTerm oldIndex,xTerm newIndex);
 	int HerbrandLevel(int index)const;
-
+	
 private:
+	inline bool isVar(int index)const;
 	bool isOperator(int index)const;
+	int  rebuild();
 	list<Term>lstTerms;
 	list<int>lstOpers;
 	list<int>lstQuans;
