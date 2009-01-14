@@ -21,13 +21,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_4C9A260B885843F59FBDCAC391C74A81"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_58811FF2292643768413CF5C1374C798"
+        "MsmKey" = "8:_613EF1A474DA447687962FF88B5EE70A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -45,14 +39,26 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A5AE7F5C89D9449A85BFDC5144A774FE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E31A8168D16C4FE6828EFD1BC5039F1F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
+        "MsmKey" = "8:_E70E10D0A25F4CD38D78F59EBD795326"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4C9A260B885843F59FBDCAC391C74A81"
+        "OwnerKey" = "8:_E70E10D0A25F4CD38D78F59EBD795326"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -73,6 +79,17 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                }
+            }
         }
         "Release"
         {
@@ -89,6 +106,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.2.0"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 2.0"
+                    "ProductCode" = "8:Microsoft.Net.Framework.2.0"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -138,23 +171,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4C9A260B885843F59FBDCAC391C74A81"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_613EF1A474DA447687962FF88B5EE70A"
             {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Logic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_4C9A260B885843F59FBDCAC391C74A81"
-                    {
-                    "Name" = "8:Logic.exe"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:..\\..\\..\\SolveLGC\\bin\\Release\\Logic.exe"
-            "TargetName" = "8:"
+            "SourcePath" = "8:C:\\WINDOWS\\Fonts\\L_10646.TTF"
+            "TargetName" = "8:L_10646.TTF"
             "Tag" = "8:"
-            "Folder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
+            "Folder" = "8:_259C0D8A278F407FA527163AA22E9AB7"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -164,27 +186,7 @@
             "Permanent" = "11:FALSE"
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_58811FF2292643768413CF5C1374C798"
-            {
-            "SourcePath" = "8:C:\\WINDOWS\\system32\\Inferencer.dll"
-            "TargetName" = "8:Inferencer.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
+            "Register" = "3:5"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
@@ -229,10 +231,61 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A5AE7F5C89D9449A85BFDC5144A774FE"
+            {
+            "SourcePath" = "8:C:\\WINDOWS\\system32\\Inferencer.dll"
+            "TargetName" = "8:Inferencer.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E31A8168D16C4FE6828EFD1BC5039F1F"
             {
             "SourcePath" = "8:..\\..\\..\\SolveLGC\\bin\\Release\\About.html"
             "TargetName" = "8:About.html"
+            "Tag" = "8:"
+            "Folder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E70E10D0A25F4CD38D78F59EBD795326"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Logic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_E70E10D0A25F4CD38D78F59EBD795326"
+                    {
+                    "Name" = "8:Logic.exe"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\..\\..\\SolveLGC\\bin\\Release\\Logic.exe"
+            "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
             "Condition" = "8:"
@@ -255,6 +308,17 @@
         }
         "Folder"
         {
+            "{1525181F-901A-416C-8A58-119130FE478E}:_259C0D8A278F407FA527163AA22E9AB7"
+            {
+            "Name" = "8:#1911"
+            "AlwaysCreate" = "11:FALSE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Property" = "8:FontsFolder"
+                "Folders"
+                {
+                }
+            }
             "{1525181F-901A-416C-8A58-119130FE478E}:_30037B22C2714A5E91CF9EEBC8D28EC1"
             {
             "Name" = "8:#1916"
@@ -316,14 +380,14 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:LOGIC"
         "ProductCode" = "8:{4175D087-6543-43CD-8725-3628AE50766B}"
-        "PackageCode" = "8:{A10984AF-B4A2-4382-8EB2-F7DEE42DD036}"
+        "PackageCode" = "8:{D1340A8A-68B5-41B0-9801-88E23ECB6A1B}"
         "UpgradeCode" = "8:{18D3A646-5C16-4BB8-9A3A-F5AB2416B3E5}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
         "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:LOGIC"
+        "Manufacturer" = "8:SLogic"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:LOGIC"
@@ -443,7 +507,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_4C9A260B885843F59FBDCAC391C74A81"
+            "Target" = "8:"
             "Folder" = "8:_F465FF8C6A6A42A1A861C60626134733"
             "WorkingFolder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
             "Icon" = "8:_85F64AB0CA914A54840A6D91E3A56EAD"
@@ -457,7 +521,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_4C9A260B885843F59FBDCAC391C74A81"
+            "Target" = "8:"
             "Folder" = "8:_30037B22C2714A5E91CF9EEBC8D28EC1"
             "WorkingFolder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
             "Icon" = "8:_85F64AB0CA914A54840A6D91E3A56EAD"

@@ -13,6 +13,8 @@
 #include <sstream>
 
 
+
+
 ///////////////////////////////////////
 
 
@@ -43,6 +45,9 @@
 #define LGC_I_ALL			0x00010000
 #define LGC_I_EXISTS		0x00020000
 #define LGC_I_INTRO			0x0003F000
+#define LGC_RULE_ASS		0x00400000
+#define LGC_RULE_EQUI		0x00800000
+#define LGC_RULE_RENAME	0x01000000
 
 //////////////////////////////////////
 #define LGC_DEMOR_OR		0x00040000
@@ -67,12 +72,13 @@
 #define LGC_PRC_I_OR2		0x00000100
 #define LGC_PRC_I_OR3		0x00000200
 #define LGC_PRC_I_OR4		0x00000400
+#define LGC_PRC_I_OR5       0x00000800
 
-#define LGC_PRC_I_NOT		0x00000800
-#define LGC_PRC_I_MAP		0x00001000
-#define LGC_PRC_I_AND		0x00002000
-#define LGC_PRC_I_ALL		0x00004000
-#define LGC_PRC_I_EXI		0x00008000
+#define LGC_PRC_I_NOT		0x00001000
+#define LGC_PRC_I_MAP		0x00002000
+#define LGC_PRC_I_AND		0x00004000
+#define LGC_PRC_I_ALL		0x00008000
+#define LGC_PRC_I_EXI		0x00010000
 //////////////////////////////////////
 #define LGC_PRC_C_OR1		0x01000000
 #define LGC_PRC_C_OR2		0x02000000
@@ -80,6 +86,8 @@
 #define LGC_PRC_C_MAP		0x08000000
 #define LGC_PRC_CONTR		0x0F000000
 #define LGC_PRC_UNIFY		0x00100000
+#define LGC_PRC_EQUIV		0x00200000
+
 //////////////////////////////////////
 #define LGC_SRC_DISABLE		0x00000001	
 #define LGC_SRC_ASSUME		0x00000002
@@ -303,7 +311,7 @@ private:
 	int  m_ZSpace;
 	list<NDBackup>lst_backup;
 
-#if _DEBUG
+#if LGC_DEBUG
 	void dprintLines();
 	int debug(int n);
 	void printAssumption();

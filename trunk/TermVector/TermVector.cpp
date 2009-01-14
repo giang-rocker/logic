@@ -453,7 +453,7 @@ int xWam::print()
 
 string xWam::GetString(int index)const
 {
-#if _DEBUG
+#if LGC_DEBUG
 	_ASSERT(index >=0 && index < clauses.size());
 #endif
 	if (index < 0 || index >= clauses.size())
@@ -462,6 +462,7 @@ string xWam::GetString(int index)const
 	}
 	string result = "";
 	int quan = clauses[index].m_info;
+	bool haveQuan = ( quan > 0);
 	if (clauses[index].m_kind != LGC_FUN_DEF && quan > 0 )
 	{
 		int size = quantifiers[quan].m_info;
@@ -470,7 +471,7 @@ string xWam::GetString(int index)const
 		{
 			if(quantifiers[i + start].m_kind == LGC_QUAN_ALL)
 			{
-#if _DEBUG
+#if LGCLGC_DEBUG
 				result += "all ";
 #else
 				result += "\\-";
@@ -479,7 +480,7 @@ string xWam::GetString(int index)const
 			}
 			else if(quantifiers[ i + start ].m_kind == LGC_QUAN_EXIST)
 			{
-#if _DEBUG
+#if LGCLGC_DEBUG
 				result += "exists ";
 #else
 				result += "-]";
@@ -542,7 +543,7 @@ string xWam::GetString(int index)const
 			break;
 		case LGC_ADDR_AND:
 			pars  = isOperator(index+1);
-			if (quan)
+			if (haveQuan)
 			{
 				result += "(";
 			}
@@ -567,13 +568,13 @@ string xWam::GetString(int index)const
 			{
 				result += ")";
 			}
-			if (quan)
+			if (haveQuan)
 			{
 				result += ")";
 			}
 			break;
 		case LGC_ADDR_OR:
-			if (quan)
+			if (haveQuan)
 			{
 				result += "(";
 			}
@@ -598,13 +599,13 @@ string xWam::GetString(int index)const
 			{
 				result += ")";
 			}
-			if (quan)
+			if (haveQuan)
 			{
 				result += ")";
 			}
 			break;
 		case LGC_ADDR_MAP:
-			if (quan)
+			if (haveQuan)
 			{
 				result += "(";
 			}
@@ -629,7 +630,7 @@ string xWam::GetString(int index)const
 			{
 				result += ")";
 			}
-			if (quan)
+			if (haveQuan)
 			{
 				result += ")";
 			}
@@ -675,7 +676,7 @@ bool xWam::isOperator(int index)const
 
 int xWam:: ClauseVars(int index, list<int>&theta)const
 {
-#if _DEBUG
+#if LGCLGC_DEBUG
 	_ASSERT(index >= 0 && index < clauses.size());
 #endif	
 	if (index < 0 || index >= clauses.size())
@@ -693,7 +694,7 @@ int xWam:: ClauseVars(int index, list<int>&theta)const
 		if (find(theta.begin(),theta.end(),clauses[index].m_ref) == theta.end())
 		{
 			theta.push_back(clauses[index].m_ref);
-#if _DEBUG
+#if LGCLGC_DEBUG
 			cout<<"Var: "<<clauses[index].m_ref<<endl;
 #endif
 		}
@@ -716,7 +717,7 @@ int xWam:: ClauseVars(int index, list<int>&theta)const
 				if (find(theta.begin(),theta.end(),quantifiers[i + start].m_ref) == theta.end())
 				{
 					theta.push_back(quantifiers[i + start].m_ref);
-#if _DEBUG
+#if LGCLGC_DEBUG
 					cout<<"Var: "<<quantifiers[i + start].m_ref<<endl;
 #endif
 		}
@@ -731,7 +732,7 @@ int xWam:: ClauseVars(int index, list<int>&theta)const
 xTerm xWam::SubVars(int index, int flag)
 {
 
-#if _DEBUG
+#if LGCLGC_DEBUG
 	_ASSERT(index >= 0 && index < variables.size());
 #endif
 	string name = names.GetString(variables[index].m_ref) + ToString(variables[index].m_extra++);
@@ -824,7 +825,7 @@ int xWam::CopyClause(int index,xTerm oldIndex,xTerm newIndex, bool changeQuan)
 					{
 						pos = clauses[pos].m_ref;
 					}
-					arg[i-1] = Term(LGC_REF,CopyClause(pos,oldIndex,newIndex));
+					arg[i-1] = Term(LGC_REF,CopyClause(pos,oldIndex,newIndex,changeQuan));
 				}
 				else
 				{
@@ -918,9 +919,9 @@ int xWam::CopyClause(int index,xTerm oldIndex,xTerm newIndex, bool changeQuan)
 		int quan = clauses[index].m_info;
 		int size  = quantifiers[quan].m_info;
 		int start = quantifiers[quan].m_ref;
-		clauses[clauses.size() -1].m_info = quantifiers.size();
+		clauses[result].m_info = quantifiers.size();
 		int position  = quantifiers.size();
-		quantifiers.push_back(Term(LGC_QUAN_SIZE,quantifiers.size(),quantifiers[quan].m_info));
+		quantifiers.push_back(Term(LGC_QUAN_SIZE,quantifiers.size() + 1,quantifiers[quan].m_info));
 		
 		for (int i = 0; i < size ; i++)
 		{
@@ -946,7 +947,7 @@ int xWam::CopyClause(int index,xTerm oldIndex,xTerm newIndex, bool changeQuan)
 		}
 		if (quantifiers[position].m_info <= 0 )
 		{
-			clauses[clauses.size() -1].m_info = -1;
+			clauses[result].m_info = -1;
 		}
 	}
 	for (int i = 0; i < size; i++)
@@ -1033,7 +1034,7 @@ int xWam::CopyClause(int index,xTerm oldIndex,xTerm newIndex, bool changeQuan)
 
 int xWam::DupVar(int index, int flag)
 {
-#if _DEBUG
+#if LGCLGC_DEBUG
 	_ASSERT(index >=0 && index < variables.size());
 #endif
 	int ref = variables[index].m_ref;
