@@ -80,7 +80,7 @@ struct pLine
 inline std::string pLine2Str(const pLine& p)
 {
 	string s = "";
-#if _DEBUG
+#if LGC_DEBUG
 	s += ToStringX(ToString(p.m_line)+".",4) ;
 #else
 	s += ToStringX(" " +ToString(p.m_line)+".\t",0) ;
@@ -94,7 +94,7 @@ inline std::string pLine2Str(const pLine& p, int max)
 {
 	string s = "";	
 
-#if _DEBUG
+#if LGC_DEBUG
 	s = ToStringX(pLine2Str(p),max) + " ";
 #else
 	s = ToString(pLine2Str(p)) + "#";

@@ -19,7 +19,8 @@ int main()
 // 		"all x( weird (x) -> !like (Nam,x))" +
 // 		"|-  !kid(Nam) ";
 
-	"all x all y ( f(x)| g(x) ) |- all x exists y (f(x) | g(x)) "	;
+//	"all x all y ( f(x)| g(x) ) |- all x exists y (f(x) | g(x)) "	;
+//	"all x all y f(x)|- -]x f(x)";
 //	"f(a) |- exists x f(x)";
 //	"f(x) |- exists x f(x)";
 //	"f(x)|g(x) |- exists x (f(x)|g(x))";
@@ -29,6 +30,7 @@ int main()
 // 				"all x all y (le(x, y) -> (gt(y, x) | eq(x, y))),\n"		+	dummy	+
 // 				"all x all y ((gt(y, x) | eq(x, y)) ->le(x, y)),\n"			+	dummy	+
 // 				"all x exists y le(x, y) |- all x le(x,x)";
+//	"all x (teacher(x)|student(x))|- exists x student(x) | all x teacher(x)";
 //	"all x f(x) |- all y f(y)";
 //	"f(A) , g(B) , exists x( h(x) & f(x) & g(x)) |- exists y (f(y) & g(y))";
 //	" all y all x f(x,y) |- f(A,B)";
@@ -50,18 +52,19 @@ int main()
 //	"exists x exists y f(x,y)|- exists y exists x f(x,y)";
 //	"all x all y f(x,y)|- all y all x f(x,y)";
 //	"all x f(x) & all x g(x) |- all x (f(x) & g(x))";
-//	"! (all x f(x) ) |- exists x !f(x)";
+//	"!f(x) |- exists x !f(x)";
+//	"! (all x f(x)) |- exists x !f(x) ";
 //	"all x (f(x) & F) |- all x f(x) & F";
 //	"exists x p(x), all x all y (p(x) -> q(y)) |-  all y q(y)";
 //	"all x (q(x) -> r(x)), exists x (p(x) & q(x)) |-  exists x (p(x) & r(x))";
 // 	"all x (p(x) ->q(x)), exists x p(x) |- exists x q(x)";
 //	"all x f(x) |- exists x f(x)";
-// 	"all x (p(x) -> q(x)), all x p(x) |- all x q(x)";
+//	"all x (p(x) -> q(x)), all x p(x) |- all x q(x)";
 // 	"p(t), all x (p(x) -> !q(x)) |- !q(t)";
 //  "all x( p(x) & q(x)) |- all x p(x) & all x q(x) ";
 //	"all x (p(x)|q(x)) |- all x p(x) | exists x q(x)";
 //	" f(a), -] x (f(x)& g(x) & h(x)) |- -]x (g(x) & f(x))";
-
+//	"all x p(x), all y !p(y) |- P";
 //	"F|G, R |- R|H";
 //	"F|G |- G|F";
 //	"p(A,B) -> h(A,B) |- p(A,B)|K -> h(A,B)|K";
@@ -110,24 +113,24 @@ int main()
 //	"(P -> Q) -> (P & Q) |- (!P -> Q) & (Q -> P) ";
 //	"|- ((F->G) & F) -> G";
 //	"P & Q & (!P | !Q) |- !P & !Q & ( P | Q )";
-//	"(P -> Q) & (P -> R) |- P -> (R & Q)";
-//	"P -> (R & Q) |-(P -> Q) & (P -> R) ";
-//	"P & (P -> (P & Q)) |- !P | !Q | (P & Q)";
-//	"!P | !Q | (P & Q) |- P & (P -> (P & Q)) ";
-//	"P -> (R & Q) |- (P -> Q) & (P -> R)";
-//	"!(P | (!P & Q)) |- !P & !Q";	
-//	"!P & !Q|-!(P | (!P & Q))  ";
+	"(P -> Q) & (P -> R) |- P -> (R & Q)";
+	"P -> (R & Q) |-(P -> Q) & (P -> R) ";
+	"P & (P -> (P & Q)) |- !P | !Q | (P & Q)";
+	"!P | !Q | (P & Q) |- P & (P -> (P & Q)) ";
+	"P -> (R & Q) |- (P -> Q) & (P -> R)";
+	"!(P | (!P & Q)) |- !P & !Q";	
+	"!P & !Q|-!(P | (!P & Q))  ";
 
 	//Lems have trouble
-// 	"P,Q,(( P & Q) -> (!P | ! Q)) | R |-  (!P | ! Q) | R";
-// 	"  (!P | ! Q) | R |- ( P & Q) -> R ";
-// 	" P & Q |- P->Q ";
-// 	"A,B , A&B -> F ,G |- G|F ";
-	"F -> G |- F|H -> G|H";
-	"!P|P, !Q|Q |- (P&Q)|(P&!Q)|(!P&Q)|(!P&!Q)";		//Have a trouble here
+ 	"P,Q,(( P & Q) -> (!P | ! Q)) | R |-  (!P | ! Q) | R";
+ 	"  (!P | ! Q) | R |- ( P & Q) -> R ";
+ 	" P & Q |- P->Q ";
+ 	"A,B , A&B -> F ,G |- G|F ";
+ 	"F -> G |- F|H -> G|H";
+	" |- (P&Q)|(P&!Q)|(!P&Q)|(!P&!Q)";		//Have a trouble here
 	"P&Q->R |- P->(Q->R)";
 
-	"A |- B|A";
+	"A |- (B|A) & (A|B)";
 	Scanner* scanner = new Scanner(text);
 	Parser* p = new Parser(scanner);
 	p->parse();
@@ -148,7 +151,7 @@ int main()
 		}
 		else 
 		{
-			return 0;
+			//return 0;
 			NaturalDeduction lem(bk);
 			lem.insertLEMs();
 			if(lem.ProveIt())
