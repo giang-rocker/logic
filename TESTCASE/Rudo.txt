@@ -1,7 +1,0 @@
-\- x (kid(x) -> like(x,Santa)),	
-\- x all y (like(x, Santa) &  reindeer (y) -> like (x, y)),
-reindeer(Rudolph) & rednose(Rudolph),
-\- x (rednose(x) -> weird (x) | clown(x)),
-\- x (reindeer(x) -> ! clown(x)),
-\- x( weird (x) -> !like (Nam,x))
-|-  !kid(Nam) 

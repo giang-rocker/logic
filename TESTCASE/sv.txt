@@ -1,1 +1,0 @@
-\- x ( an (x) & ngu(x) -> heo(x)) , \- x (nguoi(x) -> an (x) & lam (x) & ngu(x)) , nguoi (A) |- heo(A)
