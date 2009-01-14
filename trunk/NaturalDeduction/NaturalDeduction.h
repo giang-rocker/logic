@@ -186,7 +186,7 @@ struct NDTerm
 	int m_cutExists;
 	int m_nexts;
 	int m_unfVar;
-
+	int m_ORconc;
 	bool m_isPremise;
 	bool m_OrEnable;
 	bool m_isOrStart;
@@ -217,6 +217,7 @@ struct NDTerm
 		m_OrAssume = -1;
 		m_nexts = 0;
 		m_unfVar = -1;
+		m_ORconc = 0;
 	}
 	list<xTerm>substed;
 	list<xTerm>m_herbands;
@@ -257,7 +258,7 @@ public:
 	int ProveIt();
 	NaturalDeduction(xWam t);
 	int insertLEMs();
-
+	bool EnableDeMorgan;
 private:
 
 	NDWAM ndWam(int index);
@@ -310,8 +311,8 @@ private:
 	int	 m_Herbrand;
 	int  m_ZSpace;
 	list<NDBackup>lst_backup;
-
-#if LGC_DEBUG
+	
+#if _DEBUG
 	void dprintLines();
 	int debug(int n);
 	void printAssumption();

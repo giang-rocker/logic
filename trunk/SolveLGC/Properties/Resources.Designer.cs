@@ -60,6 +60,20 @@ namespace Logic.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Loading_video_ani {
+            get {
+                object obj = ResourceManager.GetObject("Loading_video_ani", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap loading4 {
+            get {
+                object obj = ResourceManager.GetObject("loading4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Please_Wait {
             get {
                 object obj = ResourceManager.GetObject("Please_Wait", resourceCulture);

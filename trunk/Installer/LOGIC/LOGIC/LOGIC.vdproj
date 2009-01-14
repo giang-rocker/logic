@@ -15,19 +15,31 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_25A95B2A83174CB290503802769711A6"
+        "MsmKey" = "8:_102265983929426ABE9921287F0BC0A6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_613EF1A474DA447687962FF88B5EE70A"
+        "MsmKey" = "8:_2A8A9F8F014743E69E11EF6F2498A485"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6820E52809F94B3FA8B5CD4CC5B19963"
+        "MsmKey" = "8:_43C409D545D04E069C4AC02859B7B047"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_73DE04DE831C4BEF9BFC9E6A18893BA3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_83FEDDD7C99B40709CC60EFEBABEB17C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -39,26 +51,26 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A5AE7F5C89D9449A85BFDC5144A774FE"
+        "MsmKey" = "8:_BF4031980C714AE9BFE14199FF396384"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_E31A8168D16C4FE6828EFD1BC5039F1F"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_E70E10D0A25F4CD38D78F59EBD795326"
+        "MsmKey" = "8:_E423E0226C014022ACE0EB7110A0994B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E70E10D0A25F4CD38D78F59EBD795326"
+        "OwnerKey" = "8:_E423E0226C014022ACE0EB7110A0994B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_BF4031980C714AE9BFE14199FF396384"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -151,10 +163,10 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_25A95B2A83174CB290503802769711A6"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_102265983929426ABE9921287F0BC0A6"
             {
-            "SourcePath" = "8:..\\..\\..\\SolveLGC\\bin\\Release\\Instruction.html"
-            "TargetName" = "8:Instruction.html"
+            "SourcePath" = "8:..\\..\\..\\SolveLGC\\bin\\Release\\Equivalence.html"
+            "TargetName" = "8:Equivalence.html"
             "Tag" = "8:"
             "Folder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
             "Condition" = "8:"
@@ -171,10 +183,30 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_613EF1A474DA447687962FF88B5EE70A"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2A8A9F8F014743E69E11EF6F2498A485"
             {
-            "SourcePath" = "8:C:\\WINDOWS\\Fonts\\L_10646.TTF"
-            "TargetName" = "8:L_10646.TTF"
+            "SourcePath" = "8:C:\\WINDOWS\\system32\\Inferencer.dll"
+            "TargetName" = "8:Inferencer.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_43C409D545D04E069C4AC02859B7B047"
+            {
+            "SourcePath" = "8:..\\..\\slogicFont.TTF"
+            "TargetName" = "8:slogicFont.TTF"
             "Tag" = "8:"
             "Folder" = "8:_259C0D8A278F407FA527163AA22E9AB7"
             "Condition" = "8:"
@@ -191,10 +223,30 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6820E52809F94B3FA8B5CD4CC5B19963"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_73DE04DE831C4BEF9BFC9E6A18893BA3"
             {
-            "SourcePath" = "8:..\\..\\..\\SolveLGC\\bin\\Release\\Equivalence.html"
-            "TargetName" = "8:Equivalence.html"
+            "SourcePath" = "8:..\\..\\..\\SolveLGC\\bin\\Release\\About.html"
+            "TargetName" = "8:About.html"
+            "Tag" = "8:"
+            "Folder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_83FEDDD7C99B40709CC60EFEBABEB17C"
+            {
+            "SourcePath" = "8:..\\..\\..\\SolveLGC\\bin\\Release\\Instruction.html"
+            "TargetName" = "8:Instruction.html"
             "Tag" = "8:"
             "Folder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
             "Condition" = "8:"
@@ -231,60 +283,51 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A5AE7F5C89D9449A85BFDC5144A774FE"
-            {
-            "SourcePath" = "8:C:\\WINDOWS\\system32\\Inferencer.dll"
-            "TargetName" = "8:Inferencer.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E31A8168D16C4FE6828EFD1BC5039F1F"
-            {
-            "SourcePath" = "8:..\\..\\..\\SolveLGC\\bin\\Release\\About.html"
-            "TargetName" = "8:About.html"
-            "Tag" = "8:"
-            "Folder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E70E10D0A25F4CD38D78F59EBD795326"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BF4031980C714AE9BFE14199FF396384"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Logic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_E70E10D0A25F4CD38D78F59EBD795326"
+                    "_BF4031980C714AE9BFE14199FF396384"
                     {
                     "Name" = "8:Logic.exe"
                     "Attributes" = "3:512"
                     }
                 }
             "SourcePath" = "8:..\\..\\..\\SolveLGC\\bin\\Release\\Logic.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E423E0226C014022ACE0EB7110A0994B"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:FINAL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_E423E0226C014022ACE0EB7110A0994B"
+                    {
+                    "Name" = "8:FINAL.exe"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\..\\..\\FINAL\\bin\\Release\\FINAL.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
@@ -380,7 +423,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:LOGIC"
         "ProductCode" = "8:{4175D087-6543-43CD-8725-3628AE50766B}"
-        "PackageCode" = "8:{D1340A8A-68B5-41B0-9801-88E23ECB6A1B}"
+        "PackageCode" = "8:{D7EC441E-1411-4953-9212-39A67A6992D5}"
         "UpgradeCode" = "8:{18D3A646-5C16-4BB8-9A3A-F5AB2416B3E5}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
@@ -499,30 +542,30 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_0CE3EBA54C014FE08DDAA65011C1C55F"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A196BF982E3144B994A05F7F7D954FC6"
             {
-            "Name" = "8:Logic"
+            "Name" = "8:SLogic"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:"
-            "Folder" = "8:_F465FF8C6A6A42A1A861C60626134733"
+            "Target" = "8:_BF4031980C714AE9BFE14199FF396384"
+            "Folder" = "8:_30037B22C2714A5E91CF9EEBC8D28EC1"
             "WorkingFolder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
             "Icon" = "8:_85F64AB0CA914A54840A6D91E3A56EAD"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_65BF96CD37934C588EBF0D9CBCEF3603"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_E4BC6344E8934D31A49CA445A5532EC9"
             {
-            "Name" = "8:Logic"
+            "Name" = "8:SLogic"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:"
-            "Folder" = "8:_30037B22C2714A5E91CF9EEBC8D28EC1"
+            "Target" = "8:_BF4031980C714AE9BFE14199FF396384"
+            "Folder" = "8:_F465FF8C6A6A42A1A861C60626134733"
             "WorkingFolder" = "8:_446338CF69B8497A8FF6B55C6F052DAD"
             "Icon" = "8:_85F64AB0CA914A54840A6D91E3A56EAD"
             "Feature" = "8:"

@@ -25,6 +25,7 @@ extern "C" __declspec (dllexport) char* inferencer(char* text)
 			result = nd.Result();
 		else
 		{
+			xWam de = l;
 			NaturalDeduction lem(l);
 			lem.insertLEMs();
 			if (lem.ProveIt())
@@ -33,7 +34,18 @@ extern "C" __declspec (dllexport) char* inferencer(char* text)
 			}
 			else
 			{
-				result = "Cannot SOLVE...";
+				NaturalDeduction morgan(de);
+				morgan.EnableDeMorgan = true;
+				if (morgan.ProveIt())
+				{
+					result = lem.Result();
+				}
+				else
+				{
+					result = "Cannot SOLVE...";
+
+				}
+				
 			}
 		}
 				
