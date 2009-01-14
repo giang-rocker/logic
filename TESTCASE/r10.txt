@@ -1,0 +1,2 @@
+\-x (brazil(x)->wc(x)) ,\- x (barca(x) -> c1(x)), 
+-]x (brazil(x) & barca(x)) |--]x (wc(x) & c1(x))

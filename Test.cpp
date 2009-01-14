@@ -9,8 +9,8 @@ using namespace std;
 int main()
 {
 	string dummy = "";
-	string text = dummy +
-	
+	string text = dummy + "all x f(x) , all x h(f(x)) |- f(A)";
+		
 // 		"all x (kid(x) -> like(x,Santa)),"+	
 // 		"all x all y (like(x, Santa) &  reindeer (y) -> like (x, y)),"+
 // 		"reindeer(Rudolph) & rednose(Rudolph)," +
@@ -25,7 +25,7 @@ int main()
 //	"f(x) |- exists x f(x)";
 //	"f(x)|g(x) |- exists x (f(x)|g(x))";
 
-// 		"\\- x (p(x) | q(x) ) |- -] x p(x) | \\- x q(x)";
+//		"\\- x (q(x) | p(x) ) |- -] x p(x) | \\- x q(x)";
 // 				"all x  all y all z ((le(x, y) &le(y, z)) -> (!gt(x, z))),\n" +	dummy	+
 // 				"all x all y (le(x, y) -> (gt(y, x) | eq(x, y))),\n"		+	dummy	+
 // 				"all x all y ((gt(y, x) | eq(x, y)) ->le(x, y)),\n"			+	dummy	+
@@ -50,6 +50,7 @@ int main()
 //	"exists x f(x) & exists x g(x) |- exists x (f(x)&g(x))";
 //	"f(g(x0),b)|- exists y exists x f(x,y)";
 //	"exists x exists y f(x,y)|- exists y exists x f(x,y)";
+//	"all x f(x), f(h(x)), all  h(x)|- Q";
 //	"all x all y f(x,y)|- all y all x f(x,y)";
 //	"all x f(x) & all x g(x) |- all x (f(x) & g(x))";
 //	"!f(x) |- exists x !f(x)";
@@ -65,6 +66,12 @@ int main()
 //	"all x (p(x)|q(x)) |- all x p(x) | exists x q(x)";
 //	" f(a), -] x (f(x)& g(x) & h(x)) |- -]x (g(x) & f(x))";
 //	"all x p(x), all y !p(y) |- P";
+//	"all x all y all z ((s(x,y) & s(y,z)) ->s(x,z)), all x !s(x,x) |- all x all y (s(x,y)->!s(y,x))";
+//	"all x(p(x)|q(x)), -]x !q(x), all x(r(x)->!p(x))|- exists x !r(x)";
+//	"all x(p(x)->(q(x)|r(x))), !-]x (p(x)&r(x)) |- all x (p(x)->q(x))";
+//  "-]x -]y (s(x,y)|s(x,y)) |-  -]x-]y s(x,y)";
+//	"-]x (p(x)&q(x)), all x (p(x)->r(x))|- -]x (r(x) & q(x))";
+//	"|- (G->H)->((!G->!F)->(F->H))";
 //	"F|G, R |- R|H";
 //	"F|G |- G|F";
 //	"p(A,B) -> h(A,B) |- p(A,B)|K -> h(A,B)|K";
@@ -113,22 +120,22 @@ int main()
 //	"(P -> Q) -> (P & Q) |- (!P -> Q) & (Q -> P) ";
 //	"|- ((F->G) & F) -> G";
 //	"P & Q & (!P | !Q) |- !P & !Q & ( P | Q )";
-	"(P -> Q) & (P -> R) |- P -> (R & Q)";
-	"P -> (R & Q) |-(P -> Q) & (P -> R) ";
-	"P & (P -> (P & Q)) |- !P | !Q | (P & Q)";
-	"!P | !Q | (P & Q) |- P & (P -> (P & Q)) ";
-	"P -> (R & Q) |- (P -> Q) & (P -> R)";
+// 	"(P -> Q) & (P -> R) |- P -> (R & Q)";
+// 	"P -> (R & Q) |-(P -> Q) & (P -> R) ";
+// 	"P & (P -> (P & Q)) |- !P | !Q | (P & Q)";
+// 	"!P | !Q | (P & Q) |- P & (P -> (P & Q)) ";
+// 	"P -> (R & Q) |- (P -> Q) & (P -> R)";
 	"!(P | (!P & Q)) |- !P & !Q";	
-	"!P & !Q|-!(P | (!P & Q))  ";
-
-	//Lems have trouble
- 	"P,Q,(( P & Q) -> (!P | ! Q)) | R |-  (!P | ! Q) | R";
- 	"  (!P | ! Q) | R |- ( P & Q) -> R ";
- 	" P & Q |- P->Q ";
- 	"A,B , A&B -> F ,G |- G|F ";
- 	"F -> G |- F|H -> G|H";
-	" |- (P&Q)|(P&!Q)|(!P&Q)|(!P&!Q)";		//Have a trouble here
-	"P&Q->R |- P->(Q->R)";
+ 	"!P & !Q|-!(P | (!P & Q))  ";
+// 
+// 	//Lems have trouble
+// 	"P,Q,(( P & Q) -> (!P | ! Q)) | R |-  (!P | ! Q) | R";
+//  	"  (!P | ! Q) | R |- ( P & Q) -> R ";
+//  	" P & Q |- P->Q ";
+ //	"A,B , A&B -> F ,G |- G|F ";
+//  	"F -> G |- F|H -> G|H";
+//	" |- (P&Q)|(P&!Q)|(!P&Q)|(!P&!Q)";		//Have a trouble here
+//	"P&Q->R |- P->(Q->R)";
 
 	"A |- (B|A) & (A|B)";
 	Scanner* scanner = new Scanner(text);
@@ -152,6 +159,7 @@ int main()
 		else 
 		{
 			//return 0;
+			xWam morgan = bk;
 			NaturalDeduction lem(bk);
 			lem.insertLEMs();
 			if(lem.ProveIt())
@@ -162,7 +170,20 @@ int main()
 			}
 			else
 			{
-				cout<<"Em xin dau hang!!!\n";
+				xWam morgan = bk;
+				NaturalDeduction demorgan(bk);
+				demorgan.EnableDeMorgan = true;
+				if(demorgan.ProveIt())
+				{
+					
+					cout<<demorgan.Result()<<endl<<endl<<endl;
+					cout<<text<<endl<<endl;
+				}
+				else
+				{
+					cout<<"Em xin dau hang!!!\n";
+				}
+				
 			}
 		}
 	}	

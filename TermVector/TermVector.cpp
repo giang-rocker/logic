@@ -197,11 +197,35 @@ int xWam::EndFunction()
 	lstTerms.push_back(Term(LGC_REF,next,0));
 
 	lstOpers.pop_back();
+	//insert
+	
+	if (!levels.empty())
+	{
+		if (!functions.empty()&&find(functions.begin(),functions.end(),(*p).m_ref)!= functions.end())
+		{
+			return LGC_ERR_PARS;
+		}
+		if (lstArgs.empty()||find(lstArgs.begin(),lstArgs.end(),(*p).m_ref)== lstArgs.end())
+		{
+			lstArgs.push_back((*p).m_ref);
+		}
+	}
+	else 
+	{
+		if (!lstArgs.empty()&&find(lstArgs.begin(),lstArgs.end(),(*p).m_ref)!= lstArgs.end())
+		{
+			return LGC_ERR_PARS;
+		}
+		if (functions.empty()||find(functions.begin(),functions.end(),(*p).m_ref)== functions.end())
+		{
+			functions.push_back((*p).m_ref);
+		}
+	}
 	return LGC_ERR_SUCC;
 }
 int xWam::BeginArg()
 {
-
+	levels.push_back(1);
 	quanSize = 0;
 	lstTerms.push_back(Term(LGC_MARK_ARG));
 	lstOpers.push_back(LGC_OP_MARK);
@@ -211,7 +235,7 @@ int xWam::BeginArg()
 int xWam::EndArg()
 {
 
-
+	
 	quanSize = 0;
 	while ((!lstOpers.empty()) && lstOpers.back()!=LGC_OP_MARK)
 	{
@@ -274,8 +298,10 @@ int xWam::EndArg()
 		break;
 	}
 		++p;
-
-
+	if (!levels.empty())
+	{
+		levels.pop_back();
+	}
 	return LGC_ERR_SUCC;
 }
 
@@ -453,8 +479,10 @@ int xWam::print()
 
 string xWam::GetString(int index)const
 {
-#if LGC_DEBUG
+#if _DEBUG
+#if _DEBUG
 	_ASSERT(index >=0 && index < clauses.size());
+#endif
 #endif
 	if (index < 0 || index >= clauses.size())
 	{
@@ -799,8 +827,18 @@ int xWam::CopyClause(int index,xTerm oldIndex,xTerm newIndex, bool changeQuan)
 	int size =  clauses[clauses[index].m_ref].m_info;
 	Term* arg =new Term[size];
 	
+	//Same as
+	if (oldIndex.isNull())
+	{
+		for (int i = 1; i <= size; i++)
+		{
+				
+			arg[i - 1] = clauses[i + index];
+				
+		}
+	}
 	
-	if (oldIndex.m_kind == LGC_TERM_VAR)
+	else if (oldIndex.m_kind == LGC_TERM_VAR)
 	{
 		// Var -> Var
 		if (newIndex.m_kind == LGC_TERM_VAR)

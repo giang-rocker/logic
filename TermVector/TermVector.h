@@ -18,8 +18,9 @@
 
 
 #if _DEBUG
- #include <crtdbg.h>
+	#include <crtdbg.h>
 #endif
+
 
 using namespace std;
 
@@ -33,7 +34,7 @@ using namespace std;
 
 //////////////////////////////////////////////////////////////////////////
 #define LGC_ERR_SUCC	1
-#define LGC_ERR_PARS	2
+#define LGC_ERR_PARS	0
 //////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////
@@ -254,6 +255,12 @@ private:
 	list<int>lstQuans;
 	int quanSize;
 	vector<Term>::const_iterator p;
+
+	//Catch error
+	list<int>functions;
+	list<int>lstArgs;
+	list<int>levels;
+	int isArg;
 
 
 	int times ;

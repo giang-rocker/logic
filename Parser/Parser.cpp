@@ -9,6 +9,7 @@ Parser::Parser(Scanner* s)
 	scanner = s;
 	lookAheadToken = Token(LGC_NIL);
 	enterGoal = false;
+	semantic = "";
 }
 
 void Parser::match(TokenKind tokenKind)
@@ -40,6 +41,10 @@ void Parser::parse()
 	s = "";
 	lookAheadToken = scanner->nextToken();
 	parseInput();	
+	if (s == "")
+	{
+		s = semantic;
+	}
 }
 
 //<input>	::= <source> |- <goal>
@@ -130,7 +135,7 @@ void Parser::parseFormula()
 			{
 				data.BeginFunction(str);
 				parseArg_list();
-				data.EndFunction();
+				if(!data.EndFunction())goto error;
 			}
 			else
 			{
@@ -142,7 +147,8 @@ void Parser::parseFormula()
 			match(LGC_VAR);
 			data.BeginFunction(str);
 			parseArg_list();
-			data.EndFunction();
+			if(!data.EndFunction())
+				goto error;
 		}
 		else if (check(LGC_NEGATION_OP))
 		{
@@ -170,8 +176,15 @@ void Parser::parseFormula()
 		}
 		else
 			s = (string)(((Token)getLookAheadToken()).tostring());
-	}	
+
+	}
+	if (1 == 0)
+	{
+error:
+	semantic = "Sai ngu nghia";
 }
+}
+
 
 //<tail>				::= 	',' <source> |  <binary-operator><source>  |	
 void Parser::parseTail()
@@ -250,7 +263,7 @@ void Parser::parseArg()
 			{
 				data.BeginFunction(str);
 				parseArg_list();
-				data.EndFunction();
+				if(!data.EndFunction())goto error;
 			}
 			else
 			{
@@ -278,6 +291,11 @@ void Parser::parseArg()
 
 		data.EndArg();
 	}
+	if (1 == 0)
+	{
+error:
+	semantic = "Sai ngu nghia";
+}
 }
 
 //<binary-operator> 	::= 	'and' 		| 'or' 		| 'modus'

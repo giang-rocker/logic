@@ -53,7 +53,7 @@ Token::operator =(const Token& t)
 
 string Token::tostring()
 {		
-#if LGC_DEBUG
+#if _DEBUG
 	return convertToken()+"\tLexeme: "+m_lexeme+"\t"+(string)m_position.toString();
 #else
 	return "Unexpected Lexeme: "+m_lexeme+"\t"+(string)m_position.toString();

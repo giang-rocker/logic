@@ -31,6 +31,7 @@ private:
 	Token lookAheadToken;
 	Token currentToken;
 	bool enterGoal ;
+	string semantic;
 //	bool first;
 //	string error = "" ;
 }
